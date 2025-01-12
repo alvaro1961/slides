@@ -201,7 +201,7 @@
 </section>
 <section id="required-libraries" class="slide level2">
 <h2>Required Libraries</h2>
-<div id="6ba75577" class="cell" data-execution_count="1">
+<div id="ca3b2eac" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -228,7 +228,7 @@
 </div><div class="column" style="width:50%;">
 <div class="fragment">
 <p><strong>Simple <span class="math inline">\(3\times 4\)</span> example</strong></p>
-<div id="68031ef9" class="cell" data-execution_count="2">
+<div id="e1bd2f3c" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a>grayscale_example <span class="op">=</span> np.array([</span>
 <span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">85</span>, <span class="dv">170</span>, <span class="dv">255</span>],    <span class="co"># Different shades</span></span>
 <span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">255</span>, <span class="dv">170</span>, <span class="dv">85</span>, <span class="dv">0</span>],    <span class="co"># Reversed pattern</span></span>
@@ -296,7 +296,7 @@
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="2713d892" class="cell" data-execution_count="3">
+<div id="c940db72" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 2x4 image with four different colors</span></span>
 <span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>simple_rgb <span class="op">=</span> np.array([</span>
 <span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">255</span>,<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">255</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">255</span>], [<span class="dv">255</span>,<span class="dv">255</span>,<span class="dv">255</span>]],</span>
@@ -320,45 +320,50 @@
 </div>
 </div></div>
 </section>
-<section id="how-arrays-represent-images" class="slide level2 smaller">
-<h2>How Arrays Represent Images</h2>
+<section id="importing-images-to-numpy-arrays" class="slide level2 smaller">
+<h2>Importing Images to NumPy arrays</h2>
 <div class="columns">
-<div class="column" style="width:60%;">
-<div class="fragment">
-<ul>
-<li>Grayscale Image: 2D array
-<ul>
-<li>Shape: (height, width)</li>
-<li>Example: (100, 100) for 100x100 image</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Color Image: 3D array
-<ul>
-<li>Shape: (height, width, 3)</li>
-<li>Example: (100, 100, 3) for 100x100 RGB image</li>
-</ul></li>
-</ul>
-</div>
-</div><div class="column" style="width:40%;">
-<div class="fragment">
-<p><img data-src="butterfly.jpg"></p>
-</div>
-<div class="fragment">
-<div id="27597cdb" class="cell" data-execution_count="4">
+<div class="column" style="width:50%;">
+<p>PIL handles all image formats reliably across platforms</p>
+<div id="6aca011d" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a color image</span></span>
-<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> plt.imread(<span class="st">'butterfly.jpg'</span>)</span>
-<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Image shape:"</span>, image.shape)</span>
-<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Height:"</span>, image.shape[<span class="dv">0</span>])</span>
-<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Width:"</span>, image.shape[<span class="dv">1</span>])</span>
-<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Channels:"</span>, image.shape[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Load image and converte to a numpy array</span></span>
+<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array(Image.<span class="bu">open</span>(<span class="st">'butterfly.jpg'</span>))</span>
+<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that the image is a numpy array</span></span>
+<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(img))</span>
+<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the size of the image</span></span>
+<span id="cb4-12"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Image shape:"</span>, img.shape)</span>
+<span id="cb4-13"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Height:"</span>, img.shape[<span class="dv">0</span>])</span>
+<span id="cb4-14"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Width:"</span>, img.shape[<span class="dv">1</span>])</span>
+<span id="cb4-15"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Channels:"</span>, img.shape[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Image shape: (251, 201, 3)
+<pre><code>&lt;class 'numpy.ndarray'&gt;
+Image shape: (251, 201, 3)
 Height: 251
 Width: 201
 Channels: 3</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<p>Use <code>matplotlib</code> to see the image</p>
+<div id="c973b8ec" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>imgplot <span class="op">=</span> plt.imshow(img)</span>
+<span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-6-output-1.png" class="quarto-figure quarto-figure-center" width="315" height="389"></p>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -367,7 +372,7 @@ Channels: 3</code></pre>
 <section id="accessing-color-channels-in-numpy" class="slide level2 smaller">
 <h2>Accessing Color Channels in NumPy</h2>
 <div class="fragment">
-<h3 id="image-array-indexing">Image Array Indexing:</h3>
+<h4 id="image-array-indexing">Image Array Indexing:</h4>
 <ul>
 <li><strong>Individual Pixels:</strong> image[ a, b, c ]
 <ul>
@@ -382,7 +387,9 @@ Channels: 3</code></pre>
 <li><strong>Entire Color Channels:</strong> image[ : , : , c ]
 <ul>
 <li>Returns 2D array (0-255 intensities)</li>
-<li>Example: <strong>image[ : , : , 0 ]</strong> extracts red channel</li>
+<li><strong>image[ : , : , 0 ]</strong> extracts red channel</li>
+<li><strong>image[ : , : , 1 ]</strong> extracts green channel</li>
+<li><strong>image[ : , : , 2 ]</strong> extracts blue channel</li>
 </ul></li>
 </ul>
 </div>
@@ -390,11 +397,11 @@ Channels: 3</code></pre>
 <section id="accessing-color-channels-in-numpy-1" class="slide level2 smaller">
 <h2>Accessing Color Channels in NumPy</h2>
 <p><strong>RGB Circles</strong></p>
-<div id="02066ba1" class="cell" data-execution_count="6">
+<div id="c2cb6593" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
-<p><img data-src="image_transformations_files/figure-revealjs/cell-7-output-1.png" width="1135" height="119"></p>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-8-output-1.png" width="1135" height="119"></p>
 </figure>
 </div>
 </div>
@@ -402,11 +409,11 @@ Channels: 3</code></pre>
 <div class="fragment">
 <div class="fragment">
 <p><strong>Butterfly Example</strong></p>
-<div id="b245cd86" class="cell" data-execution_count="7">
+<div id="e7f3a053" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
-<p><img data-src="image_transformations_files/figure-revealjs/cell-8-output-1.png" width="1129" height="335"></p>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-9-output-1.png" width="1129" height="335"></p>
 </figure>
 </div>
 </div>
@@ -416,6 +423,8 @@ Channels: 3</code></pre>
 </section>
 <section id="reshaping-for-matrix-operations" class="slide level2 smaller scrollable">
 <h2>Reshaping for Matrix Operations</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
 <div class="fragment">
 <h3 id="why-reshape">Why Reshape?</h3>
 <ol type="1">
@@ -438,33 +447,38 @@ Channels: 3</code></pre>
 </ul></li>
 </ol>
 </div>
+</div><div class="column" style="width:40%;">
+<div class="fragment">
+<p><img data-src="reshaping.png"></p>
+</div>
+</div></div>
 </section>
 <section id="reshaping-for-matrix-operations-1" class="slide level2 smaller">
 <h2>Reshaping for Matrix Operations</h2>
 <h3 id="example">Example</h3>
 <div class="columns">
 <div class="column" style="width:60%;">
-<div id="a1869c92" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create tiny RGB image (2×2)</span></span>
-<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a>tiny_image <span class="op">=</span> np.array([</span>
-<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">100</span>,<span class="dv">150</span>,<span class="dv">200</span>], [<span class="dv">120</span>,<span class="dv">160</span>,<span class="dv">210</span>]],    <span class="co"># Top row</span></span>
-<span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">220</span>], [<span class="dv">160</span>,<span class="dv">180</span>,<span class="dv">230</span>]]     <span class="co"># Bottom row</span></span>
-<span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb6-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Original 3D array (2×2×3):"</span>)</span>
-<span id="cb6-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tiny_image)</span>
-<span id="cb6-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Shape:"</span>, tiny_image.shape)</span>
-<span id="cb6-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape to 2D</span></span>
-<span id="cb6-12"><a href="" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">=</span> tiny_image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
-<span id="cb6-13"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Reshaped 2D matrix (4×3):"</span>)</span>
-<span id="cb6-14"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(matrix)</span>
-<span id="cb6-15"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">New shape:"</span>, matrix.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="78fdd9fc" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create tiny RGB image (2×2)</span></span>
+<span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a>tiny_image <span class="op">=</span> np.array([</span>
+<span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">100</span>,<span class="dv">150</span>,<span class="dv">200</span>], [<span class="dv">120</span>,<span class="dv">160</span>,<span class="dv">210</span>]],    <span class="co"># Top row</span></span>
+<span id="cb7-4"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">140</span>,<span class="dv">170</span>,<span class="dv">220</span>], [<span class="dv">160</span>,<span class="dv">180</span>,<span class="dv">230</span>]]     <span class="co"># Bottom row</span></span>
+<span id="cb7-5"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb7-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Original 3D array (2×2×3):"</span>)</span>
+<span id="cb7-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tiny_image)</span>
+<span id="cb7-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Shape:"</span>, tiny_image.shape)</span>
+<span id="cb7-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape to 2D</span></span>
+<span id="cb7-12"><a href="" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">=</span> tiny_image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb7-13"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Reshaped 2D matrix (4×3):"</span>)</span>
+<span id="cb7-14"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(matrix)</span>
+<span id="cb7-15"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">New shape:"</span>, matrix.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:40%;">
 <div class="fragment">
 <h4 id="original-3d-array-2x2x3">Original 3D array (2x2x3):</h4>
-<div id="05c18adf" class="cell" data-execution_count="9">
+<div id="8cfd1667" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[[100 150 200]
   [120 160 210]]
@@ -479,7 +493,7 @@ Shape: (2, 2, 3)</code></pre>
 <p><br></p>
 <div class="fragment">
 <h4 id="reshaped-2d-matrix-4x3">Reshaped 2D matrix (4x3):</h4>
-<div id="f138427b" class="cell" data-execution_count="10">
+<div id="25794970" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[100 150 200]
  [120 160 210]
@@ -498,7 +512,7 @@ New shape: (4, 3)</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h4 id="original">Original</h4>
-<div id="0d4d1846" class="cell" data-execution_count="11">
+<div id="b56c0a92" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[[100 150 200]
   [120 160 210]]
@@ -511,7 +525,7 @@ Shape: (2, 2, 3)</code></pre>
 </div>
 <p><br></p>
 <h4 id="reshaped">Reshaped</h4>
-<div id="649540ba" class="cell" data-execution_count="12">
+<div id="2e2b6ef7" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[100 150 200]
  [120 160 210]
@@ -566,18 +580,27 @@ New shape: (4, 3)</code></pre>
 </section>
 <section id="reshaping-back-for-visualization" class="slide level2 smaller scrollable">
 <h2>Reshaping Back for Visualization</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
 <div class="fragment">
 <h3 id="back-to-image-format">Back to Image Format</h3>
+<div>
 <ol type="1">
-<li>After matrix operations, data is still (height × width) × 3</li>
-<li>Need 3D array for display: height × width × 3</li>
-<li>Solution: Reshape using original dimensions</li>
+<li class="fragment">After matrix operations, data is still 2D: <span class="math display">\[\text{(height × width) × 3}\]</span></li>
+<li class="fragment">Need 3D array for display: height × width × 3</li>
+<li class="fragment">Solution: Reshape using original dimensions</li>
 </ol>
 <ul>
-<li><strong>image_modified.reshape(height, width, 3)</strong></li>
-<li>Must know original height and width!</li>
+<li class="fragment"><strong>image_modified.reshape(height, width, 3)</strong></li>
+<li class="fragment">Must know original height and width!</li>
 </ul>
 </div>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="fragment">
+<p><img data-src="reshaping_back.png"></p>
+</div>
+</div></div>
 </section>
 <section id="color-transformations" class="slide level2 smaller">
 <h2>Color Transformations</h2>
@@ -607,28 +630,28 @@ New shape: (4, 3)</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h4 id="rgb-to-bgr">RGB to BGR</h4>
-<div id="b3de98b9" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a>RGB_to_BGR <span class="op">=</span> np.array([</span>
-<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],  <span class="co"># New Red = Old Blue</span></span>
-<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>],  <span class="co"># Green stays same</span></span>
-<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>]   <span class="co"># New Blue = Old Red</span></span>
-<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> swap_colors(image, permutation_matrix):</span>
-<span id="cb11-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape to 2D</span></span>
-<span id="cb11-9"><a href="" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
-<span id="cb11-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply transformation</span></span>
-<span id="cb11-11"><a href="" aria-hidden="true" tabindex="-1"></a>    transformed <span class="op">=</span> matrix <span class="op">@</span> permutation_matrix</span>
-<span id="cb11-12"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape back to 3D</span></span>
-<span id="cb11-13"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> transformed.reshape(image.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="233ec1d5" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a>RGB_to_BGR <span class="op">=</span> np.array([</span>
+<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],  <span class="co"># New Red = Old Blue</span></span>
+<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>],  <span class="co"># Green stays same</span></span>
+<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>]   <span class="co"># New Blue = Old Red</span></span>
+<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> swap_colors(image, permutation_matrix):</span>
+<span id="cb12-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape to 2D</span></span>
+<span id="cb12-9"><a href="" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb12-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply transformation</span></span>
+<span id="cb12-11"><a href="" aria-hidden="true" tabindex="-1"></a>    transformed <span class="op">=</span> matrix <span class="op">@</span> permutation_matrix</span>
+<span id="cb12-12"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape back to 3D</span></span>
+<span id="cb12-13"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> transformed.reshape(image.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="e1ab12a8" class="cell" data-execution_count="14">
+<div id="fe6a2972" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="image_transformations_files/figure-revealjs/cell-15-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-16-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
 </figure>
 </div>
 </div>
@@ -650,26 +673,26 @@ New shape: (4, 3)</code></pre>
 <li>Blue: 11.4%</li>
 </ul></li>
 </ul>
-<div id="b178fa55" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_grayscale(image):</span>
-<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert RGB image to grayscale"""</span></span>
-<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> np.array([<span class="fl">0.299</span>, <span class="fl">0.587</span>, <span class="fl">0.114</span>])</span>
-<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape and apply weights</span></span>
-<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
-<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a>    grayscale_values <span class="op">=</span> matrix <span class="op">@</span> weights</span>
-<span id="cb12-8"><a href="" aria-hidden="true" tabindex="-1"></a>    grayscale_values <span class="op">=</span> np.clip(grayscale_values, <span class="dv">0</span>, <span class="dv">1</span>)  </span>
-<span id="cb12-9"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure valid range, since we use floats, range is [0,1]</span></span>
-<span id="cb12-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape to 2D (remove color channel)</span></span>
-<span id="cb12-11"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grayscale_values.reshape(image.shape[:<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="8e7acdcd" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_grayscale(image):</span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert RGB image to grayscale"""</span></span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> np.array([<span class="fl">0.299</span>, <span class="fl">0.587</span>, <span class="fl">0.114</span>])</span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape and apply weights</span></span>
+<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a>    grayscale_values <span class="op">=</span> matrix <span class="op">@</span> weights</span>
+<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a>    grayscale_values <span class="op">=</span> np.clip(grayscale_values, <span class="dv">0</span>, <span class="dv">1</span>)  </span>
+<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure valid range, since we use floats, range is [0,1]</span></span>
+<span id="cb13-10"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reshape to 2D (remove color channel)</span></span>
+<span id="cb13-11"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grayscale_values.reshape(image.shape[:<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="4e61eec1" class="cell" data-execution_count="16">
+<div id="9eaf320d" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="image_transformations_files/figure-revealjs/cell-17-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-18-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
 </figure>
 </div>
 </div>
@@ -686,26 +709,26 @@ New shape: (4, 3)</code></pre>
 <li>Transforms photos into warm brown tones, creating a vintage effect</li>
 <li>Results in tones ranging from light cream to deep brown</li>
 </ul>
-<div id="d19b5718" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_sepia(image):</span>
-<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia_matrix <span class="op">=</span> np.array([</span>
-<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.393</span>, <span class="fl">0.349</span>, <span class="fl">0.272</span>],</span>
-<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.769</span>, <span class="fl">0.686</span>, <span class="fl">0.534</span>],</span>
-<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.189</span>, <span class="fl">0.168</span>, <span class="fl">0.131</span>]</span>
-<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a>    ])</span>
-<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
-<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia <span class="op">=</span> matrix <span class="op">@</span> sepia_matrix</span>
-<span id="cb13-10"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia <span class="op">=</span> np.clip(sepia, <span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Ensure valid range</span></span>
-<span id="cb13-11"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sepia.reshape(image.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="737b7c13" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_sepia(image):</span>
+<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia_matrix <span class="op">=</span> np.array([</span>
+<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.393</span>, <span class="fl">0.349</span>, <span class="fl">0.272</span>],</span>
+<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.769</span>, <span class="fl">0.686</span>, <span class="fl">0.534</span>],</span>
+<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.189</span>, <span class="fl">0.168</span>, <span class="fl">0.131</span>]</span>
+<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-8"><a href="" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb14-9"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia <span class="op">=</span> matrix <span class="op">@</span> sepia_matrix</span>
+<span id="cb14-10"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia <span class="op">=</span> np.clip(sepia, <span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Ensure valid range</span></span>
+<span id="cb14-11"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sepia.reshape(image.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="49cb3955" class="cell" data-execution_count="18">
+<div id="a633824c" class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="image_transformations_files/figure-revealjs/cell-19-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-20-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
 </figure>
 </div>
 </div>
@@ -723,26 +746,26 @@ New shape: (4, 3)</code></pre>
 <li>Each channel increases its own weight</li>
 <li>Reduces influence of other channels</li>
 </ul>
-<div id="ad194948" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intensify_colors(image):</span>
-<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a>   intensity_matrix <span class="op">=</span> np.array([</span>
-<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.2</span>],</span>
-<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.2</span>],</span>
-<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="op">-</span><span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="fl">1.5</span>]</span>
-<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a>   ])</span>
-<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a>   </span>
-<span id="cb14-8"><a href="" aria-hidden="true" tabindex="-1"></a>   matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
-<span id="cb14-9"><a href="" aria-hidden="true" tabindex="-1"></a>   enhanced <span class="op">=</span> matrix <span class="op">@</span> intensity_matrix</span>
-<span id="cb14-10"><a href="" aria-hidden="true" tabindex="-1"></a>   enhanced <span class="op">=</span> np.clip(enhanced, <span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Ensure valid range</span></span>
-<span id="cb14-11"><a href="" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> enhanced.reshape(image.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="de7e277f" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intensify_colors(image):</span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>   intensity_matrix <span class="op">=</span> np.array([</span>
+<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.2</span>],</span>
+<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="op">-</span><span class="fl">0.2</span>, <span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.2</span>],</span>
+<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="op">-</span><span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="fl">1.5</span>]</span>
+<span id="cb15-6"><a href="" aria-hidden="true" tabindex="-1"></a>   ])</span>
+<span id="cb15-7"><a href="" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb15-8"><a href="" aria-hidden="true" tabindex="-1"></a>   matrix <span class="op">=</span> image.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb15-9"><a href="" aria-hidden="true" tabindex="-1"></a>   enhanced <span class="op">=</span> matrix <span class="op">@</span> intensity_matrix</span>
+<span id="cb15-10"><a href="" aria-hidden="true" tabindex="-1"></a>   enhanced <span class="op">=</span> np.clip(enhanced, <span class="dv">0</span>, <span class="dv">1</span>)  <span class="co"># Ensure valid range</span></span>
+<span id="cb15-11"><a href="" aria-hidden="true" tabindex="-1"></a>   <span class="cf">return</span> enhanced.reshape(image.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="886f497a" class="cell" data-execution_count="20">
+<div id="f09885e9" class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="image_transformations_files/figure-revealjs/cell-21-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
+<p><img data-src="image_transformations_files/figure-revealjs/cell-22-output-1.png" class="quarto-figure quarto-figure-center" width="374" height="588"></p>
 </figure>
 </div>
 </div>
