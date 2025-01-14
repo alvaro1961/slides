@@ -201,7 +201,7 @@
 </section>
 <section id="required-libraries" class="slide level2">
 <h2>Required Libraries</h2>
-<div id="ca3b2eac" class="cell" data-execution_count="1">
+<div id="fcb4b3af" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -228,7 +228,7 @@
 </div><div class="column" style="width:50%;">
 <div class="fragment">
 <p><strong>Simple <span class="math inline">\(3\times 4\)</span> example</strong></p>
-<div id="e1bd2f3c" class="cell" data-execution_count="2">
+<div id="35830029" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a>grayscale_example <span class="op">=</span> np.array([</span>
 <span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">85</span>, <span class="dv">170</span>, <span class="dv">255</span>],    <span class="co"># Different shades</span></span>
 <span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">255</span>, <span class="dv">170</span>, <span class="dv">85</span>, <span class="dv">0</span>],    <span class="co"># Reversed pattern</span></span>
@@ -296,7 +296,7 @@
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="c940db72" class="cell" data-execution_count="3">
+<div id="2feded7c" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 2x4 image with four different colors</span></span>
 <span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>simple_rgb <span class="op">=</span> np.array([</span>
 <span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">255</span>,<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">255</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">255</span>], [<span class="dv">255</span>,<span class="dv">255</span>,<span class="dv">255</span>]],</span>
@@ -325,7 +325,7 @@
 <div class="columns">
 <div class="column" style="width:50%;">
 <p>PIL handles all image formats reliably across platforms</p>
-<div id="6aca011d" class="cell" data-execution_count="4">
+<div id="3e3aa36b" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a color image</span></span>
 <span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -352,10 +352,10 @@ Channels: 3</code></pre>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
 <p>Use <code>matplotlib</code> to see the image</p>
-<div id="c973b8ec" class="cell" data-execution_count="5">
+<div id="0d6b6160" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>imgplot <span class="op">=</span> plt.imshow(img)</span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
 <span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -397,7 +397,7 @@ Channels: 3</code></pre>
 <section id="accessing-color-channels-in-numpy-1" class="slide level2 smaller">
 <h2>Accessing Color Channels in NumPy</h2>
 <p><strong>RGB Circles</strong></p>
-<div id="c2cb6593" class="cell" data-execution_count="7">
+<div id="381aff17" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -409,7 +409,7 @@ Channels: 3</code></pre>
 <div class="fragment">
 <div class="fragment">
 <p><strong>Butterfly Example</strong></p>
-<div id="e7f3a053" class="cell" data-execution_count="8">
+<div id="7fb33499" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div>
 <figure>
@@ -458,7 +458,7 @@ Channels: 3</code></pre>
 <h3 id="example">Example</h3>
 <div class="columns">
 <div class="column" style="width:60%;">
-<div id="78fdd9fc" class="cell" data-execution_count="9">
+<div id="d967e05b" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Create tiny RGB image (2×2)</span></span>
 <span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a>tiny_image <span class="op">=</span> np.array([</span>
 <span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [[<span class="dv">100</span>,<span class="dv">150</span>,<span class="dv">200</span>], [<span class="dv">120</span>,<span class="dv">160</span>,<span class="dv">210</span>]],    <span class="co"># Top row</span></span>
@@ -478,7 +478,7 @@ Channels: 3</code></pre>
 </div><div class="column" style="width:40%;">
 <div class="fragment">
 <h4 id="original-3d-array-2x2x3">Original 3D array (2x2x3):</h4>
-<div id="8cfd1667" class="cell" data-execution_count="10">
+<div id="8f5cb1fa" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[[100 150 200]
   [120 160 210]]
@@ -493,7 +493,7 @@ Shape: (2, 2, 3)</code></pre>
 <p><br></p>
 <div class="fragment">
 <h4 id="reshaped-2d-matrix-4x3">Reshaped 2D matrix (4x3):</h4>
-<div id="25794970" class="cell" data-execution_count="11">
+<div id="4e7c582b" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[100 150 200]
  [120 160 210]
@@ -512,7 +512,7 @@ New shape: (4, 3)</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h4 id="original">Original</h4>
-<div id="b56c0a92" class="cell" data-execution_count="12">
+<div id="a773d9f5" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[[100 150 200]
   [120 160 210]]
@@ -525,7 +525,7 @@ Shape: (2, 2, 3)</code></pre>
 </div>
 <p><br></p>
 <h4 id="reshaped">Reshaped</h4>
-<div id="2e2b6ef7" class="cell" data-execution_count="13">
+<div id="13c77b41" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-stdout">
 <pre><code>[[100 150 200]
  [120 160 210]
@@ -630,7 +630,7 @@ New shape: (4, 3)</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <h4 id="rgb-to-bgr">RGB to BGR</h4>
-<div id="233ec1d5" class="cell" data-execution_count="14">
+<div id="d7256313" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a>RGB_to_BGR <span class="op">=</span> np.array([</span>
 <span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>],  <span class="co"># New Red = Old Blue</span></span>
 <span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>],  <span class="co"># Green stays same</span></span>
@@ -647,7 +647,7 @@ New shape: (4, 3)</code></pre>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="fe6a2972" class="cell" data-execution_count="15">
+<div id="3efa8d9c" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -673,7 +673,7 @@ New shape: (4, 3)</code></pre>
 <li>Blue: 11.4%</li>
 </ul></li>
 </ul>
-<div id="8e7acdcd" class="cell" data-execution_count="16">
+<div id="cb53bcde" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_grayscale(image):</span>
 <span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert RGB image to grayscale"""</span></span>
 <span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>    weights <span class="op">=</span> np.array([<span class="fl">0.299</span>, <span class="fl">0.587</span>, <span class="fl">0.114</span>])</span>
@@ -688,7 +688,7 @@ New shape: (4, 3)</code></pre>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="9eaf320d" class="cell" data-execution_count="17">
+<div id="b70c532d" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -709,7 +709,7 @@ New shape: (4, 3)</code></pre>
 <li>Transforms photos into warm brown tones, creating a vintage effect</li>
 <li>Results in tones ranging from light cream to deep brown</li>
 </ul>
-<div id="737b7c13" class="cell" data-execution_count="18">
+<div id="cf480905" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apply_sepia(image):</span>
 <span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a>    sepia_matrix <span class="op">=</span> np.array([</span>
 <span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a>        [<span class="fl">0.393</span>, <span class="fl">0.349</span>, <span class="fl">0.272</span>],</span>
@@ -724,7 +724,7 @@ New shape: (4, 3)</code></pre>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="a633824c" class="cell" data-execution_count="19">
+<div id="80ee95d7" class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -746,7 +746,7 @@ New shape: (4, 3)</code></pre>
 <li>Each channel increases its own weight</li>
 <li>Reduces influence of other channels</li>
 </ul>
-<div id="de7e277f" class="cell" data-execution_count="20">
+<div id="1cda2855" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intensify_colors(image):</span>
 <span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>   intensity_matrix <span class="op">=</span> np.array([</span>
 <span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>       [<span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="op">-</span><span class="fl">0.2</span>],</span>
@@ -761,7 +761,7 @@ New shape: (4, 3)</code></pre>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<div id="f09885e9" class="cell" data-execution_count="21">
+<div id="65d52789" class="cell" data-execution_count="21">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
