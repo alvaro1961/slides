@@ -230,7 +230,7 @@
 <ol type="1">
 <li class="fragment"><strong>Start with leftmost column:</strong>
 <ul>
-<li class="fragment">Find first non-zero entry</li>
+<li class="fragment">Find a non-zero entry (if none exists move to the next column)</li>
 <li class="fragment">If found, move to first row (if not already there)</li>
 <li class="fragment">If found and moved, make it first pivot</li>
 <li class="fragment">Use pivot to zero out all entries below it</li>
@@ -238,7 +238,7 @@
 <li class="fragment"><strong>For each subsequent column:</strong>
 <ul>
 <li class="fragment">Look only at unused rows (below last pivot)</li>
-<li class="fragment">Find first non-zero entry</li>
+<li class="fragment">Find a non-zero entry (if none exists move to the next column)</li>
 <li class="fragment">If found, move it up (right below last pivot)</li>
 <li class="fragment">Use this pivot to zero out all entries below it</li>
 </ul></li>
