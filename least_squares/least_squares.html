@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="least_squares_files/libs/clipboard/clipboard.min.js"></script>
+<script src="least_squares_files/libs/quarto-html/tabby.min.js"></script>
+<script src="least_squares_files/libs/quarto-html/popper.min.js"></script>
+<script src="least_squares_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="least_squares_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="least_squares_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="least_squares_files/libs/quarto-html/quarto-syntax-highlighting-29e2c20b02301cfff04dc8050bf30c7e.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.37">
+
+  <title>Least Squares and Regression</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="least_squares_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="least_squares_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="least_squares_files/libs/revealjs/dist/theme/quarto-bbe7401fe57d4b791b917637bb662036.css">
+  <link rel="stylesheet" href="styles.css">
+  <link href="least_squares_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="least_squares_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="least_squares_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="least_squares_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+  
+  <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+  <script type="text/javascript">
+  window.PlotlyConfig = {MathJaxConfig: 'local'};
+  if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+  if (typeof require !== 'undefined') {
+  require.undef("plotly");
+  requirejs.config({
+      paths: {
+          'plotly': ['https://cdn.plot.ly/plotly-2.35.2.min']
+      }
+  });
+  require(['plotly'], function(Plotly) {
+      window._Plotly = Plotly;
+  });
+  }
+  </script>
+
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Least Squares and Regression</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="from-dot-product-to-geometry-in-mathbbrn" class="slide level2 smaller">
+<h2>From dot product to Geometry in <span class="math inline">\(\mathbb{R}^n\)</span></h2>
+<p>With the usual dot product defined by <span class="math display">\[\mathbf{x}\cdot \mathbf{y}=\sum_{i\leq n}x_iy_i=
+\begin{bmatrix}x_1&amp;x_2&amp;\cdots&amp;x_n\end{bmatrix}
+\begin{bmatrix}y_1\\ y_2\\ \vdots\\ y_n\end{bmatrix}\]</span></p>
+<p><span class="math inline">\(\mathbb{R}^n\)</span> has:</p>
+<div>
+<ul>
+<li class="fragment">A norm given by <span class="math inline">\(\|\mathbf{x}\|=\sqrt{\sum_{i\leq n}|x_i|^2}\)</span></li>
+<li class="fragment">A distance given by <span class="math inline">\(d(\mathbf{x},\mathbf{y})=\|\mathbf{x}-\mathbf{y}\|\)</span></li>
+<li class="fragment">A notion of orthogonality (<span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span> are orthogonal if <span class="math inline">\(\mathbf{x}\cdot \mathbf{y}=0\)</span>)</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Pythagorean Theorem:</strong> If <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span> are orthogonal, then <span class="math inline">\(\|\mathbf{x}+\mathbf{y}\|^2=\|\mathbf{x}\|^2+\|\mathbf{y}\|^2\)</span>.</p>
+</div>
+</section>
+<section id="projection-theorem" class="slide level2 smaller">
+<h2>Projection Theorem</h2>
+<p>Suppose that <span class="math inline">\(W\subset\mathbb{R}^n\)</span> is a subspace and <span class="math inline">\(\mathbf{y}\in \mathbb{R}^n\)</span>. Then there is a unique vector <span class="math inline">\(\hat{\mathbf{y}}\in W\)</span> that is closest to <span class="math inline">\(\mathbf{y}\)</span>. That is</p>
+<p><span class="math display">\[\min_{\mathbf{w}\in W}\|\mathbf{y}-\mathbf{w}\|=\|\mathbf{y}-\hat{\mathbf{y}}\|\]</span></p>
+<div class="fragment">
+<p>Moreover, <span class="math inline">\(\hat{\mathbf{y}}\)</span> is characterized by <span class="math inline">\(\mathbf{y}-\hat{\mathbf{y}}\in W^\perp\)</span> and <span class="math inline">\(\hat{\mathbf{y}}\in W\)</span>.</p>
+<p><img data-src="graph1.png" width="800"></p>
+</div>
+</section>
+<section id="projection-theorem-for-textcola" class="slide level2 smaller">
+<h2>Projection Theorem for <span class="math inline">\(\text{col}(A)\)</span></h2>
+<p>Suppose that <span class="math inline">\(A=[\mathbf{v}_1\mathbf{v}_2\cdots \mathbf{v}_k]\)</span> is an <span class="math inline">\(n\times k\)</span> matrix with columns <span class="math inline">\(\mathbf{v}_1,\dots,\mathbf{v}_k\)</span>, and recall that <span class="math inline">\(\text{col}(A)=\text{span}\{\mathbf{v}_1,\dots,\mathbf{v}_k\}\)</span>. Then recall from class that:</p>
+<div class="fragment">
+<ul>
+<li><span class="math inline">\(\mathbf{w}\in\text{col}(A)\)</span> iff there exists <span class="math inline">\(\mathbf{x}\in \mathbb{R}^k\)</span> such that <span class="math inline">\(\mathbf{w}= A\mathbf{x}\)</span></li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><span class="math inline">\(\mathbf{v}\in\text{col}(A)^\perp\)</span> iff <span class="math inline">\(A^T\mathbf{v}=\mathbf{0}\)</span>, where <span class="math inline">\(A^T\)</span> is the transpose of <span class="math inline">\(A\)</span></li>
+</ul>
+</div>
+<div class="fragment">
+<p>Given <span class="math inline">\(\mathbf{y}\in \mathbb{R}^n\)</span>, our goal is to find <span class="math inline">\(\hat{\mathbf{y}}\in \text{col}(A)\)</span> such that <span class="math inline">\(\mathbf{y}-\hat{\mathbf{y}}\in \text{col}(A)^\perp\)</span></p>
+</div>
+<div class="fragment">
+<p>We want to find <span class="math inline">\(\hat{\mathbf{x}}\in\mathbb{R}^k\)</span> such that <span class="math inline">\(\hat{\mathbf{y}}=A\hat{\mathbf{x}}\)</span> and <span class="math inline">\(A^T(\mathbf{y}-\hat{\mathbf{y}})=A^T(\mathbf{y}-A\hat{\mathbf{x}})=0\)</span></p>
+</div>
+<div class="fragment">
+<p>Therefore, we want to find <span class="math inline">\(\hat{\mathbf{x}}\in\mathbb{R}^k\)</span> such that:</p>
+<p><span class="math display">\[A^TA\hat{\mathbf{x}}=A^T\mathbf{y}\quad\text{(Normal Equations)}\]</span></p>
+</div>
+<div class="fragment">
+<p>If <span class="math inline">\(A^TA\)</span> is invertible, then <span class="math display">\[\hat{\mathbf{x}}=(A^TA)^{-1}A^T\mathbf{y}\quad\text{and}\quad \hat{\mathbf{y}}=A\hat{\mathbf{x}}=A(A^TA)^{-1}A^T\mathbf{y}\]</span></p>
+</div>
+</section>
+<section id="simple-linear-regression" class="slide level2 smaller">
+<h2>Simple Linear Regression</h2>
+<p>In the simple regression problem we want to find the “best” line <span class="math inline">\(y=mx+b\)</span> that approximates the data <span class="math inline">\(\{(x_i,y_i):i\leq N\}\)</span> we are given.</p>
+<p>By “best” we mean that the slope <span class="math inline">\(m\)</span> and the intercept <span class="math inline">\(b\)</span> minimize the sum of the squared errors:</p>
+<p><span class="math display">\[\min_{m,b}\sum_{i=1}^N|mx_i+b-y_i|^2\]</span></p>
+
+<img data-src="graph2.png" class="r-stretch"></section>
+<section id="simple-linear-regression-cont." class="slide level2 smaller">
+<h2>Simple Linear Regression (cont.)</h2>
+<p>Notice that the sum <span class="math inline">\(\sum_{i=1}^N|mx_i+b-y_i|^2\)</span> can be written in terms of the norm in <span class="math inline">\(\mathbb{R}^N\)</span>: <span class="math display">\[\sum_{i=1}^N|mx_i+b-y_i|^2=
+\left\| \begin{bmatrix}
+    mx_1+b - y_1\\
+    mx_2+b-y_2\\
+    \vdots\\
+    mx_N+b-y_N
+\end{bmatrix}
+\right\|^2
+\]</span></p>
+<div class="fragment">
+<p>and</p>
+<p><span class="math display">\[\left\| \begin{bmatrix}
+    mx_1+b - y_1\\
+    mx_2+b-y_2\\
+    \vdots\\
+    mx_N+b-y_N
+\end{bmatrix}
+\right\|^2=
+\left\| \begin{bmatrix}
+    x_1&amp;1\\
+    x_2&amp;1\\
+    \vdots\\
+    x_N&amp;1
+\end{bmatrix}\begin{bmatrix}
+    m\\ b
+\end{bmatrix}-\begin{bmatrix}
+    y_1\\ y_2\\ \vdots\\ y_N
+\end{bmatrix}
+\right\|^2
+=\left\|X\begin{bmatrix}
+    m\\ b
+\end{bmatrix}-\mathbf{y}\right\|^2\]</span> where <span class="math inline">\(X\)</span> is the <span class="math inline">\(N\times 2\)</span> matrix with columns <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{1}\)</span>.</p>
+</div>
+</section>
+<section id="simple-linear-regression-cont.-1" class="slide level2 smaller">
+<h2>Simple Linear Regression (cont.)</h2>
+<p>Then the simple linear regression problem is restated as a projection problem:</p>
+<p><span class="math display">\[\min_{m,b}\sum_{i=1}^N|mx_i+b-y_i|^2
+=\min_{\left[m \atop b\right]}\left\|X\left[m\atop b\right]-y\right\|^2
+=\min_{w\in\text{col}(X)}\|w-y\|^2
+\]</span></p>
+<div class="fragment">
+<p>And we get</p>
+<p><span class="math display">\[\begin{bmatrix} \hat{m}\\ \hat{b}\end{bmatrix}
+=(X^TX)^{-1}X^T\mathbf{y}\]</span></p>
+</div>
+<div class="fragment">
+<p>These optimal parameters define our fitted model:</p>
+<p><span class="math display">\[y = \hat{m}x+\hat{b}\]</span></p>
+<p>which captures the linear relationship in our data.</p>
+</div>
+</section>
+<section id="example-the-tips-dataset" class="slide level2 smaller">
+<h2>Example: The tips dataset</h2>
+<p>Let’s explore whether a linear model can explain how restaurant tip amounts relate to the total bill value. Look at the Pandas section of chapter 8 for reference.</p>
+<div class="fragment">
+<div id="9f14cc9f" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href=""></a><span class="im">from</span> plotly.data <span class="im">import</span> tips</span>
+<span id="cb1-3"><a href=""></a></span>
+<span id="cb1-4"><a href=""></a><span class="co"># Load the tips dataset</span></span>
+<span id="cb1-5"><a href=""></a>tips_df <span class="op">=</span> tips() </span>
+<span id="cb1-6"><a href=""></a></span>
+<span id="cb1-7"><a href=""></a><span class="co"># Look at the first few rows</span></span>
+<span id="cb1-8"><a href=""></a>tips_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header" style="text-align: right;">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">total_bill</th>
+<th data-quarto-table-cell-role="th">tip</th>
+<th data-quarto-table-cell-role="th">sex</th>
+<th data-quarto-table-cell-role="th">smoker</th>
+<th data-quarto-table-cell-role="th">day</th>
+<th data-quarto-table-cell-role="th">time</th>
+<th data-quarto-table-cell-role="th">size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>16.99</td>
+<td>1.01</td>
+<td>Female</td>
+<td>No</td>
+<td>Sun</td>
+<td>Dinner</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>10.34</td>
+<td>1.66</td>
+<td>Male</td>
+<td>No</td>
+<td>Sun</td>
+<td>Dinner</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>21.01</td>
+<td>3.50</td>
+<td>Male</td>
+<td>No</td>
+<td>Sun</td>
+<td>Dinner</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>23.68</td>
+<td>3.31</td>
+<td>Male</td>
+<td>No</td>
+<td>Sun</td>
+<td>Dinner</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>24.59</td>
+<td>3.61</td>
+<td>Female</td>
+<td>No</td>
+<td>Sun</td>
+<td>Dinner</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-finding-the-model" class="slide level2 smaller">
+<h2>Example: Finding the model</h2>
+<div id="dc9f1778" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np <span class="co"># the other libraries and the data were imported before</span></span>
+<span id="cb2-2"><a href=""></a></span>
+<span id="cb2-3"><a href=""></a><span class="co"># Extract features from DataFrame. We only keep "tips" and "total_bill"</span></span>
+<span id="cb2-4"><a href=""></a><span class="co"># .values converts pandas Series to numpy array for matrix operations</span></span>
+<span id="cb2-5"><a href=""></a><span class="co"># This is necessary because numpy's matrix operations require arrays, not pandas Series</span></span>
+<span id="cb2-6"><a href=""></a>x <span class="op">=</span> tips_df[<span class="st">'total_bill'</span>].values </span>
+<span id="cb2-7"><a href=""></a>y <span class="op">=</span> tips_df[<span class="st">'tip'</span>].values</span>
+<span id="cb2-8"><a href=""></a></span>
+<span id="cb2-9"><a href=""></a><span class="co"># Build design matrix X = [x 1]</span></span>
+<span id="cb2-10"><a href=""></a><span class="co"># np.column_stack combines arrays as columns</span></span>
+<span id="cb2-11"><a href=""></a><span class="co"># np.ones_like(x) creates array of 1's same length as x</span></span>
+<span id="cb2-12"><a href=""></a><span class="co"># Result: each row of X is [x_i 1] for the equation y = mx + b</span></span>
+<span id="cb2-13"><a href=""></a>X <span class="op">=</span> np.column_stack([x, np.ones_like(x)])</span>
+<span id="cb2-14"><a href=""></a></span>
+<span id="cb2-15"><a href=""></a><span class="co"># Calculate beta</span></span>
+<span id="cb2-16"><a href=""></a>beta <span class="op">=</span> np.linalg.inv(X.T <span class="op">@</span> X) <span class="op">@</span> X.T <span class="op">@</span> y</span>
+<span id="cb2-17"><a href=""></a></span>
+<span id="cb2-18"><a href=""></a><span class="bu">print</span>(<span class="st">"Least squares solution:"</span>)</span>
+<span id="cb2-19"><a href=""></a><span class="bu">print</span>(<span class="ss">f"m (slope) = </span><span class="sc">{</span>beta[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb2-20"><a href=""></a><span class="bu">print</span>(<span class="ss">f"b (intercept) = </span><span class="sc">{</span>beta[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb2-21"><a href=""></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Equation: tip = </span><span class="sc">{</span>beta[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss"> × total_bill + </span><span class="sc">{</span>beta[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Least squares solution:
+m (slope) = 0.1050
+b (intercept) = 0.9203
+
+Equation: tip = 0.1050 × total_bill + 0.9203</code></pre>
+</div>
+</div>
+</section>
+<section id="example-visualization" class="slide level2 smaller scrollable">
+<h2>Example: Visualization</h2>
+<div id="670f69a0" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb4-2"><a href=""></a></span>
+<span id="cb4-3"><a href=""></a><span class="co"># Create scatter plot of original data</span></span>
+<span id="cb4-4"><a href=""></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb4-5"><a href=""></a></span>
+<span id="cb4-6"><a href=""></a>fig.add_trace(</span>
+<span id="cb4-7"><a href=""></a>    go.Scatter(</span>
+<span id="cb4-8"><a href=""></a>        x<span class="op">=</span>x, </span>
+<span id="cb4-9"><a href=""></a>        y<span class="op">=</span>y, </span>
+<span id="cb4-10"><a href=""></a>        mode<span class="op">=</span><span class="st">'markers'</span>,</span>
+<span id="cb4-11"><a href=""></a>        name<span class="op">=</span><span class="st">'Actual Tips'</span>,</span>
+<span id="cb4-12"><a href=""></a>        marker<span class="op">=</span><span class="bu">dict</span>(</span>
+<span id="cb4-13"><a href=""></a>            color<span class="op">=</span><span class="st">'blue'</span>,</span>
+<span id="cb4-14"><a href=""></a>            opacity<span class="op">=</span><span class="fl">0.6</span></span>
+<span id="cb4-15"><a href=""></a>        )</span>
+<span id="cb4-16"><a href=""></a>    )</span>
+<span id="cb4-17"><a href=""></a>)</span>
+<span id="cb4-18"><a href=""></a></span>
+<span id="cb4-19"><a href=""></a><span class="co"># Generate points for the least squares line</span></span>
+<span id="cb4-20"><a href=""></a>x_line <span class="op">=</span> np.linspace(x.<span class="bu">min</span>(), x.<span class="bu">max</span>(), <span class="dv">100</span>)</span>
+<span id="cb4-21"><a href=""></a>y_line <span class="op">=</span> beta[<span class="dv">0</span>] <span class="op">*</span> x_line <span class="op">+</span> beta[<span class="dv">1</span>]</span>
+<span id="cb4-22"><a href=""></a></span>
+<span id="cb4-23"><a href=""></a><span class="co"># Add the least squares line</span></span>
+<span id="cb4-24"><a href=""></a>fig.add_trace(</span>
+<span id="cb4-25"><a href=""></a>    go.Scatter(</span>
+<span id="cb4-26"><a href=""></a>        x<span class="op">=</span>x_line,</span>
+<span id="cb4-27"><a href=""></a>        y<span class="op">=</span>y_line,</span>
+<span id="cb4-28"><a href=""></a>        mode<span class="op">=</span><span class="st">'lines'</span>,</span>
+<span id="cb4-29"><a href=""></a>        name<span class="op">=</span><span class="ss">f'Least Squares Line: y = </span><span class="sc">{</span>beta[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss">x + </span><span class="sc">{</span>beta[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">'</span>,</span>
+<span id="cb4-30"><a href=""></a>        line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'red'</span>)</span>
+<span id="cb4-31"><a href=""></a>    )</span>
+<span id="cb4-32"><a href=""></a>)</span>
+<span id="cb4-33"><a href=""></a></span>
+<span id="cb4-34"><a href=""></a><span class="co"># Update layout</span></span>
+<span id="cb4-35"><a href=""></a>fig.update_layout(</span>
+<span id="cb4-36"><a href=""></a>    title<span class="op">=</span><span class="st">'Tips vs Total Bill: Least Squares Fit'</span>,</span>
+<span id="cb4-37"><a href=""></a>    xaxis_title<span class="op">=</span><span class="st">'Total Bill ($)'</span>,</span>
+<span id="cb4-38"><a href=""></a>    yaxis_title<span class="op">=</span><span class="st">'Tip ($)'</span>,</span>
+<span id="cb4-39"><a href=""></a>    showlegend<span class="op">=</span><span class="va">True</span></span>
+<span id="cb4-40"><a href=""></a>)</span>
+<span id="cb4-41"><a href=""></a></span>
+<span id="cb4-42"><a href=""></a>fig.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>                            <div id="57f0ad27-ab36-435b-af0b-c9330985de58" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("57f0ad27-ab36-435b-af0b-c9330985de58")) {                    Plotly.newPlot(                        "57f0ad27-ab36-435b-af0b-c9330985de58",                        [{"marker":{"color":"blue","opacity":0.6},"mode":"markers","name":"Actual Tips","x":[16.99,10.34,21.01,23.68,24.59,25.29,8.77,26.88,15.04,14.78,10.27,35.26,15.42,18.43,14.83,21.58,10.33,16.29,16.97,20.65,17.92,20.29,15.77,39.42,19.82,17.81,13.37,12.69,21.7,19.65,9.55,18.35,15.06,20.69,17.78,24.06,16.31,16.93,18.69,31.27,16.04,17.46,13.94,9.68,30.4,18.29,22.23,32.4,28.55,18.04,12.54,10.29,34.81,9.94,25.56,19.49,38.01,26.41,11.24,48.27,20.29,13.81,11.02,18.29,17.59,20.08,16.45,3.07,20.23,15.01,12.02,17.07,26.86,25.28,14.73,10.51,17.92,27.2,22.76,17.29,19.44,16.66,10.07,32.68,15.98,34.83,13.03,18.28,24.71,21.16,28.97,22.49,5.75,16.32,22.75,40.17,27.28,12.03,21.01,12.46,11.35,15.38,44.3,22.42,20.92,15.36,20.49,25.21,18.24,14.31,14.0,7.25,38.07,23.95,25.71,17.31,29.93,10.65,12.43,24.08,11.69,13.42,14.26,15.95,12.48,29.8,8.52,14.52,11.38,22.82,19.08,20.27,11.17,12.26,18.26,8.51,10.33,14.15,16.0,13.16,17.47,34.3,41.19,27.05,16.43,8.35,18.64,11.87,9.78,7.51,14.07,13.13,17.26,24.55,19.77,29.85,48.17,25.0,13.39,16.49,21.5,12.66,16.21,13.81,17.51,24.52,20.76,31.71,10.59,10.63,50.81,15.81,7.25,31.85,16.82,32.9,17.89,14.48,9.6,34.63,34.65,23.33,45.35,23.17,40.55,20.69,20.9,30.46,18.15,23.1,15.69,19.81,28.44,15.48,16.58,7.56,10.34,43.11,13.0,13.51,18.71,12.74,13.0,16.4,20.53,16.47,26.59,38.73,24.27,12.76,30.06,25.89,48.33,13.27,28.17,12.9,28.15,11.59,7.74,30.14,12.16,13.42,8.58,15.98,13.42,16.27,10.09,20.45,13.28,22.12,24.01,15.69,11.61,10.77,15.53,10.07,12.6,32.83,35.83,29.03,27.18,22.67,17.82,18.78],"y":[1.01,1.66,3.5,3.31,3.61,4.71,2.0,3.12,1.96,3.23,1.71,5.0,1.57,3.0,3.02,3.92,1.67,3.71,3.5,3.35,4.08,2.75,2.23,7.58,3.18,2.34,2.0,2.0,4.3,3.0,1.45,2.5,3.0,2.45,3.27,3.6,2.0,3.07,2.31,5.0,2.24,2.54,3.06,1.32,5.6,3.0,5.0,6.0,2.05,3.0,2.5,2.6,5.2,1.56,4.34,3.51,3.0,1.5,1.76,6.73,3.21,2.0,1.98,3.76,2.64,3.15,2.47,1.0,2.01,2.09,1.97,3.0,3.14,5.0,2.2,1.25,3.08,4.0,3.0,2.71,3.0,3.4,1.83,5.0,2.03,5.17,2.0,4.0,5.85,3.0,3.0,3.5,1.0,4.3,3.25,4.73,4.0,1.5,3.0,1.5,2.5,3.0,2.5,3.48,4.08,1.64,4.06,4.29,3.76,4.0,3.0,1.0,4.0,2.55,4.0,3.5,5.07,1.5,1.8,2.92,2.31,1.68,2.5,2.0,2.52,4.2,1.48,2.0,2.0,2.18,1.5,2.83,1.5,2.0,3.25,1.25,2.0,2.0,2.0,2.75,3.5,6.7,5.0,5.0,2.3,1.5,1.36,1.63,1.73,2.0,2.5,2.0,2.74,2.0,2.0,5.14,5.0,3.75,2.61,2.0,3.5,2.5,2.0,2.0,3.0,3.48,2.24,4.5,1.61,2.0,10.0,3.16,5.15,3.18,4.0,3.11,2.0,2.0,4.0,3.55,3.68,5.65,3.5,6.5,3.0,5.0,3.5,2.0,3.5,4.0,1.5,4.19,2.56,2.02,4.0,1.44,2.0,5.0,2.0,2.0,4.0,2.01,2.0,2.5,4.0,3.23,3.41,3.0,2.03,2.23,2.0,5.16,9.0,2.5,6.5,1.1,3.0,1.5,1.44,3.09,2.2,3.48,1.92,3.0,1.58,2.5,2.0,3.0,2.72,2.88,2.0,3.0,3.39,1.47,3.0,1.25,1.0,1.17,4.67,5.92,2.0,2.0,1.75,3.0],"type":"scatter"},{"line":{"color":"red"},"mode":"lines","name":"Least Squares Line: y = 0.1050x + 0.9203","x":[3.07,3.552222222222222,4.0344444444444445,4.516666666666667,4.998888888888889,5.481111111111111,5.963333333333333,6.445555555555556,6.927777777777777,7.41,7.892222222222221,8.374444444444444,8.856666666666667,9.338888888888889,9.821111111111112,10.303333333333333,10.785555555555556,11.267777777777779,11.75,12.232222222222223,12.714444444444444,13.196666666666667,13.678888888888888,14.161111111111111,14.643333333333334,15.125555555555556,15.607777777777779,16.09,16.572222222222223,17.054444444444442,17.536666666666665,18.01888888888889,18.50111111111111,18.983333333333334,19.465555555555557,19.947777777777777,20.43,20.912222222222223,21.394444444444446,21.876666666666665,22.358888888888888,22.84111111111111,23.323333333333334,23.805555555555557,24.287777777777777,24.77,25.252222222222223,25.734444444444446,26.21666666666667,26.698888888888888,27.18111111111111,27.663333333333334,28.145555555555557,28.627777777777776,29.11,29.592222222222222,30.074444444444445,30.55666666666667,31.038888888888888,31.52111111111111,32.00333333333333,32.48555555555556,32.967777777777776,33.449999999999996,33.93222222222222,34.41444444444444,34.89666666666667,35.37888888888889,35.861111111111114,36.343333333333334,36.82555555555555,37.30777777777778,37.79,38.272222222222226,38.754444444444445,39.236666666666665,39.71888888888889,40.20111111111111,40.68333333333333,41.16555555555556,41.647777777777776,42.13,42.61222222222222,43.09444444444444,43.57666666666667,44.05888888888889,44.541111111111114,45.02333333333333,45.50555555555555,45.98777777777778,46.47,46.952222222222225,47.434444444444445,47.916666666666664,48.39888888888889,48.88111111111111,49.36333333333334,49.845555555555556,50.327777777777776,50.81],"y":[1.2426948819246362,1.2933400380855355,1.343985194246435,1.394630350407334,1.4452755065682332,1.4959206627291326,1.546565818890032,1.5972109750509311,1.6478561312118303,1.6985012873727297,1.7491464435336288,1.7997915996945282,1.8504367558554276,1.9010819120163267,1.951727068177226,2.0023722243381252,2.0530173804990244,2.103662536659924,2.154307692820823,2.2049528489817223,2.2555980051426214,2.306243161303521,2.35688831746442,2.4075334736253193,2.458178629786219,2.508823785947118,2.5594689421080172,2.6101140982689164,2.6607592544298155,2.7114044105907147,2.762049566751614,2.8126947229125134,2.8633398790734126,2.913985035234312,2.9646301913952113,3.0152753475561105,3.0659205037170096,3.1165656598779092,3.1672108160388084,3.2178559721997075,3.2685011283606067,3.3191462845215063,3.3697914406824054,3.420436596843305,3.4710817530042037,3.5217269091651033,3.5723720653260025,3.623017221486902,3.6736623776478012,3.7243075338087004,3.7749526899695995,3.8255978461304987,3.8762430022913983,3.926888158452297,3.9775333146131966,4.028178470774096,4.078823626934995,4.129468783095894,4.180113939256794,4.230759095417692,4.281404251578592,4.3320494077394915,4.38269456390039,4.433339720061289,4.483984876222189,4.534630032383088,4.585275188543988,4.6359203447048865,4.686565500865786,4.737210657026686,4.787855813187584,4.838500969348484,4.889146125509383,4.939791281670282,4.990436437831182,5.041081593992081,5.09172675015298,5.142371906313879,5.1930170624747785,5.243662218635678,5.294307374796577,5.344952530957476,5.395597687118376,5.446242843279275,5.496887999440174,5.547533155601073,5.598178311761973,5.648823467922872,5.699468624083771,5.7501137802446705,5.800758936405569,5.85140409256647,5.902049248727368,5.952694404888267,6.003339561049167,6.053984717210066,6.104629873370966,6.155275029531865,6.205920185692763,6.256565341853663],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"title":{"text":"Tips vs Total Bill: Least Squares Fit"},"xaxis":{"title":{"text":"Total Bill ($)"}},"yaxis":{"title":{"text":"Tip ($)"}},"showlegend":true},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('57f0ad27-ab36-435b-af0b-c9330985de58');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+</section>
+<section id="polynomial-regression-example" class="slide level2 smaller">
+<h2>Polynomial Regression Example</h2>
+<p>Our task is to model the relationship between <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. We are given data <span class="math inline">\({(x_i,y_i):i\leq N}\)</span> and we plot it.</p>
+<div class="fragment">
+<div id="b5df029d" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>                            <div id="af259439-906f-40bb-96bf-5d8d36aeaa62" class="plotly-graph-div" style="height:400px; width:600px;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("af259439-906f-40bb-96bf-5d8d36aeaa62")) {                    Plotly.newPlot(                        "af259439-906f-40bb-96bf-5d8d36aeaa62",                        [{"marker":{"color":"blue","opacity":0.6,"size":8},"mode":"markers","name":"Data Points","x":[-1.0,-0.9310344827586207,-0.8620689655172413,-0.7931034482758621,-0.7241379310344828,-0.6551724137931034,-0.5862068965517242,-0.5172413793103449,-0.4482758620689655,-0.3793103448275862,-0.31034482758620685,-0.24137931034482762,-0.1724137931034483,-0.10344827586206895,-0.034482758620689724,0.034482758620689724,0.10344827586206895,0.17241379310344818,0.24137931034482762,0.31034482758620685,0.3793103448275863,0.4482758620689655,0.5172413793103448,0.5862068965517242,0.6551724137931034,0.7241379310344827,0.7931034482758621,0.8620689655172413,0.9310344827586206,1.0],"y":[-0.2336826991740964,-0.19847112299313038,-0.5187032492049835,-0.10399748834234071,0.10661579455668478,-0.09766424814771557,0.14476249180733197,0.14194833731323456,0.13491462305998717,0.10016134703225843,0.21188712736707777,0.34723341268527647,-0.11193149893995932,0.2562718970676958,0.06292640324417015,0.07182714534683136,-0.27793752383736386,-0.0540542594736662,0.19028146244448235,-0.3412428665334134,-0.5306270452824281,-0.482730796052962,-0.0670245993701305,0.3853332914733113,0.17838538668582088,0.3521758428829767,0.12215056152368498,0.4892224662014449,0.287277320279655,0.6226408369719278],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmapgl":[{"type":"heatmapgl","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"xaxis":{"title":{"text":"x"}},"yaxis":{"title":{"text":"y"}},"showlegend":false,"width":600,"height":400},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('af259439-906f-40bb-96bf-5d8d36aeaa62');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The data doesn’t look like a line, and the model <span class="math inline">\(y=mx+b\)</span> might not be appropriate. It might be better to look at a different model.</p>
+</div>
+</section>
+<section id="polynomial-regression" class="slide level2 smaller">
+<h2>Polynomial Regression</h2>
+<p>We propose a polynomial model of the form <span class="math display">\[y=a_0+a_1x+a_2x^2+\cdots+a_kx^k\]</span> where <span class="math inline">\(a_0,a_1,\dots,a_k\)</span> are chosen to minimize the sum of the squared errors: <span class="math display">\[\min_{a_0,a_1,\dots,a_k}\sum_{i=1}^N|a_0+a_1x_i+a_2x_i^2+\cdots+a_kx_i^k-y_i|^2\]</span></p>
+<div class="fragment">
+<p>Like before, the sum of errors squared can written as the square of a norm: <span class="math display">\[\sum_{i=1}^N|a_0+a_1x_i+a_2x_i^2+\cdots+a_kx_i^k-y_i|^2 = \left\|
+\begin{bmatrix}
+a_0+a_1x_1+a_2x_1^2+\cdots+a_kx_1^k-y_1 \\
+a_0+a_1x_2+a_2x_2^2+\cdots+a_kx_2^k-y_2 \\
+\vdots \\
+a_0+a_1x_N+a_2x_N^2+\cdots+a_kx_N^k-y_N
+\end{bmatrix}
+\right\|^2\]</span></p>
+</div>
+</section>
+<section id="polynomial-regression-1" class="slide level2 smaller">
+<h2>Polynomial Regression</h2>
+<p>Since <span class="math display">\[
+\left\|
+\begin{bmatrix}
+a_0+a_1x_1+a_2x_1^2+\cdots+a_kx_1^k-y_1 \\
+a_0+a_1x_2+a_2x_2^2+\cdots+a_kx_2^k-y_2 \\
+\vdots \\
+a_0+a_1x_N+a_2x_N^2+\cdots+a_kx_N^k-y_N
+\end{bmatrix}
+\right\|^2
+=
+\left\|
+\begin{bmatrix}
+1&amp;x_1&amp;x_1^2&amp;\cdots&amp;x_1^k\\
+1&amp;x_2&amp;x_2^2&amp;\cdots&amp;x_2^k\\
+\vdots&amp;\vdots&amp;\ddots&amp;\vdots \\
+1&amp;x_N&amp;x_N^2&amp;\cdots&amp;x_N^k
+\end{bmatrix}
+\begin{bmatrix}
+a_0 \\ a_1 \\ \vdots\\ a_k
+\end{bmatrix} -
+\begin{bmatrix}
+y_1\\ y_2\\ \vdots\\ y_N
+\end{bmatrix}
+\right\|^2
+\]</span></p>
+<div class="fragment">
+<p>Then <span class="math display">\[
+\sum_{i=1}^N|a_0+a_1x_i+a_2x_i^2+\cdots+a_kx_i^k-y_i|^2
+=
+\left\|
+X
+\begin{bmatrix}
+a_0 \\ a_1 \\ \vdots\\ a_k
+\end{bmatrix}
+-\mathbf{y}
+\right\|^2
+=
+\|X\mathbf{a}-\mathbf{y}\|^2
+\]</span></p>
+</div>
+</section>
+<section id="polynomial-regression-2" class="slide level2 smaller">
+<h2>Polynomial Regression</h2>
+<p>The coefficients <span class="math inline">\(\mathbf{a}\)</span> that minimize the least squares error are given by:</p>
+<p><span class="math display">\[\mathbf{a}=(X^TX)^{-1}X^T\mathbf{y}\]</span></p>
+<div class="fragment">
+<p>The degree <span class="math inline">\(k\)</span> of the polynomial is a <strong>hyperparameter</strong> (a modeling choice we make before fitting):</p>
+<div>
+<ul>
+<li class="fragment"><span class="math inline">\(k=1\)</span>: linear model <span class="math inline">\(y = a_0 + a_1x\)</span></li>
+<li class="fragment"><span class="math inline">\(k=2\)</span>: quadratic model <span class="math inline">\(y = a_0 + a_1x + a_2x^2\)</span></li>
+<li class="fragment"><span class="math inline">\(k=3\)</span>: cubic model <span class="math inline">\(y = a_0 + a_1x + a_2x^2 + a_3x^3\)</span></li>
+<li class="fragment">etc.</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Choosing <span class="math inline">\(k\)</span></strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Higher <span class="math inline">\(k\)</span> reduces the error but risks <strong>overfitting</strong></li>
+<li>Lower <span class="math inline">\(k\)</span> keeps the model simple but risks <strong>underfitting</strong></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="polynomial-regression-a-cubic-model" class="slide level2 smaller">
+<h2>Polynomial Regression: A Cubic Model</h2>
+<p>Let’s try a cubic model: Our input consists of the numpy vectors <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span></p>
+<div id="c8e387da" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="|1-2|4-5|7-11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="co"># Build design matrix X = [1 x x² x³]</span></span>
+<span id="cb5-2"><a href=""></a>X <span class="op">=</span> np.column_stack([np.ones_like(x), x, x<span class="op">**</span><span class="dv">2</span>, x<span class="op">**</span><span class="dv">3</span>])</span>
+<span id="cb5-3"><a href=""></a></span>
+<span id="cb5-4"><a href=""></a><span class="co"># Calculate coefficients using normal equation</span></span>
+<span id="cb5-5"><a href=""></a>alpha <span class="op">=</span> np.linalg.inv(X.T <span class="op">@</span> X) <span class="op">@</span> X.T <span class="op">@</span> y</span>
+<span id="cb5-6"><a href=""></a></span>
+<span id="cb5-7"><a href=""></a><span class="bu">print</span>(<span class="st">"Polynomial coefficients:"</span>)</span>
+<span id="cb5-8"><a href=""></a><span class="bu">print</span>(<span class="ss">f"α₀ (constant)   = </span><span class="sc">{</span>alpha[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb5-9"><a href=""></a><span class="bu">print</span>(<span class="ss">f"α₁ (linear)     = </span><span class="sc">{</span>alpha[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb5-10"><a href=""></a><span class="bu">print</span>(<span class="ss">f"α₂ (quadratic)  = </span><span class="sc">{</span>alpha[<span class="dv">2</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb5-11"><a href=""></a><span class="bu">print</span>(<span class="ss">f"α₃ (cubic)      = </span><span class="sc">{</span>alpha[<span class="dv">3</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Polynomial coefficients:
+α₀ (constant)   = -0.0063
+α₁ (linear)     = -0.4509
+α₂ (quadratic)  = 0.1289
+α₃ (cubic)      = 0.9930</code></pre>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>The model is <span class="math inline">\(y = α₀ + α₁x + α₂x² + α₃x³\)</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization-of-the-cubic-fit" class="slide level2 smaller">
+<h2>Visualization of the cubic fit</h2>
+<div id="f93464aa" class="cell" data-fig-height="6" data-fig-width="8" data-execution_count="6">
+<div class="cell-output cell-output-display">
+<div>                            <div id="8cfe6e0c-8fa8-4e75-9a8d-ee2187211630" class="plotly-graph-div" style="height:500px; width:800px;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("8cfe6e0c-8fa8-4e75-9a8d-ee2187211630")) {                    Plotly.newPlot(                        "8cfe6e0c-8fa8-4e75-9a8d-ee2187211630",                        [{"marker":{"opacity":0.6,"size":8},"mode":"markers","name":"Data points","x":[-1.0,-0.9310344827586207,-0.8620689655172413,-0.7931034482758621,-0.7241379310344828,-0.6551724137931034,-0.5862068965517242,-0.5172413793103449,-0.4482758620689655,-0.3793103448275862,-0.31034482758620685,-0.24137931034482762,-0.1724137931034483,-0.10344827586206895,-0.034482758620689724,0.034482758620689724,0.10344827586206895,0.17241379310344818,0.24137931034482762,0.31034482758620685,0.3793103448275863,0.4482758620689655,0.5172413793103448,0.5862068965517242,0.6551724137931034,0.7241379310344827,0.7931034482758621,0.8620689655172413,0.9310344827586206,1.0],"y":[-0.2336826991740964,-0.19847112299313038,-0.5187032492049835,-0.10399748834234071,0.10661579455668478,-0.09766424814771557,0.14476249180733197,0.14194833731323456,0.13491462305998717,0.10016134703225843,0.21188712736707777,0.34723341268527647,-0.11193149893995932,0.2562718970676958,0.06292640324417015,0.07182714534683136,-0.27793752383736386,-0.0540542594736662,0.19028146244448235,-0.3412428665334134,-0.5306270452824281,-0.482730796052962,-0.0670245993701305,0.3853332914733113,0.17838538668582088,0.3521758428829767,0.12215056152368498,0.4892224662014449,0.287277320279655,0.6226408369719278],"type":"scatter"},{"line":{"color":"red","width":2},"mode":"lines","name":"Cubic fit","x":[-1.0,-0.9899497487437185,-0.9798994974874372,-0.9698492462311558,-0.9597989949748744,-0.949748743718593,-0.9396984924623115,-0.9296482412060302,-0.9195979899497487,-0.9095477386934674,-0.8994974874371859,-0.8894472361809045,-0.8793969849246231,-0.8693467336683417,-0.8592964824120604,-0.8492462311557789,-0.8391959798994975,-0.8291457286432161,-0.8190954773869347,-0.8090452261306533,-0.7989949748743719,-0.7889447236180904,-0.778894472361809,-0.7688442211055276,-0.7587939698492463,-0.7487437185929648,-0.7386934673366834,-0.728643216080402,-0.7185929648241206,-0.7085427135678393,-0.6984924623115578,-0.6884422110552764,-0.6783919597989949,-0.6683417085427136,-0.6582914572864322,-0.6482412060301508,-0.6381909547738693,-0.6281407035175879,-0.6180904522613065,-0.6080402010050251,-0.5979899497487438,-0.5879396984924623,-0.5778894472361809,-0.5678391959798995,-0.5577889447236181,-0.5477386934673367,-0.5376884422110553,-0.5276381909547738,-0.5175879396984925,-0.507537688442211,-0.4974874371859297,-0.48743718592964824,-0.4773869346733668,-0.46733668341708545,-0.457286432160804,-0.44723618090452255,-0.4371859296482412,-0.42713567839195976,-0.4170854271356784,-0.40703517587939697,-0.3969849246231155,-0.3869346733668342,-0.37688442211055273,-0.3668341708542714,-0.35678391959798994,-0.3467336683417085,-0.33668341708542715,-0.3266331658291457,-0.31658291457286436,-0.3065326633165829,-0.29648241206030146,-0.2864321608040201,-0.27638190954773867,-0.26633165829145733,-0.2562814070351759,-0.24623115577889443,-0.2361809045226131,-0.22613065326633164,-0.2160804020100502,-0.20603015075376885,-0.1959798994974874,-0.18592964824120606,-0.1758793969849246,-0.16582914572864316,-0.15577889447236182,-0.14572864321608037,-0.13567839195979903,-0.12562814070351758,-0.11557788944723613,-0.10552763819095479,-0.09547738693467334,-0.085427135678392,-0.07537688442211055,-0.0653266331658291,-0.055276381909547756,-0.045226130653266305,-0.035175879396984966,-0.025125628140703515,-0.015075376884422065,-0.005025125628140725,0.005025125628140614,0.015075376884422065,0.025125628140703515,0.035175879396984966,0.045226130653266416,0.055276381909547645,0.0653266331658291,0.07537688442211055,0.085427135678392,0.09547738693467345,0.1055276381909549,0.11557788944723613,0.12562814070351758,0.13567839195979903,0.14572864321608048,0.15577889447236193,0.16582914572864316,0.1758793969849246,0.18592964824120606,0.1959798994974875,0.20603015075376896,0.2160804020100502,0.22613065326633164,0.2361809045226131,0.24623115577889454,0.256281407035176,0.2663316582914572,0.27638190954773867,0.2864321608040201,0.29648241206030157,0.306532663316583,0.31658291457286425,0.3266331658291457,0.33668341708542715,0.3467336683417086,0.35678391959799005,0.3668341708542713,0.37688442211055273,0.3869346733668342,0.39698492462311563,0.4070351758793971,0.4170854271356783,0.42713567839195976,0.4371859296482412,0.44723618090452266,0.4572864321608041,0.46733668341708534,0.4773869346733668,0.48743718592964824,0.4974874371859297,0.5075376884422111,0.5175879396984926,0.5276381909547738,0.5376884422110553,0.5477386934673367,0.5577889447236182,0.5678391959798996,0.5778894472361809,0.5879396984924623,0.5979899497487438,0.6080402010050252,0.6180904522613067,0.6281407035175879,0.6381909547738693,0.6482412060301508,0.6582914572864322,0.6683417085427137,0.6783919597989949,0.6884422110552764,0.6984924623115578,0.7085427135678393,0.7185929648241207,0.728643216080402,0.7386934673366834,0.7487437185929648,0.7587939698492463,0.7688442211055277,0.778894472361809,0.7889447236180904,0.7989949748743719,0.8090452261306533,0.8190954773869348,0.829145728643216,0.8391959798994975,0.8492462311557789,0.8592964824120604,0.8693467336683418,0.879396984924623,0.8894472361809045,0.8994974874371859,0.9095477386934674,0.9195979899497488,0.9296482412060301,0.9396984924623115,0.949748743718593,0.9597989949748744,0.9698492462311559,0.9798994974874373,0.9899497487437185,1.0],"y":[-0.41948006042052677,-0.39695068089537167,-0.37499101685283975,-0.3535950199175051,-0.33275664171394237,-0.31246983386672544,-0.292728548000429,-0.2735267357396275,-0.2548583487088947,-0.23671733853280552,-0.21909765683593363,-0.20199325524285383,-0.18539808537814062,-0.16930609886636772,-0.15371124733211017,-0.13860748239994147,-0.12398875569443668,-0.1098490188401699,-0.09618222346171507,-0.08298232118364712,-0.0702432636305399,-0.05795900242696789,-0.04612348919750553,-0.0347306755667271,-0.023774513159206923,-0.013248953599519053,-0.0031479485122381523,0.006534550478061618,0.015804591746805763,0.02466822366942012,0.03313149462133036,0.04120045297796221,0.048881147114741175,0.05617962540709298,0.0631019362304433,0.06965412796021803,0.07584224897184258,0.08167234764074274,0.08715047234234408,0.09228267145207233,0.09707499334535324,0.1015334863976125,0.10566419898427576,0.10947317948076846,0.11296647626251663,0.11615013770494573,0.11903021218348152,0.12161274807354965,0.12390379375057578,0.12590939758998562,0.1276356079672048,0.1290884732576591,0.13027404183677407,0.13119836207997546,0.13186748236268891,0.13228745106034012,0.13246431654835472,0.13240412720215847,0.13211293139717697,0.13159677750883594,0.13086171391256105,0.12991378898377795,0.12875905109791233,0.12740354863038988,0.12585332995663628,0.12411444345207717,0.12219293749213825,0.1200948604522452,0.11782626070782369,0.11539318663429937,0.11280168660709795,0.11005780900164513,0.10716760219336652,0.10413711455768787,0.10097239447003477,0.09767949030583295,0.0942644504405081,0.09073332324948585,0.08709215710819189,0.08334700039205195,0.07950390147649161,0.07556890873693665,0.07154807054881267,0.06744743528754535,0.06327305132856043,0.05903096704728349,0.05472723081914031,0.05036789101955648,0.04595899602395769,0.0415065942077697,0.037016733946418065,0.03249546361532857,0.02794883158992679,0.023382886245638446,0.018803675957889274,0.01421724910210484,0.009629654053710924,0.005046939188133105,0.000475152880797105,-0.004079656492871347,-0.008611440557446629,-0.013114150937503111,-0.017581739257615067,-0.022008157142356825,-0.026387356216302706,-0.030713288104026938,-0.034979904430104035,-0.039181156819108234,-0.04331099689561384,-0.0473633762841952,-0.05133224660942662,-0.05521155949588234,-0.058995266568136875,-0.06267731945076443,-0.06625166976833938,-0.06971226914543598,-0.07305306920662855,-0.07626802157649151,-0.07935107787959911,-0.08229618974052572,-0.08509730878384564,-0.0877483866341331,-0.0902433749159626,-0.09257622525390838,-0.09474088927254473,-0.09673131859644604,-0.09854146485018654,-0.10016527965834067,-0.1015967146454827,-0.10282972143618693,-0.10385825165502773,-0.10467625692657936,-0.10527768887541622,-0.10565649912611258,-0.10580663930324277,-0.10572206103138115,-0.10539671593510205,-0.1048245556389797,-0.10399953176758851,-0.1029155959455028,-0.10156669979729686,-0.09994679494754505,-0.09804983302082168,-0.09586976564170104,-0.09340054443475748,-0.09063612102456534,-0.08757044703569897,-0.0841974740927326,-0.0805111538202406,-0.07650543784279729,-0.07217427778497704,-0.06751162527135413,-0.06251143192650294,-0.05716764937499769,-0.05147422924141279,-0.04542512315032246,-0.03901428272630114,-0.03223565959392327,-0.02508320537776282,-0.01755087170239439,-0.009632610192392144,-0.0013223724723305796,0.007385889833215975,0.016498225099673358,0.026020681702467352,0.03595930801702335,0.046320152418767246,0.05710926328312421,0.06833268898552075,0.07999647790138198,0.09210667840613374,0.10466933887520163,0.11769050768401124,0.13117623320798838,0.1451325638225589,0.15956554790314825,0.1744812338251822,0.18988566996408607,0.2057849046952862,0.2221849863942077,0.2390919634362767,0.2565118841969185,0.2744507970515586,0.2929147503756233,0.311909792544538,0.3314419719337284,0.35151733691861997,0.3721419358746382,0.3933218171772094,0.4150630292017591,0.4373716203237128,0.46025363891849624,0.4837151333615344,0.5077621520282541,0.5324007432940805,0.5576369555344395,0.5834768371247563,0.6099264364404572,0.6369918018569667,0.664678981749712],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"rgb(36,36,36)"},"error_y":{"color":"rgb(36,36,36)"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"rgb(36,36,36)","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"rgb(36,36,36)"},"baxis":{"endlinecolor":"rgb(36,36,36)","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"rgb(36,36,36)"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"contour"}],"heatmapgl":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"heatmapgl"}],"heatmap":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"histogram2d"}],"histogram":[{"marker":{"line":{"color":"white","width":0.6}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattermapbox"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"rgb(237,237,237)"},"line":{"color":"white"}},"header":{"fill":{"color":"rgb(217,217,217)"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"colorscale":{"diverging":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"sequential":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"sequentialminus":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]]},"colorway":["#1F77B4","#FF7F0E","#2CA02C","#D62728","#9467BD","#8C564B","#E377C2","#7F7F7F","#BCBD22","#17BECF"],"font":{"color":"rgb(36,36,36)"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"white"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"},"bgcolor":"white","radialaxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"rgb(232,232,232)","gridwidth":2,"linecolor":"rgb(36,36,36)","showbackground":true,"showgrid":false,"showline":true,"ticks":"outside","zeroline":false,"zerolinecolor":"rgb(36,36,36)"},"yaxis":{"backgroundcolor":"white","gridcolor":"rgb(232,232,232)","gridwidth":2,"linecolor":"rgb(36,36,36)","showbackground":true,"showgrid":false,"showline":true,"ticks":"outside","zeroline":false,"zerolinecolor":"rgb(36,36,36)"},"zaxis":{"backgroundcolor":"white","gridcolor":"rgb(232,232,232)","gridwidth":2,"linecolor":"rgb(36,36,36)","showbackground":true,"showgrid":false,"showline":true,"ticks":"outside","zeroline":false,"zerolinecolor":"rgb(36,36,36)"}},"shapedefaults":{"fillcolor":"black","line":{"width":0},"opacity":0.3},"ternary":{"aaxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"},"baxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"},"bgcolor":"white","caxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside","title":{"standoff":15},"zeroline":false,"zerolinecolor":"rgb(36,36,36)"},"yaxis":{"automargin":true,"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside","title":{"standoff":15},"zeroline":false,"zerolinecolor":"rgb(36,36,36)"}}},"margin":{"l":50,"r":50,"t":30,"b":50},"showlegend":true,"width":800,"height":500},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('8cfe6e0c-8fa8-4e75-9a8d-ee2187211630');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+</section>
+<section id="visualization-of-degree-18-fit" class="slide level2 smaller">
+<h2>Visualization of degree 18 fit</h2>
+<div id="f4341c7d" class="cell" data-fig-height="6" data-fig-width="8" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div>                            <div id="0e570118-f357-4038-bbeb-3045de42ae89" class="plotly-graph-div" style="height:500px; width:800px;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("0e570118-f357-4038-bbeb-3045de42ae89")) {                    Plotly.newPlot(                        "0e570118-f357-4038-bbeb-3045de42ae89",                        [{"marker":{"opacity":0.6,"size":8},"mode":"markers","name":"Data points","x":[-1.0,-0.9310344827586207,-0.8620689655172413,-0.7931034482758621,-0.7241379310344828,-0.6551724137931034,-0.5862068965517242,-0.5172413793103449,-0.4482758620689655,-0.3793103448275862,-0.31034482758620685,-0.24137931034482762,-0.1724137931034483,-0.10344827586206895,-0.034482758620689724,0.034482758620689724,0.10344827586206895,0.17241379310344818,0.24137931034482762,0.31034482758620685,0.3793103448275863,0.4482758620689655,0.5172413793103448,0.5862068965517242,0.6551724137931034,0.7241379310344827,0.7931034482758621,0.8620689655172413,0.9310344827586206,1.0],"y":[-0.2336826991740964,-0.19847112299313038,-0.5187032492049835,-0.10399748834234071,0.10661579455668478,-0.09766424814771557,0.14476249180733197,0.14194833731323456,0.13491462305998717,0.10016134703225843,0.21188712736707777,0.34723341268527647,-0.11193149893995932,0.2562718970676958,0.06292640324417015,0.07182714534683136,-0.27793752383736386,-0.0540542594736662,0.19028146244448235,-0.3412428665334134,-0.5306270452824281,-0.482730796052962,-0.0670245993701305,0.3853332914733113,0.17838538668582088,0.3521758428829767,0.12215056152368498,0.4892224662014449,0.287277320279655,0.6226408369719278],"type":"scatter"},{"line":{"color":"red","width":2},"mode":"lines","name":"Polynomial fit","x":[-1.0,-0.9899497487437185,-0.9798994974874372,-0.9698492462311558,-0.9597989949748744,-0.949748743718593,-0.9396984924623115,-0.9296482412060302,-0.9195979899497487,-0.9095477386934674,-0.8994974874371859,-0.8894472361809045,-0.8793969849246231,-0.8693467336683417,-0.8592964824120604,-0.8492462311557789,-0.8391959798994975,-0.8291457286432161,-0.8190954773869347,-0.8090452261306533,-0.7989949748743719,-0.7889447236180904,-0.778894472361809,-0.7688442211055276,-0.7587939698492463,-0.7487437185929648,-0.7386934673366834,-0.728643216080402,-0.7185929648241206,-0.7085427135678393,-0.6984924623115578,-0.6884422110552764,-0.6783919597989949,-0.6683417085427136,-0.6582914572864322,-0.6482412060301508,-0.6381909547738693,-0.6281407035175879,-0.6180904522613065,-0.6080402010050251,-0.5979899497487438,-0.5879396984924623,-0.5778894472361809,-0.5678391959798995,-0.5577889447236181,-0.5477386934673367,-0.5376884422110553,-0.5276381909547738,-0.5175879396984925,-0.507537688442211,-0.4974874371859297,-0.48743718592964824,-0.4773869346733668,-0.46733668341708545,-0.457286432160804,-0.44723618090452255,-0.4371859296482412,-0.42713567839195976,-0.4170854271356784,-0.40703517587939697,-0.3969849246231155,-0.3869346733668342,-0.37688442211055273,-0.3668341708542714,-0.35678391959798994,-0.3467336683417085,-0.33668341708542715,-0.3266331658291457,-0.31658291457286436,-0.3065326633165829,-0.29648241206030146,-0.2864321608040201,-0.27638190954773867,-0.26633165829145733,-0.2562814070351759,-0.24623115577889443,-0.2361809045226131,-0.22613065326633164,-0.2160804020100502,-0.20603015075376885,-0.1959798994974874,-0.18592964824120606,-0.1758793969849246,-0.16582914572864316,-0.15577889447236182,-0.14572864321608037,-0.13567839195979903,-0.12562814070351758,-0.11557788944723613,-0.10552763819095479,-0.09547738693467334,-0.085427135678392,-0.07537688442211055,-0.0653266331658291,-0.055276381909547756,-0.045226130653266305,-0.035175879396984966,-0.025125628140703515,-0.015075376884422065,-0.005025125628140725,0.005025125628140614,0.015075376884422065,0.025125628140703515,0.035175879396984966,0.045226130653266416,0.055276381909547645,0.0653266331658291,0.07537688442211055,0.085427135678392,0.09547738693467345,0.1055276381909549,0.11557788944723613,0.12562814070351758,0.13567839195979903,0.14572864321608048,0.15577889447236193,0.16582914572864316,0.1758793969849246,0.18592964824120606,0.1959798994974875,0.20603015075376896,0.2160804020100502,0.22613065326633164,0.2361809045226131,0.24623115577889454,0.256281407035176,0.2663316582914572,0.27638190954773867,0.2864321608040201,0.29648241206030157,0.306532663316583,0.31658291457286425,0.3266331658291457,0.33668341708542715,0.3467336683417086,0.35678391959799005,0.3668341708542713,0.37688442211055273,0.3869346733668342,0.39698492462311563,0.4070351758793971,0.4170854271356783,0.42713567839195976,0.4371859296482412,0.44723618090452266,0.4572864321608041,0.46733668341708534,0.4773869346733668,0.48743718592964824,0.4974874371859297,0.5075376884422111,0.5175879396984926,0.5276381909547738,0.5376884422110553,0.5477386934673367,0.5577889447236182,0.5678391959798996,0.5778894472361809,0.5879396984924623,0.5979899497487438,0.6080402010050252,0.6180904522613067,0.6281407035175879,0.6381909547738693,0.6482412060301508,0.6582914572864322,0.6683417085427137,0.6783919597989949,0.6884422110552764,0.6984924623115578,0.7085427135678393,0.7185929648241207,0.728643216080402,0.7386934673366834,0.7487437185929648,0.7587939698492463,0.7688442211055277,0.778894472361809,0.7889447236180904,0.7989949748743719,0.8090452261306533,0.8190954773869348,0.829145728643216,0.8391959798994975,0.8492462311557789,0.8592964824120604,0.8693467336683418,0.879396984924623,0.8894472361809045,0.8994974874371859,0.9095477386934674,0.9195979899497488,0.9296482412060301,0.9396984924623115,0.949748743718593,0.9597989949748744,0.9698492462311559,0.9798994974874373,0.9899497487437185,1.0],"y":[-0.23370440712005802,0.4572830298484405,0.6913899500582374,0.6534576417188873,0.471736319185311,0.23207799678584706,-0.01089982754592711,-0.2251182555289688,-0.3943386497053325,-0.5130698924471062,-0.5827560733406472,-0.6089762981001741,-0.5994365180324621,-0.5625739741746543,-0.5066290500055857,-0.4390679280503491,-0.36626323941146666,-0.2933595760476635,-0.22426691226729645,-0.16173818631568793,-0.10749798829576207,-0.06239788860533224,-0.026580769296181472,0.00035811190834778017,0.019221432078666112,0.031076417536631595,0.037140313671727654,0.03868552598458308,0.03696402345772043,0.0331497714622877,0.028297447345009274,0.02331541285532257,0.018950812811783457,0.015784689930274265,0.01423511253495402,0.014566474460842915,0.016903321268682214,0.021247266244032614,0.027495770535518438,0.03546176507802801,0.044893281534695295,0.05549243169453155,0.06693322771693577,0.07887786883429512,0.09099123412639845,0.10295341694113407,0.11447021607582017,0.12528156378928149,0.13516792300583527,0.1439547275761846,0.1515149719380619,0.15777008155413086,0.162689214478434,0.16628715847157927,0.16862099819033957,0.1697857338468241,0.16990903690427692,0.1691453302227873,0.16766937981980856,0.16566958318883127,0.16334113496498853,0.16087924462534484,0.15847257282370558,0.1562970428410871,0.15451017145577772,0.15324604930715785,0.15261108459712674,0.15268060584988674,0.1534963996039464,0.15506523757169297,0.15735842526630445,0.16031238071550724,0.1638302280604168,0.16778436702141036,0.1720199558790897,0.1763592232636073,0.18060650317280794,0.1845538687441266,0.18798722386099548,0.19069269812084788,0.19246318042016033,0.19310481975421717,0.19244331904707726,0.1903298491028852,0.1866464151988891,0.1813105184269151,0.17427896754189523,0.1655507146050701,0.1551686088319812,0.14321998739533107,0.12983604902748186,0.11518998557465873,0.09949387756285161,0.08299439167337647,0.06596735007763091,0.04871127309781492,0.03154002687903676,0.01477473591402019,-0.0012648543930169525,-0.016269358115804013,-0.029948847508112327,-0.04204183252884087,-0.0523238761491493,-0.06061559856319776,-0.06678982760559234,-0.07077766306201078,-0.07257323919533909,-0.07223699260904881,-0.0698972712989678,-0.06575015502361456,-0.06005739642510118,-0.053142435987599455,-0.04538449112255749,-0.03721076948669085,-0.029086908023854302,-0.02150579103087077,-0.01497495155669859,-0.010002809372796958,-0.007084044285607159,-0.006684444378067346,-0.00922560356583355,-0.015069870386555825,-0.0245059690409144,-0.037735723320199345,-0.05486231328136508,-0.075880482638653,-0.10066909131107298,-0.12898637211380898,-0.16046820318813504,-0.19462964869356084,-0.23086995010690223,-0.2684810700741151,-0.30665980135804466,-0.344523356565352,-0.3811282518921227,-0.41549219228806705,-0.4466185586876552,-0.4735229930434517,-0.4952614768028098,-0.5109592063570172,-0.5198394881512849,-0.5212518099237862,-0.5146981962752003,-0.49985692968808804,-0.4766027152525594,-0.4450223914472838,-0.40542534269892044,-0.358347853901106,-0.3045507637707803,-0.2450099232439773,-0.18089914656010359,-0.11356555473888158,-0.04449745117620565,0.024714866795936402,0.09242467351679422,0.15697977555429432,0.21677758534526834,0.27032273156975833,0.31628535150469195,0.353557960540139,0.38130858583158433,0.39902769927196435,0.406566404957996,0.4041633439077563,0.39245788977556595,0.37248743898258496,0.34566696105137407,0.3137494820025575,0.2787668343396783,0.24295082615943464,0.20863595839832172,0.17814594514339532,0.15366755026850143,0.13711661626404492,0.13000258638317064,0.13329925121601605,0.14733080836164447,0.17168350889476613,0.20515405016659827,0.2457463031797147,0.2907277406587525,0.3367558235679269,0.3800823268288127,0.41683980230408224,0.44340869085851864,0.45685553748523944,0.4554217881313889,0.4390281193897181,0.4097404394736941,0.37211975683351284,0.33334807427092983,0.3029852268605282,0.29216588456301906,0.3119903597207667,0.37079578336943086,0.4699138244718597,0.5974253789236172,0.7193092558695753,0.7672482716779996,0.6221994590387112],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"rgb(36,36,36)"},"error_y":{"color":"rgb(36,36,36)"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"rgb(36,36,36)","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"rgb(36,36,36)"},"baxis":{"endlinecolor":"rgb(36,36,36)","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"rgb(36,36,36)"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"contour"}],"heatmapgl":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"heatmapgl"}],"heatmap":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"histogram2d"}],"histogram":[{"marker":{"line":{"color":"white","width":0.6}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scattermapbox"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"},"colorscale":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"rgb(237,237,237)"},"line":{"color":"white"}},"header":{"fill":{"color":"rgb(217,217,217)"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":1,"tickcolor":"rgb(36,36,36)","ticks":"outside"}},"colorscale":{"diverging":[[0.0,"rgb(103,0,31)"],[0.1,"rgb(178,24,43)"],[0.2,"rgb(214,96,77)"],[0.3,"rgb(244,165,130)"],[0.4,"rgb(253,219,199)"],[0.5,"rgb(247,247,247)"],[0.6,"rgb(209,229,240)"],[0.7,"rgb(146,197,222)"],[0.8,"rgb(67,147,195)"],[0.9,"rgb(33,102,172)"],[1.0,"rgb(5,48,97)"]],"sequential":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]],"sequentialminus":[[0.0,"#440154"],[0.1111111111111111,"#482878"],[0.2222222222222222,"#3e4989"],[0.3333333333333333,"#31688e"],[0.4444444444444444,"#26828e"],[0.5555555555555556,"#1f9e89"],[0.6666666666666666,"#35b779"],[0.7777777777777778,"#6ece58"],[0.8888888888888888,"#b5de2b"],[1.0,"#fde725"]]},"colorway":["#1F77B4","#FF7F0E","#2CA02C","#D62728","#9467BD","#8C564B","#E377C2","#7F7F7F","#BCBD22","#17BECF"],"font":{"color":"rgb(36,36,36)"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"white"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"},"bgcolor":"white","radialaxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"rgb(232,232,232)","gridwidth":2,"linecolor":"rgb(36,36,36)","showbackground":true,"showgrid":false,"showline":true,"ticks":"outside","zeroline":false,"zerolinecolor":"rgb(36,36,36)"},"yaxis":{"backgroundcolor":"white","gridcolor":"rgb(232,232,232)","gridwidth":2,"linecolor":"rgb(36,36,36)","showbackground":true,"showgrid":false,"showline":true,"ticks":"outside","zeroline":false,"zerolinecolor":"rgb(36,36,36)"},"zaxis":{"backgroundcolor":"white","gridcolor":"rgb(232,232,232)","gridwidth":2,"linecolor":"rgb(36,36,36)","showbackground":true,"showgrid":false,"showline":true,"ticks":"outside","zeroline":false,"zerolinecolor":"rgb(36,36,36)"}},"shapedefaults":{"fillcolor":"black","line":{"width":0},"opacity":0.3},"ternary":{"aaxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"},"baxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"},"bgcolor":"white","caxis":{"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside"}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside","title":{"standoff":15},"zeroline":false,"zerolinecolor":"rgb(36,36,36)"},"yaxis":{"automargin":true,"gridcolor":"rgb(232,232,232)","linecolor":"rgb(36,36,36)","showgrid":false,"showline":true,"ticks":"outside","title":{"standoff":15},"zeroline":false,"zerolinecolor":"rgb(36,36,36)"}}},"margin":{"l":50,"r":50,"t":30,"b":50},"title":{"text":"Overfitting Example"},"showlegend":true,"width":800,"height":500},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('0e570118-f357-4038-bbeb-3045de42ae89');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };                });            </script>        </div>
+</div>
+</div>
+</section>
+<section id="multilinear-regression" class="slide level2 smaller">
+<h2>Multilinear Regression</h2>
+<p>In the multilinear regression problem we are given high dimensional data:</p>
+<p><span class="math display">\[\{(x_{1i},x_{2i},\dots,x_{ki},y_i):i\leq N\}\]</span></p>
+<p>and we want to find constants <span class="math inline">\(a_0,a_1,\dots,a_k\)</span> such that:</p>
+<p><span class="math display">\[y=a_0+a_1x_1+a_2x_2+\cdots+a_kx_k\]</span></p>
+<p>“best” approximates the data.</p>
+<div class="fragment">
+<p>More precisely, we want to find <span class="math inline">\(a_0,a_1,\dots,a_k\)</span> that minimize the sum of the squared errors:</p>
+<p><span class="math display">\[\min_{a_0,a_1,\dots,a_k} \sum_{i=1}^N|a_0+a_1x_{1i}+\cdots+a_kx_{ki}-y_i|^2\]</span></p>
+</div>
+</section>
+<section id="multilinear-regression-1" class="slide level2 smaller">
+<h2>Multilinear Regression</h2>
+<p>Like in the simple regression problem, the sum of the squared errors <span class="math inline">\(\sum_{i=1}^N|a_0+a_1x_{1i}+\cdots+a_kx_{ki}-y_i|^2\)</span> can be written as the norm in <span class="math inline">\(\mathbb{R}^N\)</span></p>
+<p><span class="math display">\[\sum_{i=1}^N|a_0+a_1x_{1i}+\cdots+a_kx_{ki}-y_i|^2
+=
+\left\|
+\begin{bmatrix}
+a_0+a_1x_{11}+\cdots+a_kx_{k1}-y_i \\
+a_0+a_1x_{12}+\cdots+a_kx_{k2}-y_2 \\
+\vdots\\
+a_0+a_1x_{1N}+\cdots+a_kx_{kN}-y_N \\
+\end{bmatrix}
+\right\|^2\]</span></p>
+<div class="fragment">
+<p>Since <span class="math display">\[\left\|
+\begin{bmatrix}
+a_0+a_1x_{11}+\cdots+a_kx_{k1}-y_1 \\
+a_0+a_1x_{12}+\cdots+a_kx_{k2}-y_2 \\
+\vdots\\
+a_0+a_1x_{1N}+\cdots+a_kx_{kN}-y_N \\
+\end{bmatrix}
+\right\|^2
+=
+\left\|
+\begin{bmatrix}
+1 &amp; x_{11} &amp; \cdots &amp; x_{k1} \\
+1 &amp; x_{12} &amp; \cdots &amp; x_{k2} \\
+\vdots &amp; \vdots &amp; \ddots &amp;\vdots \\
+1 &amp; x_{1N} &amp; \cdots &amp; x_{kN} \\
+\end{bmatrix}
+\begin{bmatrix}
+a_0\\a_1\\\vdots\\ a_k
+\end{bmatrix}
+-
+\begin{bmatrix}
+y_1\\y_2\\\vdots\\ y_k
+\end{bmatrix}
+\right\|^2
+\]</span></p>
+</div>
+</section>
+<section id="multilinear-regression-2" class="slide level2 smaller">
+<h2>Multilinear Regression</h2>
+<p>Then</p>
+<p><span class="math display">\[\sum_{i=1}^N|a_0+a_1x_{1i}+\cdots+a_kx_{ki}-y_i|^2
+=\|X\mathbf{a}-\mathbf{y}\|^2,\]</span></p>
+<div class="fragment">
+<p>and as before, the coefficients are given by</p>
+<p><span class="math display">\[\mathbf{a}=(X^TX)^{-1}X^T\mathbf{y}.\]</span></p>
+</div>
+<div class="fragment">
+<p>We’ll illustrate this using the California Housing Market dataset, which contains data from the 1990 census. The goal is to predict median house prices (measured in units of $100,000) based on neighborhood characteristics. Though the dataset includes 8 different predictor variables, we’ll focus on just three features: median income, latitude, and house age. This simplified version demonstrates the process of feature selection while keeping the model simpler.</p>
+</div>
+</section>
+<section id="example-california-housing-market" class="slide level2 smaller">
+<h2>Example: California Housing Market</h2>
+<div id="18bf9f4e" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href=""></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_california_housing</span>
+<span id="cb7-2"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-3"><a href=""></a></span>
+<span id="cb7-4"><a href=""></a><span class="co"># Load dataset</span></span>
+<span id="cb7-5"><a href=""></a>california <span class="op">=</span> fetch_california_housing()</span>
+<span id="cb7-6"><a href=""></a></span>
+<span id="cb7-7"><a href=""></a><span class="co"># Convert to DataFrame</span></span>
+<span id="cb7-8"><a href=""></a>df <span class="op">=</span> pd.DataFrame(california.data, columns<span class="op">=</span>california.feature_names)</span>
+<span id="cb7-9"><a href=""></a>target <span class="op">=</span> california.target  <span class="co"># Median House Value</span></span>
+<span id="cb7-10"><a href=""></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">The first 5 house values: </span><span class="sc">{</span>target[:<span class="dv">5</span>]<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb7-11"><a href=""></a><span class="co"># Display first few rows</span></span>
+<span id="cb7-12"><a href=""></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The first 5 house values: [4.526 3.585 3.521 3.413 3.422]
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header" style="text-align: right;">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">MedInc</th>
+<th data-quarto-table-cell-role="th">HouseAge</th>
+<th data-quarto-table-cell-role="th">AveRooms</th>
+<th data-quarto-table-cell-role="th">AveBedrms</th>
+<th data-quarto-table-cell-role="th">Population</th>
+<th data-quarto-table-cell-role="th">AveOccup</th>
+<th data-quarto-table-cell-role="th">Latitude</th>
+<th data-quarto-table-cell-role="th">Longitude</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>8.3252</td>
+<td>41.0</td>
+<td>6.984127</td>
+<td>1.023810</td>
+<td>322.0</td>
+<td>2.555556</td>
+<td>37.88</td>
+<td>-122.23</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>8.3014</td>
+<td>21.0</td>
+<td>6.238137</td>
+<td>0.971880</td>
+<td>2401.0</td>
+<td>2.109842</td>
+<td>37.86</td>
+<td>-122.22</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>7.2574</td>
+<td>52.0</td>
+<td>8.288136</td>
+<td>1.073446</td>
+<td>496.0</td>
+<td>2.802260</td>
+<td>37.85</td>
+<td>-122.24</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>5.6431</td>
+<td>52.0</td>
+<td>5.817352</td>
+<td>1.073059</td>
+<td>558.0</td>
+<td>2.547945</td>
+<td>37.85</td>
+<td>-122.25</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>3.8462</td>
+<td>52.0</td>
+<td>6.281853</td>
+<td>1.081081</td>
+<td>565.0</td>
+<td>2.181467</td>
+<td>37.85</td>
+<td>-122.25</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="example-california-housing-market-1" class="slide level2 smaller">
+<h2>Example: California Housing Market</h2>
+<p>We will select a subset of the columns to model the problem.</p>
+<div class="fragment">
+<p>Choosing the subset is also a hyperparameter</p>
+</div>
+<div class="fragment">
+<div id="86b47386" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="co"># Select a subset</span></span>
+<span id="cb9-2"><a href=""></a>df2 <span class="op">=</span> df[[<span class="st">"MedInc"</span>,<span class="st">"HouseAge"</span>,<span class="st">"Latitude"</span>]]</span>
+<span id="cb9-3"><a href=""></a>df2.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="59">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+
+<table class="dataframe caption-top" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header" style="text-align: right;">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">MedInc</th>
+<th data-quarto-table-cell-role="th">HouseAge</th>
+<th data-quarto-table-cell-role="th">Latitude</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>8.3252</td>
+<td>41.0</td>
+<td>37.88</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>8.3014</td>
+<td>21.0</td>
+<td>37.86</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>7.2574</td>
+<td>52.0</td>
+<td>37.85</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>5.6431</td>
+<td>52.0</td>
+<td>37.85</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>3.8462</td>
+<td>52.0</td>
+<td>37.85</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The model we are proposing is:</p>
+<p><span class="math display">\[\text{target} = a_0+a_1\text{MedInc}+a_2\text{HouseAge}+a_3\text{Latitude}\]</span></p>
+</div>
+</section>
+<section id="example-california-housing-market-2" class="slide level2 smaller">
+<h2>Example: California Housing Market</h2>
+<p>We now convert the data frame to numpy and add a column of ones (the target is already a numpy array). Then we find the least squares coefficients.</p>
+<div class="fragment">
+<div id="ca90e4c7" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href=""></a><span class="co"># Convert the data to numpy</span></span>
+<span id="cb10-2"><a href=""></a>X <span class="op">=</span> df2.to_numpy()</span>
+<span id="cb10-3"><a href=""></a><span class="co"># Add a column of 1's </span></span>
+<span id="cb10-4"><a href=""></a>X <span class="op">=</span> np.column_stack([np.ones(X.shape[<span class="dv">0</span>]),X])</span>
+<span id="cb10-5"><a href=""></a><span class="bu">print</span>(<span class="ss">f"With the column of 1's added to it, the shape of X is: </span><span class="sc">{</span>X<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-6"><a href=""></a><span class="co"># Find coefficients</span></span>
+<span id="cb10-7"><a href=""></a>coeff <span class="op">=</span> np.linalg.inv(X.T<span class="op">@</span>X)<span class="op">@</span>X.T<span class="op">@</span>target</span>
+<span id="cb10-8"><a href=""></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">a0 (intercept) = </span><span class="sc">{</span>coeff[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-9"><a href=""></a><span class="bu">print</span>(<span class="ss">f"a1 (MedInc) = </span><span class="sc">{</span>coeff[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-10"><a href=""></a><span class="bu">print</span>(<span class="ss">f"a2 (HouseAge) = </span><span class="sc">{</span>coeff[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-11"><a href=""></a><span class="bu">print</span>(<span class="ss">f"a3 (Latitude) = </span><span class="sc">{</span>coeff[<span class="dv">3</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-12"><a href=""></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Equation:target = </span><span class="sc">{</span>coeff[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">+</span><span class="sc">{</span>coeff[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">MedInc+</span><span class="sc">{</span>coeff[<span class="dv">2</span>]<span class="sc">}</span><span class="ss">HouseAge+</span><span class="sc">{</span>coeff[<span class="dv">3</span>]<span class="sc">}</span><span class="ss">Latitude"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>With the column of 1's added to it, the shape of X is: (20640, 4)
+
+a0 (intercept) = 1.649760147577231
+a1 (MedInc) = 0.4273334048742183
+a2 (HouseAge) = 0.017455367252492887
+a3 (Latitude) = -0.04869747695183503
+
+Equation:target = 1.649760147577231+0.4273334048742183MedInc+0.017455367252492887HouseAge+-0.04869747695183503Latitude</code></pre>
+</div>
+</div>
+
+</div>
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="least_squares_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="least_squares_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="least_squares_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="least_squares_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
