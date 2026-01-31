@@ -1,0 +1,1305 @@
+---
+title: "Classification"
+subtitle: "Introduction to Machine Learning"
+author: "Alvaro Arias"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    code-fold: false
+    code-line-numbers: false
+    code-copy: true
+    highlight-style: monokai
+    scrollable: true
+    font-size: 20px
+css: |
+  .reveal .title {
+    font-size: 2em !important;
+  }
+  .reveal .subtitle {
+    font-size: 1.3em !important;
+  }
+  .reveal .author {
+    font-size: 1.1em !important;
+  }
+  .reveal .date {
+    font-size: 1em !important;
+  }
+engine: knitr
+---
+
+```{r}
+#| include: false
+source("utils.R")
+```
+
+
+
+## Review of Regression {.smaller}
+
+::: {.incremental}
+
+
+* In regression, we observe data $\{(\mathbf{x}_i,y_i):i\leq N\}$ where $\mathbf{x}_i\in\mathbb{R}^n$ and $y_i\in\mathbb{R}$
+* We model the relationship using $f_\theta:\mathbb{R}^n\to\mathbb{R}$ to predict: $\hat{y}_i = f_\theta(\mathbf{x}_i)$
+* The residual (error) for each observation is $y_i-\hat{y}_i$
+* We measure overall fit using a loss function, typically: $\text{Loss}(\theta) =\frac{1}{N}\sum_{i=1}^N(y_i-\hat{y}_i)^2$
+* Goal: find $\theta^*$ that balances minimizing training error with generalizing to unseen data (avoiding overfitting)
+
+:::
+
+::: {.fragment}
+
+::: {.panel-tabset}
+
+## Linear $n=1$
+
+In *simple linear regression* the model is
+$$f_\theta(x)=\omega_0+\omega_1x$$
+
+Parameters: $\omega_0$ (bias) and $\omega_1$ (weight)
+
+## Polynomial $n=1$
+
+In*polynomial regression* the model is 
+
+$$f_\theta(x)=\omega_0+\omega_1x+\omega_2x^2+\cdots+\omega_dx^d$$
+
+Parameters: $\omega_0$ (bias) and $(\omega_1,\omega_2,\dots,\omega_d)$ (weights)
+
+## Multilinear $n>1$
+
+In *multilinear regression* the model is 
+
+$$f_\theta((x_1,x_2,\dots,x_n))=\omega_0+\omega_1x_1+\omega_2x_2+\cdots+\omega_nx_n$$
+
+Parameters: $\omega_0$ (bias) and $(\omega_1,\omega_2,\dots,\omega_d)$ (weights)
+
+
+The neural network diagram below visualizes this structure
+```{r}
+plot_nn_quick(c(7, 1), bias = TRUE, label_size=1.2)
+```
+
+:::
+:::
+
+## Binary Classification {.smaller}
+
+
+In binary classification, we observe data $\{(\mathbf{x}_i,y_i):i\leq N\}$ where $\mathbf{x}_i\in\mathbb{R}^n$ and $y_i\in\{0,1\}$ is the label.
+
+::: {.incremental}
+* Instead of predicting a continuous value, we model $p = P(y=1|\mathbf{x})$, the probability that $\mathbf{x}$ has label 1
+* This implies $1-p = P(y=0|\mathbf{x})$ is the probability that $\mathbf{x}$ has label 0
+* Therefore we model the complete **probability mass function** over the two classes
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 3
+plot_pmf(c(0.3, 0.7), 
+         prob_labels = c("1-p", "p"),
+         labels = c("y=0","y=1"),
+         col = "steelblue",
+         spacing = "tight",
+         xlab = "",
+         main = "Example: p=0.7",
+         basic = TRUE,
+         line_width = 5,
+         label_size = 1.3,
+         axis_label_size = 1.3)
+```
+:::
+
+
+## {.smaller}
+**The likelihood** is the probability of observing the actual outcome $y$.  
+For this estimate, the likelihood is:
+
+$$
+\text{likelihood}=\begin{cases} p &\text{if} &y=1\\1-p &\text{if} & y=0\end{cases}\\
+$$
+
+which can be combined as: $\quad\text{likelihood}=p^y(1-p)^{1-y}$.
+
+::: {.incremental}
+
+- A good model assigns **high likelihood** to the observed data. 
+- This motivates choosing parameters that **maximize the likelihood**, a fundamental principle in statistics called **Maximum Likelihood Estimation (MLE)**.
+- MLE is a cornerstone of statistical inference, used across countless applications from biology to economics to machine learning.
+:::
+
+
+## Binary Classification: MLE {.smaller}
+
+We model the probability using $f_\theta:\mathbb{R}^n\to [0,1]$ where $f_\theta(\mathbf{x})$ estimates the probabilty that the
+label of $x$ is 1.
+
+::: {.fragment}
+**Maximum Likelihood Estimation (MLE)**: Choose $\theta^*$ that maximizes the probability of observing our data
+:::
+
+::: {.fragment}
+
+**Likelihood for all observations:**
+$$\mathcal{L}(\theta) = \prod_{i=1}^N f_\theta(\mathbf{x}_i)^{y_i}(1-f_\theta(\mathbf{x}_i))^{1-y_i}$$
+
+:::
+
+::: {.fragment}
+
+**Log-likelihood** (easier to optimize):
+$$\log \mathcal{L}(\theta) = \sum_{i=1}^N \left[ y_i\log(f_\theta(\mathbf{x}_i))+(1-y_i)\log(1-f_\theta(\mathbf{x}_i))\right]$$
+
+:::
+
+::: {.fragment}
+
+**Binary Cross-Entropy Loss** (negate and average):
+$$\text{Loss}(\theta) = -\frac{1}{N}\sum_{i=1}^N\left[ y_i\log(f_\theta(\mathbf{x}_i))+(1-y_i)\log(1-f_\theta(\mathbf{x}_i))\right]$$
+
+Minimizing this loss ≡ Maximizing the likelihood
+
+:::
+
+## Logistic Regression {.smaller}
+
+In *Logistic Regression*, we model the probability using:
+$$f_\theta(\mathbf{x})=\sigma(\omega_0+\omega_1x_1+\dots+\omega_nx_n)$$
+
+::: {.columns}
+::: {.column width=50%}
+where $\sigma:\mathbb{R}\to[0,1]$ is the **sigmoid function**:
+$$\sigma(t)=\frac{1}{1+e^{-t}}=\frac{e^t}{1+e^t}$$
+
+The sigmoid maps any real number to a probability in $[0,1]$.
+:::
+::: {.column width=50%}
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+t <- seq(-6, 6, length.out = 200)
+sigmoid <- 1 / (1 + exp(-t))
+
+plot(t, sigmoid, 
+     type = "l", 
+     lwd = 3, 
+     col = "steelblue",
+     xlab = "t", 
+     ylab = expression(sigma(t)),
+     main = "Sigmoid Function",
+     cex.lab = 1.2,
+     cex.main = 1.3)
+abline(h = c(0, 0.5, 1), lty = 2, col = "gray50")
+abline(v = 0, lty = 2, col = "gray50")
+grid()
+```
+:::
+:::
+
+
+## {.smaller}
+
+*Logistic Regression* combines multilinear regression with the sigmoid activation function:
+
+::: {.columns}
+::: {.column width=50%}
+
+**Step 1: Linear combination**
+$$z = \omega_0+\omega_1x_1+\dots+\omega_nx_n$$
+The linear part produces $z\in\mathbb{R}$ 
+```{r}
+plot_nn_quick(c(4, 1), bias = TRUE,classify = TRUE, label_size = 2)
+```
+:::
+::: {.column width=50%}
+
+**Step 2: Sigmoid transformation**
+$$z\longrightarrow \sigma(z) = \frac{1}{1+e^{-z}}$$
+
+The sigmoid maps $z$ to a probability in $[0,1]$
+
+:::
+:::
+::: {.fragment}
+**Limitation**: Since the decision boundary is linear, logistic regression only works well when classes are approximately **linearly separable**. Non-linear patterns require more complex models.
+:::
+
+
+
+
+## Model Selection: Training and Testing {.smaller transition="slide-in none-out"}
+
+Similar to regression, we split our data to prevent overfitting:
+
+::: {.incremental}
+
+* **Training set** $\{(\mathbf{x}_i,y_i):i\in\text{Train}\}$: Used to find optimal parameters $\theta^*$
+  $$\theta^* = \arg\min_\theta \text{Loss}_{\text{train}}(\theta)$$
+
+* **Test set** $\{(\mathbf{x}_i,y_i):i\in\text{Test}\}$: Used to evaluate generalization: $\text{Loss}_{\text{test}}(\theta^*)$
+
+* **Overfitting detection**: If $\text{Loss}_{\text{train}} \ll \text{Loss}_{\text{test}}$, the model memorizes training data rather than learning patterns
+
+* **Preventing overfitting**: Add regularization penalties to the loss function
+  - **Ridge (L2)**: $\text{Loss}_{\text{regularized}}(\theta) = \text{Loss}(\theta) + \lambda\sum_{j=1}^n\omega_j^2$
+  - **Lasso (L1)**: $\text{Loss}_{\text{regularized}}(\theta) = \text{Loss}(\theta) + \lambda\sum_{j=1}^n|\omega_j|$
+
+:::
+
+::: {.fragment}
+For classification we have more interpretable metrics than just loss and accuracy of predictions. 
+These metrics help us understand *how* our model fails, not just *that* it fails.
+:::
+
+
+## Evaluation Metrics: Beyond Loss {.smaller transition="slide-in none-out"}
+
+For binary classification, the **confusion matrix** provides interpretable performance metrics:
+
+::: {.columns}
+::: {.column width=50%}
+
+|                | Predicted 0 | Predicted 1 |
+|----------------|-------------|-------------|
+| **Actual 0**   | TN          | FP          |
+| **Actual 1**   | FN          | TP          |
+
+* **True Positive (TP)**: Correctly predicted 1
+* **True Negative (TN)**: Correctly predicted 0
+* **False Positive (FP)**: Incorrectly predicted 1 (Type I error)
+* **False Negative (FN)**: Incorrectly predicted 0 (Type II error)
+
+:::
+::: {.column width=50%}
+::: {.fragment}
+
+```{r}
+#| fig-width: 8
+#| fig-height: 7
+#| fig-align: center
+
+library(ggplot2)
+library(ggforce)
+
+ggplot() +
+  # Rectangle for the entire population
+  geom_rect(aes(xmin = -2, xmax = 3, ymin = -1.5, ymax = 1.5),
+            color = "black", fill = NA, size = 1.2) +
+  
+  # Blue circle - Population to detect
+  geom_circle(aes(x0 = 0, y0 = 0, r = 1), 
+              color = "blue", fill = "lightblue", alpha = 0.3, size = 1.5) +
+  
+  # Red circle - Classification
+  geom_circle(aes(x0 = 1, y0 = 0, r = 1), 
+              color = "red", fill = "pink", alpha = 0.3, size = 1.5) +
+  
+  # Labels for regions
+  annotate("text", x = -0.3, y = 0, label = "FN", size = 8, fontface = "bold") +
+  annotate("text", x = 0.5, y = 0, label = "TP", size = 8, fontface = "bold") +
+  annotate("text", x = 1.3, y = 0, label = "FP", size = 8, fontface = "bold") +
+  annotate("text", x = 2.3, y = 1, label = "TN", size = 8, fontface = "bold") +
+  
+  # Labels for circles
+  annotate("text", x = -0.65, y = 1.7, label = "Population to detect", 
+           color = "blue", size = 7.5, fontface = "bold") +
+  annotate("text", x = 2, y = 1.7, label = "Classification", 
+           color = "red", size = 7.5, fontface = "bold") +
+
+  # # Formulas
+  # annotate("text", x = 0.5, y = -2, 
+  #          label = "Precision = TP / (TP + FP)", color = "blue", size = 9) +
+  # annotate("text", x = 0.5, y = -3, 
+  #          label = "Recall = TP / (TP + FN)", color = "blue", size = 9) +
+  
+  coord_fixed(xlim = c(-2.2, 3.2), ylim = c(-4, 2)) +
+  theme_void()
+  ```
+
+
+:::
+:::
+:::
+
+
+
+## Evaluation Metrics: Beyond Loss {.smaller transition="none"}
+
+These metrics are central to ethical AI. Medical professionals have dealt with these tradeoffs for decades.
+
+::: {.columns}
+::: {.column width=50%}
+
+::: {.fragment}
+**Medical Stat Terms**
+:::
+
+::: {.incremental}
+- *Sensitivity* $=\frac{TP}{TP+FN}$ (probability test detects disease when present)
+- *Specificity* $=\frac{TN}{TN+FP}$ (probability test is negative when disease absent)
+- *Positive Predictive Value (PPV)* $=\frac{TP}{TP+FP}$ (probability of disease given positive test)
+- *Negative Predictive Value (NPV)* $=\frac{TN}{TN+FN}$ (probability no disease given negative test)
+:::
+
+
+:::
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 8
+#| fig-height: 7
+#| fig-align: center
+
+library(ggplot2)
+library(ggforce)
+
+ggplot() +
+  # Rectangle for the entire population
+  geom_rect(aes(xmin = -2, xmax = 3, ymin = -1.5, ymax = 1.5),
+            color = "black", fill = NA, size = 1.2) +
+  
+  # Blue circle - Population to detect
+  geom_circle(aes(x0 = 0, y0 = 0, r = 1), 
+              color = "blue", fill = "lightblue", alpha = 0.3, size = 1.5) +
+  
+  # Red circle - Classification
+  geom_circle(aes(x0 = 1, y0 = 0, r = 1), 
+              color = "red", fill = "pink", alpha = 0.3, size = 1.5) +
+  
+  # Labels for regions
+  annotate("text", x = -0.3, y = 0, label = "FN", size = 8, fontface = "bold") +
+  annotate("text", x = 0.5, y = 0, label = "TP", size = 8, fontface = "bold") +
+  annotate("text", x = 1.3, y = 0, label = "FP", size = 8, fontface = "bold") +
+  annotate("text", x = 2.3, y = 1, label = "TN", size = 8, fontface = "bold") +
+  
+  # Labels for circles
+  annotate("text", x = -0.65, y = 1.7, label = "Population to detect", 
+           color = "blue", size = 7.5, fontface = "bold") +
+  annotate("text", x = 2, y = 1.7, label = "Classification", 
+           color = "red", size = 7.5, fontface = "bold") +
+
+  # # Formulas
+  # annotate("text", x = 0.5, y = -2, 
+  #          label = "Precision = TP / (TP + FP)", color = "blue", size = 9) +
+  # annotate("text", x = 0.5, y = -3, 
+  #          label = "Recall = TP / (TP + FN)", color = "blue", size = 9) +
+  
+  coord_fixed(xlim = c(-2.2, 3.2), ylim = c(-4, 2)) +
+  theme_void()
+  ```
+
+
+:::
+:::
+
+
+## When the Condition is Rare {.smaller}
+
+**A "Good" Diagnostic Test:**
+
+- **Sensitivity (Recall):** 95% - catches 95% of true cases
+- **Specificity:** 99% - correctly identifies 99% of negatives
+
+Sounds impressive, right? Let's see what happens in practice...
+
+::: {.fragment}
+::: {.panel-tabset .smaller}
+
+### Prevalence: 50%
+
+::: {.fragment}
+**Testing 1,000 people (500 have condition)**
+
+|                    | Actually Positive | Actually Negative | **Total** |
+|--------------------|-------------------|-------------------|-----------|
+| **Test Positive**  | 475               | 5                 | **480**   |
+| **Test Negative**  | 25                | 495               | **520**   |
+:::
+
+::: {.fragment}
+- **PPV (Precision):** 475/480 = **99.0%** ✓
+- **NPV:** 495/520 = **95.2%** ✓
+- When prevalence is balanced, the test performs well!
+:::
+
+### Prevalence: 10%
+
+**Testing 1,000 people (100 have condition)**
+
+|                    | Actually Positive | Actually Negative | **Total** |
+|--------------------|-------------------|-------------------|-----------|
+| **Test Positive**  | 95                | 9                 | **104**   |
+| **Test Negative**  | 5                 | 891               | **896**   |
+
+::: {.fragment}
+- **PPV (Precision):** 95/104 = **91.3%** ✓
+- **NPV:** 891/896 = **99.4%** ✓
+- Performance declining but acceptable
+:::
+
+### Prevalence: 1%
+
+**Testing 10,000 people (100 have condition)**
+
+|                    | Actually Positive | Actually Negative | **Total**   |
+|--------------------|-------------------|-------------------|-------------|
+| **Test Positive**  | 95                | 99               | **194**   |
+| **Test Negative**  | 5                 | 9,801            | **9,806**  |
+
+::: {.fragment}
+- **PPV (Precision):** 95/194 = **48.96%** ⚠️
+- **NPV:** 9,801/9,806 = **99.94%** ✓
+- Less than half of positive predictions are correct!
+:::
+
+### Prevalence: 0.1%
+**Testing 100,000 people (100 have condition)**
+
+|                    | Actually Positive | Actually Negative | **Total**   |
+|--------------------|-------------------|-------------------|-------------|
+| **Test Positive**  | 95                | 999               | **1,094**   |
+| **Test Negative**  | 5                 | 98,901            | **98,906**  |
+
+::: {.fragment}
+- **PPV (Precision):** 95/1,094 = **8.7%** ⚠️
+- **NPV:** 98,901/98,906 = **99.99%** ✓
+- **Less than 1 in 10 positive predictions are correct!**
+:::
+:::
+:::
+
+## Machine Learning Metrics {.smaller}
+
+In ML, we often focus on **Recall** and **Precision** rather than *Sensitivity* and *Specificity*:
+
+::: {.columns}
+
+::: {.column width="50%"}
+::: {.fragment}
+### Recall = Sensitivity
+
+$$\text{Recall} = \frac{\text{TP}}{\text{TP + FN}}$$
+
+*Of all actual positives, how many did we catch?*
+
+- **Not affected by prevalence**
+:::
+::: 
+
+::: {.column width="50%"}
+::: {.fragment}
+### Precision = PPV
+
+$$\text{Precision} = \frac{\text{TP}}{\text{TP + FP}}$$
+
+*Of all predicted positives, how many are correct?*
+
+- **Heavily affected by prevalence (base rates)**
+:::
+:::
+:::
+
+::: {.fragment}
+### Why this matters for rare conditions
+
+Remember our 0.1% prevalence example: **Recall = 95%**, but **Precision = 8.7%**
+
+→ The model catches most cases, but most alerts are false alarms!
+:::
+
+::: {.notes}
+Precision reveals what Specificity hides: when the condition is rare, even a small false positive rate creates many more false alarms than true detections.
+:::
+
+
+
+## {.smaller}
+
+::: {.panel-tabset}
+
+## High Recall, Medium Precision 
+::: {.columns}
+::: {.column width=40%}
+
+```{r}
+#| fig-width: 8
+#| fig-height: 7
+#| fig-align: center
+
+ggplot() +
+  # Rectangle for the entire population
+  geom_rect(aes(xmin = -2.5, xmax = 3, ymin = -1.8, ymax = 1.8),
+            color = "black", fill = NA, size = 1.2) +
+  
+  # Blue circle - Population to detect (radius = 1)
+  geom_circle(aes(x0 = 0, y0 = 0, r = 1), 
+              color = "blue", fill = "lightblue", alpha = 0.3, size = 1.5) +
+  
+  # Red ellipse - Classification
+  geom_ellipse(aes(x0 = 0.4, y0 = 0, a = 1.3, b = 0.9, angle = 0), 
+               color = "red", fill = "pink", alpha = 0.3, size = 1.5) +
+  
+  # Arrow pointing to FN region (inside blue, outside red)
+  annotate("segment", x = -1.2, y = 0.6, xend = -0.65, yend = 0.6,
+           arrow = arrow(length = unit(0.3, "cm")), size = 1) +
+  
+  # Labels for regions
+  annotate("text", x = -1.2, y = 0.9, label = "FN", size = 8, fontface = "bold") +
+  annotate("text", x = 0.3, y = 0, label = "TP", size = 8, fontface = "bold") +
+  annotate("text", x = 1.3, y = 0, label = "FP", size = 8, fontface = "bold") +
+  annotate("text", x = 2.3, y = 1.2, label = "TN", size = 8, fontface = "bold") +
+  
+ # Labels for circles
+  annotate("text", x = -1, y = 2.1, label = "Population to detect", 
+           color = "blue", size = 10, fontface = "bold") +
+  annotate("text", x = 2, y = 2.1, label = "Classification", 
+           color = "red", size = 10, fontface = "bold") +
+  
+ 
+  coord_fixed(xlim = c(-2.7, 3.2), ylim = c(-2.8, 2.6)) +
+  theme_void()
+```
+
+
+:::
+
+::: {.column width=30%}
+
+::: {.fragment}
+**When is this appropriate?**
+:::
+::: {.incremental}
+- Early medical screening (e.g. cancer pre-screening)  
+- Fraud or anomaly detection used to trigger human review  
+- Search or recommendation systems where the user is free to ignore suggestions
+:::
+:::
+
+::: {.column width=30%}
+
+::: {.fragment}
+**When is this inappropriate?**
+:::
+::: {.incremental}
+- Automated punishment or denial (e.g. loan rejection, policing)  
+- Expensive or harmful interventions with no review step  
+- Situations where false accusations carry social or legal stigma
+:::
+:::
+
+:::
+
+
+## High Precision, Lower Recall 
+
+::: {.columns}
+::: {.column width=40%}
+
+```{r}
+#| fig-width: 8
+#| fig-height: 7
+#| fig-align: center
+
+ggplot() +
+  # Rectangle for the entire population
+  geom_rect(aes(xmin = -2.5, xmax = 3, ymin = -1.8, ymax = 1.8),
+            color = "black", fill = NA, size = 1.2) +
+  
+  # Blue circle - Population to detect (radius = 1)
+  geom_circle(aes(x0 = 0, y0 = 0, r = 1), 
+              color = "blue", fill = "lightblue", alpha = 0.3, size = 1.5) +
+  
+  # Red ellipse - Classification (extends beyond blue on the right)
+  geom_ellipse(aes(x0 = 0.25, y0 = 0, a = 0.9, b = 0.7, angle = 0), 
+               color = "red", fill = "pink", alpha = 0.3, size = 1.5) +
+  
+  # Arrow pointing to FN region
+  annotate("segment", x = -1.3, y = 0.3, xend = -0.85, yend = 0.15,
+           arrow = arrow(length = unit(0.3, "cm")), size = 1) +
+  
+  # Arrow pointing to FP region
+  annotate("segment", x = 1.5, y = 0.5, xend = 1.1, yend = 0.15,
+           arrow = arrow(length = unit(0.3, "cm")), size = 1, color = "darkred") +
+  
+  # Labels for regions
+  annotate("text", x = -1.5, y = 0.4, label = "FN", 
+           size = 8, fontface = "bold") +
+  annotate("text", x = 0.2, y = 0, label = "TP", 
+           size = 8, fontface = "bold") +
+   annotate("text", x = 1.7, y = 0.6, label = "FP",
+           size = 8, fontface = "bold", color = "darkred") +
+  annotate("text", x = 2.3, y = 1.2, label = "TN", 
+           size = 8, fontface = "bold") +
+  
+  # Labels for circles
+  annotate("text", x = -1, y = 2.1, label = "Population to detect", 
+           color = "blue", size = 10, fontface = "bold") +
+  annotate("text", x = 2, y = 2.1, label = "Classification", 
+           color = "red", size = 10, fontface = "bold") +
+  
+  coord_fixed(xlim = c(-2.7, 3.2), ylim = c(-2.8, 2.6)) +
+  theme_void()
+```
+
+
+:::
+
+::: {.column width=30%}
+
+::: {.fragment}
+**When is this appropriate?**
+:::
+::: {.incremental}
+- Automated actions with serious consequences (e.g. account suspension, benefit denial)  
+- Legal or disciplinary decisions where false accusations must be minimized  
+- Situations requiring very high confidence before acting
+:::
+:::
+
+::: {.column width=30%}
+
+::: {.fragment}
+**When is this inappropriate?**
+:::
+::: {.incremental}
+- Early screening or detection of rare but serious conditions  
+- Safety-critical monitoring where missed cases can cause harm  
+- Systems intended to provide help or protection rather than punishment
+:::
+:::
+
+:::
+
+
+:::
+
+
+
+
+
+
+
+## From Predictions to Decisions {.smaller}
+
+A classifier produces a **probability** $p$, not a yes/no answer.
+
+We must choose a **decision rule**:
+
+$$
+\text{Predict positive if } p > t
+$$
+
+- The common choice $t = 0.5$ is **conventional, not natural**
+- Different values of $t$ lead to different outcomes
+
+::: {.fragment}
+### What changing $t$ does
+
+- Increasing $t$: fewer positives  
+  → **fewer false positives**, more missed cases
+- Decreasing $t$: more positives  
+  → **more false positives**, fewer missed cases
+:::
+
+::: {.fragment}
+### This is not a technical choice
+
+Choosing $t$ **weights the cost** of:
+
+- false positives (unnecessary alarms, interventions)
+- false negatives (missed cases, lack of help)
+
+The “right” threshold depends on **context, values, and consequences**, not on the algorithm alone.
+:::
+
+
+
+
+
+
+
+## Application: Breast Cancer Classification {.smaller}
+
+**Dataset**: Wisconsin Breast Cancer Database (from `MASS` package)
+
+::: {.columns}
+::: {.column width=50%}
+
+::: {.smaller}
+- Samples from breast masses
+- Goal: Classify tumors as **benign** or **malignant**
+:::
+
+**Outcome variable:** 
+
+- *Class*: benign or malignant
+
+**Sample size:**
+```{r}
+#| echo: true
+library(MASS)
+data(biopsy)
+nrow(biopsy)
+table(biopsy$class)
+```
+
+:::
+::: {.column width=50%}
+
+::: {.fragment}
+**Predictor variables** (all scaled 1-10):
+
+* `V1`: Clump thickness
+* `V2`: Uniformity of cell size
+* `V3`: Uniformity of cell shape
+* `V4`: Marginal adhesion
+* `V5`: Single epithelial cell size
+* `V6`: Bare nuclei
+* `V7`: Bland chromatin
+* `V8`: Normal nucleoli
+* `V9`: Mitoses
+
+All features describe cellular characteristics visible under microscopy.
+
+:::
+:::
+:::
+
+::: {.fragment}
+**Question**: Can we predict malignancy from these cellular features?
+:::
+
+
+## Building the Model: Simple Logistic Regression {.smaller}
+
+::: {.columns}
+::: {.column width=50%}
+
+**Step 1: Train/Test Split (70/30)**
+```{r}
+#| echo: true
+# Clean data (remove NAs)
+biopsy_clean <- na.omit(biopsy)
+biopsy_clean$malignant <- ifelse(biopsy_clean$class == "malignant", 1, 0)
+
+# Train/test split
+set.seed(123)
+train_idx <- sample(1:nrow(biopsy_clean), 
+                    0.7 * nrow(biopsy_clean))
+train_bc <- biopsy_clean[train_idx, ]
+test_bc <- biopsy_clean[-train_idx, ]
+
+cat("Training samples:", nrow(train_bc), "\n")
+cat("Test samples:", nrow(test_bc), "\n")
+```
+
+:::
+::: {.column width=50%}
+
+::: {.fragment}
+**Step 2: Fit Simple Model**
+
+Start with 3 clinically important features:
+
+- `V1`: Clump thickness
+- `V2`: Cell size uniformity  
+- `V6`: Bare nuclei
+```{r}
+#| echo: true
+model_simple <- glm(malignant ~ V1 + V2 + V6, 
+                    data = train_bc, 
+                    family = binomial)
+```
+:::
+:::
+:::
+
+
+## {.smaller}
+
+**Model Summary:**
+```{r}
+#| echo: false
+summary(model_simple)
+```
+
+All three predictors are highly significant
+
+
+
+## Model Evaluation: Test Set Performance {.smaller}
+
+::: {.columns}
+::: {.column width=50%}
+
+**Generate Predictions:**
+```{r}
+#| echo: true
+# Predict probabilities on test set
+test_bc$pred_prob <- predict(model_simple, 
+                              newdata = test_bc, 
+                              type = "response")
+
+# Convert to class predictions (threshold = 0.5)
+test_bc$pred_class <- ifelse(test_bc$pred_prob > 0.5, 
+                              "malignant", "benign")
+```
+
+**Confusion Matrix:**
+```{r}
+#| echo: true
+conf_matrix <- table(Actual = test_bc$class, 
+                     Predicted = test_bc$pred_class)
+conf_matrix
+```
+
+::: {.fragment}
+**Performance Metrics:**
+```{r}
+#| echo: false
+TP <- conf_matrix["malignant", "malignant"]
+TN <- conf_matrix["benign", "benign"]
+FP <- conf_matrix["benign", "malignant"]
+FN <- conf_matrix["malignant", "benign"]
+
+accuracy <- (TP + TN) / sum(conf_matrix)
+precision <- TP / (TP + FP)
+recall <- TP / (TP + FN)
+
+cat("Accuracy: ", round(accuracy, 3), "\n")
+cat("Precision:", round(precision, 3), "\n")
+cat("Recall:   ", round(recall, 3), "\n")
+```
+:::
+
+:::
+::: {.column width=50%}
+
+::: {.fragment}
+**Distribution of Predicted Probabilities:**
+```{r}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 5
+library(ggplot2)
+ggplot(test_bc, aes(x = pred_prob, fill = class)) +
+  geom_histogram(bins = 30, alpha = 0.7, position = "identity") +
+  geom_vline(xintercept = 0.5, color = "red", 
+             linetype = "dashed", linewidth = 1) +
+  scale_fill_manual(values = c("benign" = "steelblue", 
+                                "malignant" = "coral")) +
+  labs(title = "Predicted Probability Distribution",
+       x = "Predicted Probability of Malignancy",
+       y = "Count",
+       fill = "Actual Class") +
+  theme_minimal(base_size = 12)
+```
+
+The red dashed line shows the 0.5 decision threshold.
+
+:::
+:::
+:::
+
+
+## Multiclass Classification {.smaller}
+
+In *multiclass classification*, we observe data $\{(\mathbf{x}_i,y_i):i\leq N\}$ where $\mathbf{x}_i\in\mathbb{R}^n$ and $y_i\in\{1,2,\dots,C\}$ is the label.
+
+::: {.incremental}
+* We model the **probability mass function** over all $C$ classes for each input $\mathbf{x}$
+* The model is $f_\theta:\mathbb{R}^n\to\mathbb{R}^C$ defined by:
+  $$f_\theta(\mathbf{x})=(p_1(\mathbf{x}),p_2(\mathbf{x}),\dots,p_C(\mathbf{x}))$$
+  where $p_k(\mathbf{x}) = P(y=k|\mathbf{x})$ represents the probability that $\mathbf{x}$ belongs to class $k$
+* **Required conditions**: The probabilities must satisfy:
+  - $p_k(\mathbf{x}) \geq 0$ for all $k=1,\dots,C$ (non-negative)
+  - $\sum_{k=1}^C p_k(\mathbf{x}) = 1$ (sum to one)
+:::
+
+## {.smaller}
+
+For each input $\mathbf{x}$, our model predicts probabilities for all classes:
+```{r}
+#| echo: false
+#| fig-width: 6
+#| fig-height: 4
+plot_pmf(c(0.1, 0.4, 0.1, 0.25, 0.15), 
+         labels = c("y=1", "y=2", "y=3", "y=4", "y=5"),
+         prob_labels = c("p1=0.1", "p2=0.4", "p3=0.1", "p4=0.25", "p5=0.15"),
+         col = "purple",
+         basic = TRUE,
+         xlab = "Class",
+         main = "Example: 5-Class PMF",
+         line_width = 5,
+         label_size = 1.2,
+         axis_label_size = 1.2)
+```
+
+
+::: {.fragment}
+**The likelihood** is the probability of observing the actual outcome. For an observation with true class $y$, the likelihood is simply:
+$$\text{likelihood} = p_y(\mathbf{x})$$
+:::
+
+::: {.fragment}
+As in binary classification, we choose parameters $\theta^*$ by **Maximum Likelihood Estimation (MLE)**, selecting the model that assigns the highest probability to the observed data.
+:::
+
+
+## Multiclass Classification: MLE {.smaller}
+
+::: {.fragment}
+**Maximum Likelihood Estimation (MLE)**: Choose $\theta^*$ that maximizes the probability of observing our data
+:::
+
+::: {.fragment}
+
+**Likelihood for all observations:**
+$$\mathcal{L}(\theta) = \prod_{i=1}^N p_{y_i}(\mathbf{x}_i)$$
+where $p_{y_i}(\mathbf{x}_i)$ is the model's predicted probability for the true class $y_i$
+
+:::
+
+::: {.fragment}
+
+**Log-likelihood** (easier to optimize):
+$$\log \mathcal{L}(\theta) = \sum_{i=1}^N \log(p_{y_i}(\mathbf{x}_i))$$
+
+:::
+
+::: {.fragment}
+
+**Cross-Entropy Loss** (negate and average):
+$$\text{Loss}(\theta) = -\frac{1}{N}\sum_{i=1}^N\log(p_{y_i}(\mathbf{x}_i))$$
+
+Minimizing this loss ≡ Maximizing the likelihood
+
+:::
+
+::: {.fragment}
+**Note**: This generalizes binary cross-entropy—when $C=2$, we recover the binary classification loss.
+:::
+
+## Understanding Cross-Entropy Loss {.smaller}
+
+::: {.fragment}
+**Cross-entropy** measures how well a predicted probability distribution $Q$ approximates a true distribution $P$:
+$$H(P, Q) = -\sum_{k=1}^C P(k) \log Q(k)$$
+Lower cross-entropy = better approximation
+:::
+
+::: {.fragment}
+**In our classification setting:**
+
+::: {.columns}
+::: {.column width=50%}
+**True distribution** $P$ (one-hot):
+$$P(k) = \begin{cases} 1 &\text{if } k=y\\0 &\text{otherwise}\end{cases}$$
+
+For example, if true class is $y=2$:
+```{r}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 3
+plot_pmf(c(0, 1, 0, 0, 0), 
+         labels = c("1", "2", "3", "4", "5"),
+         prob_labels = c("0", "1", "0", "0", "0"),
+         col = "darkgreen",
+         basic = TRUE,
+         main = "True: P",
+         line_width = 4,
+         label_size = 1.1,
+         axis_label_size = 1.1)
+```
+:::
+::: {.column width=50%}
+**Predicted distribution** $Q$:
+$$Q(k) = p_k(\mathbf{x})$$
+
+Model's prediction:
+```{r}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 3
+plot_pmf(c(0.1, 0.5, 0.15, 0.15, 0.1), 
+         labels = c("1", "2", "3", "4", "5"),
+         prob_labels = c("0.1", "0.5", "0.15", "0.15", "0.1"),
+         col = "steelblue",
+         basic = TRUE,
+         main = "Predicted: Q",
+         line_width = 4,
+         label_size = 1.1,
+         axis_label_size = 1.1)
+```
+:::
+:::
+:::
+
+::: {.fragment}
+**Simplification**: Since $P(k)=1$ only for $k=y$ and $P(k)=0$ elsewhere:
+$$H(P, Q) = -\sum_{k=1}^C P(k) \log Q(k) = -\log Q(y) = -\log p_y(\mathbf{x})$$
+This is exactly our loss function (averaged over all samples)!
+:::
+
+::: {.fragment}
+**Connection to KL Divergence**: Cross-entropy is related to the Kullback--Leibler divergence,
+$$
+H(P,Q) = \mathrm{KL}(P\|Q) + H(P).
+$$
+Since $H(P)$ is constant (and zero for one-hot labels), minimizing cross-entropy is equivalent to minimizing KL divergence, a fundamental measure of distributional difference used throughout statistics, information theory, and machine learning, including variational inference, VAEs, and diffusion models.
+
+:::
+
+## Multiclass Logistic Regression {.smaller}
+
+In *Multiclass Logistic Regression* (also called *Softmax Regression*), we model the probability distribution using:
+$$f_\theta(\mathbf{x})=\text{softmax}(\mathbf{z}(\mathbf{x}))$$
+
+where $\mathbf{z}(\mathbf{x}) = W\mathbf{x}+\mathbf{b}$ computes the linear scores for each class:
+$$\mathbf{z}(\mathbf{x}) = (z_1(\mathbf{x}), z_2(\mathbf{x}), \dots, z_C(\mathbf{x}))$$
+
+Here, $W$ is a $C \times n$ weight matrix and $\mathbf{b}\in\mathbb{R}^C$ is the bias vector.
+
+::: {.fragment}
+::: {.columns}
+::: {.column width=50%}
+The **softmax function** $\text{softmax}:\mathbb{R}^C\to[0,1]^C$ is defined by:
+$$\text{softmax}(\mathbf{z})_k = \frac{e^{z_k}}{\sum_{j=1}^C e^{z_j}}$$
+
+Softmax converts any vector of real numbers into a valid probability distribution (non-negative, sums to 1).
+
+**Key property**: Larger scores → higher probabilities
+:::
+::: {.column width=50%}
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+# Example: transform scores to probabilities
+scores <- c(-1, 2, 0.5, 1, -0.5)
+probs <- exp(scores) / sum(exp(scores))
+
+par(mfrow=c(1,2), mar=c(4,4,3,1))
+barplot(scores, names.arg=1:5, col="coral",
+        main="Input Scores (z)", 
+        ylab="Score", xlab="Class",
+        ylim=c(-2, 3), cex.main=1.1)
+abline(h=0, lwd=2)
+
+barplot(probs, names.arg=1:5, col="steelblue",
+        main="Softmax Output (p)", 
+        ylab="Probability", xlab="Class",
+        ylim=c(0, 1), cex.main=1.1)
+abline(h=0, lwd=2)
+```
+:::
+:::
+:::
+
+## {.smaller}
+*Multiclass Logistic Regression* combines an **affine map** $\mathbf{z}:\mathbb{R}^n\to \mathbb{R}^C$ with the softmax activation:
+
+::: {.columns}
+::: {.column width=50%}
+
+**Step 1: Linear scores for each class**
+$$\mathbf{z}(\mathbf{x}) = W\mathbf{x}+\mathbf{b}$$
+where $W$ is a $C \times n$ weight matrix and $\mathbf{b}\in\mathbb{R}^C$ is the bias vector.
+```{r}
+#| echo: false
+plot_nn_quick(c(4, 5), bias = TRUE, classify = TRUE, label_size = 1.8)
+```
+
+Each output node computes a score $z_k\in\mathbb{R}$
+:::
+::: {.column width=50%}
+
+**Step 2: Softmax transformation**
+
+$$\begin{array}{c}
+\mathbf{z}=(z_1,\dots,z_C)\\
+\downarrow\\
+\text{softmax}(\mathbf{z})=(p_1,\dots,p_C)
+\end{array}$$
+
+where $p_k = \frac{e^{z_k}}{\sum_{j=1}^C e^{z_j}}$
+
+The softmax ensures:
+
+- All probabilities are non-negative
+- Probabilities sum to 1: $\sum_{k=1}^C p_k = 1$
+
+**Prediction**: Choose class with highest probability
+$$\hat{y} = \arg\max_{k} p_k(\mathbf{x})$$
+
+:::
+:::
+
+**Limitation**: Decision boundaries between classes are still **linear** (piecewise linear overall). Non-linear patterns require neural networks with hidden layers.
+
+## Application: The Iris Dataset {.smaller}
+
+**One of the most famous dataset in statistics and machine learning**
+
+::: {.columns}
+::: {.column width=50%}
+
+**Historical Context:**
+
+- Published by Ronald Fisher in 1936
+- Used to demonstrate linear discriminant analysis
+- Collected by botanist Edgar Anderson in the Gaspé Peninsula, Quebec
+- Still widely used 90 years later for teaching classification!
+
+::: {.fragment}
+**The Classification Task:**
+Predict iris species from flower measurements
+:::
+:::
+
+::: {.column width=50%}
+
+::: {.fragment}
+**The 3 Species:**
+```{r}
+#| echo: true
+library(datasets)
+data(iris)
+table(iris$Species)
+```
+
+50 samples per species (150 total)
+:::
+
+::: {.fragment}
+**The 4 Features (in cm):**
+
+- `Sepal.Length`: Length of sepal
+- `Sepal.Width`: Width of sepal  
+- `Petal.Length`: Length of petal
+- `Petal.Width`: Width of petal
+:::
+:::
+::: 
+##
+
+```{r}
+#| echo: false
+#| fig-width: 8
+#| fig-height: 6
+
+par(oma = c(4, 0, 0, 0))  # Outer margin at bottom
+par(mar = c(5, 4, 4, 2))  # Regular margins
+
+pairs(iris[,1:4], 
+      col = c("red", "green", "blue")[iris$Species],
+      pch = 19,
+      cex = 0.8,
+      main = "Pairwise Feature Relationships")
+
+par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+plot(0, 0, type = 'l', bty = 'n', xaxt = 'n', yaxt = 'n')
+legend("bottom", 
+       legend = levels(iris$Species),
+       col = c("red", "green", "blue"),
+       pch = 19,
+       cex = 0.8,
+       horiz = TRUE,
+       xpd = TRUE,
+       bty = "n")
+
+```
+
+
+## Model Training and Predictions {.smaller}
+
+::: {.columns}
+::: {.column width=50%}
+
+**Step 1: Prepare Data**
+```{r}
+#| echo: true
+# Convert species to numeric labels
+iris$label <- as.numeric(iris$Species)
+
+# Train/test split (70/30)
+set.seed(42)
+train_idx <- sample(1:nrow(iris), 0.7 * nrow(iris))
+train_iris <- iris[train_idx, ]
+test_iris <- iris[-train_idx, ]
+
+cat("Training samples:", nrow(train_iris), "\n")
+cat("Test samples:", nrow(test_iris), "\n")
+```
+
+::: {.fragment}
+**Step 2: Fit Softmax Regression**
+```{r}
+#| echo: true
+library(nnet)
+model_iris <- multinom(Species ~ Sepal.Length + Sepal.Width + 
+                            Petal.Length + Petal.Width,
+                  data = train_iris)
+```
+:::
+:::
+::: {.column width=50%}
+::: {.fragment}
+
+**Step 3: Evaluate on Test Set**
+
+**Confusion Matrix**
+
+```{r}
+#| echo: true
+
+# Predictions
+pred_iris <- predict(model_iris, test_iris)
+# Confusion matrix
+table(Predicted = pred_iris, Actual = test_iris$Species)
+```
+**Accuracy**
+```{r}
+#| echo: true
+# Accuracy
+accuracy_iris <- mean(pred_iris == test_iris$Species)
+cat("Iris Test Accuracy:", round(accuracy_iris * 100, 2), "%\n")
+```
+
+:::
+:::
+:::
+
+
+
+## {.smaller}
+**Predict Probabilities**
+```{r}
+library(knitr)
+
+# Get predicted probabilities
+probs_iris <- predict(model_iris, test_iris, type = "probs")
+
+# Create results table
+results_table <- data.frame(
+  Actual = test_iris$Species,
+  Predicted = pred_iris,
+  Prob_setosa = round(probs_iris[, "setosa"], 4),
+  Prob_versicolor = round(probs_iris[, "versicolor"], 4),
+  Prob_virginica = round(probs_iris[, "virginica"], 4)
+)
+
+# Shuffle the rows
+set.seed(4)  # for reproducibility
+shuffled_results <- results_table[sample(nrow(results_table)), ]
+
+# Display with kable
+kable(head(shuffled_results, 10), 
+      caption = "Sample of Iris Predictions with Probabilities",
+      row.names = FALSE)
+```

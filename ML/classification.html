@@ -290,9 +290,12 @@ For this estimate, the likelihood is:</p>
 \text{likelihood}=\begin{cases} p &amp;\text{if} &amp;y=1\\1-p &amp;\text{if} &amp; y=0\end{cases}\\
 \]</span></p>
 <p>which can be combined as: <span class="math inline">\(\quad\text{likelihood}=p^y(1-p)^{1-y}\)</span>.</p>
-<div class="fragment">
-<p>A good model assigns <strong>high likelihood</strong> to the observed data. This motivates choosing parameters that <strong>maximize the likelihood</strong>—a fundamental principle in statistics called <strong>Maximum Likelihood Estimation (MLE)</strong>.</p>
-<p>MLE is a cornerstone of statistical inference, used across countless applications from biology to economics to machine learning.</p>
+<div>
+<ul>
+<li class="fragment">A good model assigns <strong>high likelihood</strong> to the observed data.</li>
+<li class="fragment">This motivates choosing parameters that <strong>maximize the likelihood</strong>, a fundamental principle in statistics called <strong>Maximum Likelihood Estimation (MLE)</strong>.</li>
+<li class="fragment">MLE is a cornerstone of statistical inference, used across countless applications from biology to economics to machine learning.</li>
+</ul>
 </div>
 </section>
 <section id="binary-classification-mle" class="slide level2 smaller">
@@ -354,27 +357,26 @@ For this estimate, the likelihood is:</p>
 <p><strong>Limitation</strong>: Since the decision boundary is linear, logistic regression only works well when classes are approximately <strong>linearly separable</strong>. Non-linear patterns require more complex models.</p>
 </div>
 </section>
-<section id="model-selection-training-and-testing" class="slide level2 smaller">
+<section id="model-selection-training-and-testing" class="slide level2 smaller" data-transition="slide-in none-out">
 <h2>Model Selection: Training and Testing</h2>
 <p>Similar to regression, we split our data to prevent overfitting:</p>
 <div>
 <ul>
 <li class="fragment"><p><strong>Training set</strong> <span class="math inline">\(\{(\mathbf{x}_i,y_i):i\in\text{Train}\}\)</span>: Used to find optimal parameters <span class="math inline">\(\theta^*\)</span> <span class="math display">\[\theta^* = \arg\min_\theta \text{Loss}_{\text{train}}(\theta)\]</span></p></li>
-<li class="fragment"><p><strong>Test set</strong> <span class="math inline">\(\{(\mathbf{x}_i,y_i):i\in\text{Test}\}\)</span>: Used to evaluate generalization <span class="math display">\[\text{Loss}_{\text{test}}(\theta^*)\]</span></p></li>
+<li class="fragment"><p><strong>Test set</strong> <span class="math inline">\(\{(\mathbf{x}_i,y_i):i\in\text{Test}\}\)</span>: Used to evaluate generalization: <span class="math inline">\(\text{Loss}_{\text{test}}(\theta^*)\)</span></p></li>
 <li class="fragment"><p><strong>Overfitting detection</strong>: If <span class="math inline">\(\text{Loss}_{\text{train}} \ll \text{Loss}_{\text{test}}\)</span>, the model memorizes training data rather than learning patterns</p></li>
 <li class="fragment"><p><strong>Preventing overfitting</strong>: Add regularization penalties to the loss function</p>
 <ul>
 <li class="fragment"><strong>Ridge (L2)</strong>: <span class="math inline">\(\text{Loss}_{\text{regularized}}(\theta) = \text{Loss}(\theta) + \lambda\sum_{j=1}^n\omega_j^2\)</span></li>
 <li class="fragment"><strong>Lasso (L1)</strong>: <span class="math inline">\(\text{Loss}_{\text{regularized}}(\theta) = \text{Loss}(\theta) + \lambda\sum_{j=1}^n|\omega_j|\)</span></li>
-<li class="fragment">The penalty <span class="math inline">\(\lambda\)</span> controls the trade-off between fit and complexity</li>
 </ul></li>
 </ul>
 </div>
 <div class="fragment">
-<p>However, for classification we have more interpretable metrics than just loss…</p>
+<p>For classification we have more interpretable metrics than just loss and accuracy of predictions. These metrics help us understand <em>how</em> our model fails, not just <em>that</em> it fails.</p>
 </div>
 </section>
-<section id="evaluation-metrics-beyond-loss" class="slide level2 smaller">
+<section id="evaluation-metrics-beyond-loss" class="slide level2 smaller" data-transition="slide-in none-out">
 <h2>Evaluation Metrics: Beyond Loss</h2>
 <p>For binary classification, the <strong>confusion matrix</strong> provides interpretable performance metrics:</p>
 <div class="columns">
@@ -408,17 +410,382 @@ For this estimate, the likelihood is:</p>
 </ul>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<p><strong>Common metrics derived from confusion matrix:</strong></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="evaluation-metrics-beyond-loss-1" class="slide level2 smaller" data-transition="none">
+<h2>Evaluation Metrics: Beyond Loss</h2>
+<p>These metrics are central to ethical AI. Medical professionals have dealt with these tradeoffs for decades.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<p><strong>Medical Stat Terms</strong></p>
+</div>
+<div>
 <ul>
-<li><p><strong>Accuracy</strong>: <span class="math inline">\(\frac{TP + TN}{TP + TN + FP + FN}\)</span></p></li>
-<li><p><strong>Precision</strong>: <span class="math inline">\(\frac{TP}{TP + FP}\)</span> (when we predict 1, how often are we correct?)</p></li>
-<li><p><strong>Recall (Sensitivity)</strong>: <span class="math inline">\(\frac{TP}{TP + FN}\)</span> (what fraction of actual 1’s did we find?)</p></li>
-<li><p><strong>F1-Score</strong>: <span class="math inline">\(2\cdot\frac{\text{Precision}\cdot\text{Recall}}{\text{Precision}+\text{Recall}}\)</span> (harmonic mean)</p></li>
+<li class="fragment"><em>Sensitivity</em> <span class="math inline">\(=\frac{TP}{TP+FN}\)</span> (probability test detects disease when present)</li>
+<li class="fragment"><em>Specificity</em> <span class="math inline">\(=\frac{TN}{TN+FP}\)</span> (probability test is negative when disease absent)</li>
+<li class="fragment"><em>Positive Predictive Value (PPV)</em> <span class="math inline">\(=\frac{TP}{TP+FP}\)</span> (probability of disease given positive test)</li>
+<li class="fragment"><em>Negative Predictive Value (NPV)</em> <span class="math inline">\(=\frac{TN}{TN+FN}\)</span> (probability no disease given negative test)</li>
+</ul>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="when-the-condition-is-rare" class="slide level2 smaller">
+<h2>When the Condition is Rare</h2>
+<p><strong>A “Good” Diagnostic Test:</strong></p>
+<ul>
+<li><strong>Sensitivity (Recall):</strong> 95% - catches 95% of true cases</li>
+<li><strong>Specificity:</strong> 99% - correctly identifies 99% of negatives</li>
+</ul>
+<p>Sounds impressive, right? Let’s see what happens in practice…</p>
+<div class="fragment">
+<div class="panel-tabset smaller">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Prevalence: 50%</a></li><li><a href="#tabset-2-2">Prevalence: 10%</a></li><li><a href="#tabset-2-3">Prevalence: 1%</a></li><li><a href="#tabset-2-4">Prevalence: 0.1%</a></li></ul>
+<div class="tab-content smaller">
+<div id="tabset-2-1">
+<div class="fragment">
+<p><strong>Testing 1,000 people (500 have condition)</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Actually Positive</th>
+<th>Actually Negative</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Test Positive</strong></td>
+<td>475</td>
+<td>5</td>
+<td><strong>480</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Test Negative</strong></td>
+<td>25</td>
+<td>495</td>
+<td><strong>520</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>PPV (Precision):</strong> 475/480 = <strong>99.0%</strong> ✓</li>
+<li><strong>NPV:</strong> 495/520 = <strong>95.2%</strong> ✓</li>
+<li>When prevalence is balanced, the test performs well!</li>
+</ul>
+</div>
+</div>
+<div id="tabset-2-2">
+<p><strong>Testing 1,000 people (100 have condition)</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Actually Positive</th>
+<th>Actually Negative</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Test Positive</strong></td>
+<td>95</td>
+<td>9</td>
+<td><strong>104</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Test Negative</strong></td>
+<td>5</td>
+<td>891</td>
+<td><strong>896</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<ul>
+<li><strong>PPV (Precision):</strong> 95/104 = <strong>91.3%</strong> ✓</li>
+<li><strong>NPV:</strong> 891/896 = <strong>99.4%</strong> ✓</li>
+<li>Performance declining but acceptable</li>
+</ul>
+</div>
+</div>
+<div id="tabset-2-3">
+<p><strong>Testing 10,000 people (100 have condition)</strong></p>
+<table class="caption-top" style="width:100%;">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Actually Positive</th>
+<th>Actually Negative</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Test Positive</strong></td>
+<td>95</td>
+<td>99</td>
+<td><strong>194</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Test Negative</strong></td>
+<td>5</td>
+<td>9,801</td>
+<td><strong>9,806</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<ul>
+<li><strong>PPV (Precision):</strong> 95/194 = <strong>48.96%</strong> ⚠️</li>
+<li><strong>NPV:</strong> 9,801/9,806 = <strong>99.94%</strong> ✓</li>
+<li>Less than half of positive predictions are correct!</li>
+</ul>
+</div>
+</div>
+<div id="tabset-2-4">
+<p><strong>Testing 100,000 people (100 have condition)</strong></p>
+<table class="caption-top" style="width:100%;">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Actually Positive</th>
+<th>Actually Negative</th>
+<th><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Test Positive</strong></td>
+<td>95</td>
+<td>999</td>
+<td><strong>1,094</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Test Negative</strong></td>
+<td>5</td>
+<td>98,901</td>
+<td><strong>98,906</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<ul>
+<li><strong>PPV (Precision):</strong> 95/1,094 = <strong>8.7%</strong> ⚠️</li>
+<li><strong>NPV:</strong> 98,901/98,906 = <strong>99.99%</strong> ✓</li>
+<li><strong>Less than 1 in 10 positive predictions are correct!</strong></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="machine-learning-metrics" class="slide level2 smaller">
+<h2>Machine Learning Metrics</h2>
+<p>In ML, we often focus on <strong>Recall</strong> and <strong>Precision</strong> rather than <em>Sensitivity</em> and <em>Specificity</em>:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="fragment">
+<h3 id="recall-sensitivity">Recall = Sensitivity</h3>
+<p><span class="math display">\[\text{Recall} = \frac{\text{TP}}{\text{TP + FN}}\]</span></p>
+<p><em>Of all actual positives, how many did we catch?</em></p>
+<ul>
+<li><strong>Not affected by prevalence</strong></li>
+</ul>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<h3 id="precision-ppv">Precision = PPV</h3>
+<p><span class="math display">\[\text{Precision} = \frac{\text{TP}}{\text{TP + FP}}\]</span></p>
+<p><em>Of all predicted positives, how many are correct?</em></p>
+<ul>
+<li><strong>Heavily affected by prevalence (base rates)</strong></li>
 </ul>
 </div>
 </div></div>
 <div class="fragment">
-<p>These metrics help us understand <em>how</em> our model fails, not just <em>that</em> it fails.</p>
+<h3 id="why-this-matters-for-rare-conditions">Why this matters for rare conditions</h3>
+<p>Remember our 0.1% prevalence example: <strong>Recall = 95%</strong>, but <strong>Precision = 8.7%</strong></p>
+<p>→ The model catches most cases, but most alerts are false alarms!</p>
+</div>
+<aside class="notes">
+<p>Precision reveals what Specificity hides: when the condition is rare, even a small false positive rate creates many more false alarms than true detections.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 smaller">
+<h2></h2>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">High Recall, Medium Precision</a></li><li><a href="#tabset-3-2">High Precision, Lower Recall</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment">
+<p><strong>When is this appropriate?</strong></p>
+</div>
+<div>
+<ul>
+<li class="fragment">Early medical screening (e.g.&nbsp;cancer pre-screening)<br>
+</li>
+<li class="fragment">Fraud or anomaly detection used to trigger human review<br>
+</li>
+<li class="fragment">Search or recommendation systems where the user is free to ignore suggestions</li>
+</ul>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment">
+<p><strong>When is this inappropriate?</strong></p>
+</div>
+<div>
+<ul>
+<li class="fragment">Automated punishment or denial (e.g.&nbsp;loan rejection, policing)<br>
+</li>
+<li class="fragment">Expensive or harmful interventions with no review step<br>
+</li>
+<li class="fragment">Situations where false accusations carry social or legal stigma</li>
+</ul>
+</div>
+</div></div>
+</div>
+<div id="tabset-3-2">
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment">
+<p><strong>When is this appropriate?</strong></p>
+</div>
+<div>
+<ul>
+<li class="fragment">Automated actions with serious consequences (e.g.&nbsp;account suspension, benefit denial)<br>
+</li>
+<li class="fragment">Legal or disciplinary decisions where false accusations must be minimized<br>
+</li>
+<li class="fragment">Situations requiring very high confidence before acting</li>
+</ul>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="fragment">
+<p><strong>When is this inappropriate?</strong></p>
+</div>
+<div>
+<ul>
+<li class="fragment">Early screening or detection of rare but serious conditions<br>
+</li>
+<li class="fragment">Safety-critical monitoring where missed cases can cause harm<br>
+</li>
+<li class="fragment">Systems intended to provide help or protection rather than punishment</li>
+</ul>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+</section>
+<section id="from-predictions-to-decisions" class="slide level2 smaller">
+<h2>From Predictions to Decisions</h2>
+<p>A classifier produces a <strong>probability</strong> <span class="math inline">\(p\)</span>, not a yes/no answer.</p>
+<p>We must choose a <strong>decision rule</strong>:</p>
+<p><span class="math display">\[
+\text{Predict positive if } p &gt; t
+\]</span></p>
+<ul>
+<li>The common choice <span class="math inline">\(t = 0.5\)</span> is <strong>conventional, not natural</strong></li>
+<li>Different values of <span class="math inline">\(t\)</span> lead to different outcomes</li>
+</ul>
+<div class="fragment">
+<h3 id="what-changing-t-does">What changing <span class="math inline">\(t\)</span> does</h3>
+<ul>
+<li>Increasing <span class="math inline">\(t\)</span>: fewer positives<br>
+→ <strong>fewer false positives</strong>, more missed cases</li>
+<li>Decreasing <span class="math inline">\(t\)</span>: more positives<br>
+→ <strong>more false positives</strong>, fewer missed cases</li>
+</ul>
+</div>
+<div class="fragment">
+<h3 id="this-is-not-a-technical-choice">This is not a technical choice</h3>
+<p>Choosing <span class="math inline">\(t\)</span> <strong>weights the cost</strong> of:</p>
+<ul>
+<li>false positives (unnecessary alarms, interventions)</li>
+<li>false negatives (missed cases, lack of help)</li>
+</ul>
+<p>The “right” threshold depends on <strong>context, values, and consequences</strong>, not on the algorithm alone.</p>
 </div>
 </section>
 <section id="application-breast-cancer-classification" class="slide level2 smaller">
@@ -426,15 +793,15 @@ For this estimate, the likelihood is:</p>
 <p><strong>Dataset</strong>: Wisconsin Breast Cancer Database (from <code>MASS</code> package)</p>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p><strong>Context:</strong></p>
+<div class="smaller">
 <ul>
-<li>Fine needle aspirate (FNA) samples from breast masses</li>
+<li>Samples from breast masses</li>
 <li>Goal: Classify tumors as <strong>benign</strong> or <strong>malignant</strong></li>
-<li>Original data from University of Wisconsin Hospitals</li>
 </ul>
+</div>
 <p><strong>Outcome variable:</strong></p>
 <ul>
-<li><code>class</code>: benign or malignant</li>
+<li><em>Class</em>: benign or malignant</li>
 </ul>
 <p><strong>Sample size:</strong></p>
 <div class="cell">
@@ -453,7 +820,7 @@ For this estimate, the likelihood is:</p>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="fragment">
-<p><strong>Predictor variables</strong> (all measured 1-10 scale):</p>
+<p><strong>Predictor variables</strong> (all scaled 1-10):</p>
 <ul>
 <li><code>V1</code>: Clump thickness</li>
 <li><code>V2</code>: Uniformity of cell size</li>
@@ -516,7 +883,7 @@ For this estimate, the likelihood is:</p>
 </div>
 </div></div>
 </section>
-<section id="section-2" class="slide level2 smaller">
+<section id="section-3" class="slide level2 smaller">
 <h2></h2>
 <p><strong>Model Summary:</strong></p>
 <div class="cell">
@@ -593,7 +960,7 @@ Actual      benign malignant
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-13-1.png" width="576"></p>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-17-1.png" width="576"></p>
 </figure>
 </div>
 </div>
@@ -617,11 +984,11 @@ Actual      benign malignant
 </ul>
 </div>
 </section>
-<section id="section-3" class="slide level2 smaller">
+<section id="section-4" class="slide level2 smaller">
 <h2></h2>
 <p>For each input <span class="math inline">\(\mathbf{x}\)</span>, our model predicts probabilities for all classes:</p>
 
-<img data-src="classification_files/figure-revealjs/unnamed-chunk-14-1.png" width="576" class="r-stretch"><div class="fragment">
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-18-1.png" width="576" class="r-stretch"><div class="fragment">
 <p><strong>The likelihood</strong> is the probability of observing the actual outcome. For an observation with true class <span class="math inline">\(y\)</span>, the likelihood is simply: <span class="math display">\[\text{likelihood} = p_y(\mathbf{x})\]</span></p>
 </div>
 <div class="fragment">
@@ -662,7 +1029,7 @@ Actual      benign malignant
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-15-1.png" width="384"></p>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-19-1.png" width="384"></p>
 </figure>
 </div>
 </div>
@@ -674,7 +1041,7 @@ Actual      benign malignant
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-16-1.png" width="384"></p>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-20-1.png" width="384"></p>
 </figure>
 </div>
 </div>
@@ -706,7 +1073,7 @@ H(P,Q) = \mathrm{KL}(P\|Q) + H(P).
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-17-1.png" width="480"></p>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-21-1.png" width="480"></p>
 </figure>
 </div>
 </div>
@@ -714,7 +1081,7 @@ H(P,Q) = \mathrm{KL}(P\|Q) + H(P).
 </div></div>
 </div>
 </section>
-<section id="section-4" class="slide level2 smaller">
+<section id="section-5" class="slide level2 smaller">
 <h2></h2>
 <p><em>Multiclass Logistic Regression</em> combines an <strong>affine map</strong> <span class="math inline">\(\mathbf{z}:\mathbb{R}^n\to \mathbb{R}^C\)</span> with the softmax activation:</p>
 <div class="columns">
@@ -724,7 +1091,7 @@ H(P,Q) = \mathrm{KL}(P\|Q) + H(P).
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-18-1.png" width="960"></p>
+<p><img data-src="classification_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -789,10 +1156,10 @@ H(P,Q) = \mathrm{KL}(P\|Q) + H(P).
 </div>
 </div></div>
 </section>
-<section id="section-5" class="slide level2">
+<section id="section-6" class="slide level2">
 <h2></h2>
 
-<img data-src="classification_files/figure-revealjs/unnamed-chunk-20-1.png" width="768" class="r-stretch"></section>
+<img data-src="classification_files/figure-revealjs/unnamed-chunk-24-1.png" width="768" class="r-stretch"></section>
 <section id="model-training-and-predictions" class="slide level2 smaller">
 <h2>Model Training and Predictions</h2>
 <div class="columns">
@@ -871,7 +1238,7 @@ Predicted    setosa versicolor virginica
 </div>
 </div></div>
 </section>
-<section id="section-6" class="slide level2 smaller">
+<section id="section-7" class="slide level2 smaller">
 <h2></h2>
 <p><strong>Predict Probabilities</strong></p>
 <div class="cell">
