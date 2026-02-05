@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="regression_files/libs/clipboard/clipboard.min.js"></script>
+<script src="regression_files/libs/quarto-html/tabby.min.js"></script>
+<script src="regression_files/libs/quarto-html/popper.min.js"></script>
+<script src="regression_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="regression_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="regression_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="regression_files/libs/quarto-html/quarto-syntax-highlighting-325f3ff2f131f9421fc6e27256f8a6fd.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.37">
+
+  <meta name="author" content="Alvaro Arias">
+  <title>Regression</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="regression_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="regression_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #f8f8f2; background-color: #2e3440; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #f8f8f2; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #75715e; } /* Annotation */
+    code span.at { color: #f92672; } /* Attribute */
+    code span.bn { color: #ae81ff; } /* BaseN */
+    code span.bu { color: #66d9ef; } /* BuiltIn */
+    code span.cf { color: #f92672; } /* ControlFlow */
+    code span.ch { color: #e6db74; } /* Char */
+    code span.cn { color: #ae81ff; } /* Constant */
+    code span.co { color: #75715e; } /* Comment */
+    code span.cv { color: #75715e; } /* CommentVar */
+    code span.do { color: #75715e; } /* Documentation */
+    code span.dt { color: #66d9ef; font-style: italic; } /* DataType */
+    code span.dv { color: #ae81ff; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #a6e22e; font-weight: bold; } /* Extension */
+    code span.fl { color: #ae81ff; } /* Float */
+    code span.fu { color: #a6e22e; } /* Function */
+    code span.im { color: #f92672; } /* Import */
+    code span.in { color: #f1fa8c; } /* Information */
+    code span.kw { color: #f92672; } /* Keyword */
+    code span.op { color: #f8f8f2; } /* Operator */
+    code span.ot { color: #a6e22e; } /* Other */
+    code span.pp { color: #f92672; } /* Preprocessor */
+    code span.re { color: #75715e; } /* RegionMarker */
+    code span.sc { color: #ae81ff; } /* SpecialChar */
+    code span.ss { color: #e6db74; } /* SpecialString */
+    code span.st { color: #e6db74; } /* String */
+    code span.va { color: #f8f8f2; } /* Variable */
+    code span.vs { color: #e6db74; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="regression_files/libs/revealjs/dist/theme/quarto-dd35d0306f5a6863b0b5c85b74390ac9.css">
+  <link rel="stylesheet" href=".reveal .title {
+  font-size: 2em !important;
+}
+.reveal .subtitle {
+  font-size: 1.3em !important;
+}
+.reveal .author {
+  font-size: 1.1em !important;
+}
+.reveal .date {
+  font-size: 1em !important;
+}">
+  <link href="regression_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="regression_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="regression_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="regression_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Regression</h1>
+  <p class="subtitle">Introduction to Machine Learning</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Alvaro Arias 
+</div>
+</div>
+</div>
+
+</section>
+<section id="machine-learning" class="slide level2 smaller" data-transition="none">
+<h2>Machine Learning</h2>
+<blockquote>
+<p>In Machine Learning we study and build models that learn predictive relationships from data by minimizing error and validating performance on new data.</p>
+</blockquote>
+</section>
+<section id="machine-learning-1" class="slide level2 smaller" data-transition="none">
+<h2>Machine Learning</h2>
+<blockquote>
+<p>In Machine Learning we study and <span style="color: red;">build models</span> that learn <span style="color: red;">predictive relationships from data</span> by <span style="color: red;">minimizing error</span> and <span style="color: red;">validating</span> performance on <span style="color: red;">new data</span>.</p>
+</blockquote>
+<p><strong>Important Concepts:</strong></p>
+<ul>
+<li>Building models</li>
+<li>Predictive relationships from data</li>
+<li>Minimize error</li>
+<li>Validating performance on new data</li>
+</ul>
+<div class="fragment">
+<blockquote>
+<p>These ideas come directly from statistics, especially non-parametric methods, and become powerful at large scale.</p>
+<p>In some settings, models are used not to predict a target, but to <strong>discover hidden structure</strong> in the data itself.</p>
+</blockquote>
+</div>
+</section>
+<section id="linear-regression-a-starting-point" class="slide level2 smaller">
+<h2>Linear Regression: A Starting Point</h2>
+<div class="fragment">
+<ul>
+<li>We observe data <span class="math inline">\(\{(x_i,y_i):i\leq N\}\)</span>.</li>
+<li>Our goal is to predict <span class="math inline">\(y\)</span> from <span class="math inline">\(x\)</span> using these data.</li>
+</ul>
+</div>
+<div class="fragment">
+<h3 id="what-is-a-model">What is a Model?</h3>
+<p>A model is a function that maps inputs to predictions. For simple regression, the model is: <span class="math display">\[\hat{y}=f(x)=\beta_0+\beta_1x,\]</span> where <span class="math inline">\(\beta_0, \beta_1\)</span> are parameters to be estimated from data.</p>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Our goal is to find the values of <span class="math inline">\(\beta_0, \beta_1\)</span> that make the model’s predictions as accurate as possible.</p>
+</blockquote>
+</div>
+</section>
+<section id="error-loss-and-learning" class="slide level2 smaller">
+<h2>Error, Loss, and Learning</h2>
+<div class="fragment">
+<p>For each observation <span class="math inline">\((x_i, y_i)\)</span>, the model predicts <span class="math display">\[
+\hat y_i = f(x_i).
+\]</span> The <strong>residual</strong> is <span class="math display">\[
+e_i = y_i - \hat y_i.
+\]</span></p>
+</div>
+<div class="fragment">
+<p>Residuals measure error <strong>point by point</strong>. To evaluate the model as a whole, we aggregate them using a <strong>loss function</strong>.</p>
+</div>
+<div class="fragment">
+<p>In linear regression, we commonly use the <strong>mean squared error</strong>: <span class="math display">\[
+\text{Loss}(\beta_0,\beta_1)
+= \frac{1}{N}\sum_{i=1}^N (y_i - \hat y_i)^2.
+\]</span></p>
+</div>
+<div class="fragment">
+<p><strong>Learning</strong> means choosing the parameters that minimize this loss.</p>
+</div>
+</section>
+<section id="comparing-models-fit-and-residuals" class="slide level2 smaller">
+<h2>Comparing Models: Fit and Residuals</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Data</a></li><li><a href="#tabset-1-2">A Model</a></li><li><a href="#tabset-1-3">A Better Model</a></li><li><a href="#tabset-1-4">Residuals</a></li><li><a href="#tabset-1-5">Linear Regression in R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-4">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-5">
+<p>Fitting a linear model in R is straightforward:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Find a linear model to the data</span></span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.1212 -0.6574 -0.2296  1.1805  2.5618 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   2.2048     0.5835   3.778 0.000759 ***
+x             1.4901     0.0995  14.976  6.8e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.582 on 28 degrees of freedom
+Multiple R-squared:  0.889, Adjusted R-squared:  0.885 
+F-statistic: 224.3 on 1 and 28 DF,  p-value: 6.799e-15</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="linear-regression-fitting-vs-predicting" class="slide level2 smaller">
+<h2>Linear Regression: Fitting vs Predicting</h2>
+<div class="fragment">
+<p>Minimizing loss tells us how well the model fits the <strong>observed data</strong>.</p>
+</div>
+<div class="fragment">
+<p>But a model that fits the data extremely well may perform poorly on <strong>new data</strong>.</p>
+</div>
+<div class="fragment">
+<p>To evaluate prediction performance, we separate data into:</p>
+<ul>
+<li><strong>Training data</strong> – fit the model</li>
+<li><strong>Validation data</strong> – choose models or hyperparameters</li>
+<li><strong>Test data</strong> – final, unbiased evaluation</li>
+</ul>
+</div>
+<div class="fragment">
+<p>The goal is <strong>low loss on unseen data</strong>, not just on the data we trained on.</p>
+</div>
+</section>
+<section id="polynomial-regression" class="slide level2 smaller">
+<h2>Polynomial Regression</h2>
+<h3 class="smaller" id="increasing-model-flexibility">Increasing Model Flexibility</h3>
+<div class="fragment">
+<ul>
+<li>Linear regression is simple and easy to understand<br>
+</li>
+<li>But many relationships in data are <strong>nonlinear</strong><br>
+</li>
+<li>Polynomial regression allows the model to <strong>curve to fit the data</strong></li>
+</ul>
+</div>
+<div class="fragment">
+<h4 class="smaller" id="topics-we-will-explore">Topics We Will Explore</h4>
+<div>
+<ul>
+<li class="fragment"><strong>Model Capacity</strong> – How flexible should a model be?<br>
+</li>
+<li class="fragment"><strong>Underfitting</strong> – Too simple to capture the trend<br>
+</li>
+<li class="fragment"><strong>Overfitting</strong> – Too complex, captures noise instead of signal<br>
+</li>
+<li class="fragment"><strong>Bias-Variance Tradeoff</strong> – Balancing simplicity and flexibility<br>
+</li>
+<li class="fragment"><strong>Validation</strong> – How to check that the model generalizes</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<blockquote>
+<p>We will illustrate these topics with synthetic data.</p>
+</blockquote>
+</div>
+</section>
+<section id="polynomial-regression-model-capacity" class="slide level2 smaller">
+<h2>Polynomial Regression: Model Capacity</h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Data</a></li><li><a href="#tabset-2-2">Linear</a></li><li><a href="#tabset-2-3">Quadratic</a></li><li><a href="#tabset-2-4">Cubic</a></li><li><a href="#tabset-2-5">Degree 7</a></li><li><a href="#tabset-2-6">Degree 12</a></li><li><a href="#tabset-2-7">Degree 20</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-4">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-11-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-5">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-6">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-13-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-7">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="polynomial-regression-traintest" class="slide level2 smaller">
+<h2>Polynomial Regression: Train/Test</h2>
+<p><strong>Goal</strong>: Create a model that generalizes well to new, unseen data.</p>
+<div class="smaller">
+<ul>
+<li class="fragment">Our dataset has 40 points</li>
+<li class="fragment">We randomly select 30 points to train the model</li>
+<li class="fragment">The remaining 10 points are used to test the model</li>
+<li class="fragment">We will plot the training and test errors versus polynomial degree</li>
+<li class="fragment">Training error decreases monotonically as degree increases</li>
+<li class="fragment">Test error decreases initially, then increases as the model overfits</li>
+<li class="fragment">The U-shaped test error curve illustrates the bias–variance tradeoff</li>
+</ul>
+</div>
+</section>
+<section id="polynomial-regression-traintest-1" class="slide level2 smaller">
+<h2>Polynomial Regression: Train/Test</h2>
+
+<img data-src="regression_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch"></section>
+<section id="the-fitted-models-are-random" class="slide level2 smaller">
+<h2>The Fitted Models Are Random</h2>
+<p>The fitted models depend on which observations are randomly selected for training. Below we compare two polynomial models fitted on different random training sets, illustrating model variance.</p>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Data</a></li><li><a href="#tabset-3-2">Degree 1</a></li><li><a href="#tabset-3-3">Degree 3</a></li><li><a href="#tabset-3-4">Degree 5</a></li><li><a href="#tabset-3-5">Degree 12</a></li><li><a href="#tabset-3-6">Degree 20</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-4">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-5">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-6">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="model-comparison-via-validation" class="slide level2 smaller">
+<h2>Model Comparison via Validation</h2>
+<div class="fragment">
+<p>Fitted models are random because the training data is random. So we do not judge a model by a single fit.</p>
+</div>
+<div class="fragment">
+<p>Instead, we:</p>
+<ul>
+<li>fit the same model on several different training samples</li>
+<li>evaluate each fit on data it has <strong>not seen</strong></li>
+</ul>
+</div>
+<div class="fragment">
+<p>For each model choice (e.g.&nbsp;polynomial degree), we record the <strong>prediction error on the test data</strong>.</p>
+</div>
+<div class="fragment">
+<p>We select the model with the <strong>lowest average test error</strong>.</p>
+<p>This is the core idea of <em>K-fold cross-validation</em>, a standard tool in ML</p>
+</div>
+</section>
+<section id="overfitting" class="slide level2 smaller scrollable">
+<h2>Overfitting</h2>
+<div class="fragment smaller">
+<p>How do we detect overfitting?</p>
+<p>In polynomial regression we actually see it. In more complex models with thousands of parameters we cannot visualize it</p>
+<p>The most common method is to compare the error between the train and test sets</p>
+</div>
+<div class="fragment">
+<p><strong>Solutions to Overfitting:</strong> When we detect overfitting there are several methods</p>
+</div>
+<div class="smaller">
+<ol type="1">
+<li class="fragment"><strong>Adjust Model Complexity:</strong>
+<ul>
+<li class="fragment">Use simpler architecture, like reducing the polynomial degree in our examples</li>
+</ul></li>
+<li class="fragment"><strong>Regularization:</strong> Restrict the values of the model adding a penalty
+<ul>
+<li class="fragment">Ridge (Tichonov) Regularization</li>
+<li class="fragment">Lasso Regularization</li>
+</ul></li>
+<li class="fragment"><strong>Add More Data</strong></li>
+</ol>
+</div>
+</section>
+<section id="regularization-in-polynomial-regression" class="slide level2 smaller">
+<h2>Regularization in Polynomial Regression</h2>
+<div class="smaller">
+<p><strong>Setup:</strong> Data points <span class="math inline">\(\{(x_i,y_i):i\leq N\}\)</span> with polynomial model <span class="math inline">\(p(x)=a_0+a_1x+\cdots+a_dx^d\)</span></p>
+<p><strong>Standard Loss (Mean Squared Error):</strong> <span class="math display">\[\text{Loss}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2\]</span></p>
+<p><strong>Problem:</strong> When degree <span class="math inline">\(d\)</span> is too large, the model fits noise instead of the underlying trend (overfitting)</p>
+<p><strong>Solution - Ridge Regularization (Tikhonov):</strong><br>
+Penalize large coefficients by adding a penalty term: <span class="math display">\[\text{Loss}_{\text{Ridge}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d a_i^2\]</span></p>
+<p><strong>Solution - Lasso Regularization:</strong><br>
+Use absolute values for the penalty (encourages sparse solutions): <span class="math display">\[\text{Loss}_{\text{Lasso}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d |a_i|\]</span></p>
+<ul>
+<li><span class="math inline">\(\lambda &gt; 0\)</span> controls the regularization strength (larger <span class="math inline">\(\lambda\)</span> = more penalty)</li>
+<li>Both methods shrink coefficients toward zero, preventing overfitting</li>
+</ul>
+</div>
+</section>
+<section id="fix-overfitting-ridge-regularization" class="slide level2 smaller">
+<h2>Fix Overfitting: Ridge Regularization</h2>
+<p>Ridge (Tikhonov) Regularization penalizes large coefficients of the polynomial with the loss function: <span class="math display">\[\text{Loss}_{\text{Ridge}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d a_i^2,\quad\lambda\geq0\]</span> When <span class="math inline">\(\lambda = 0\)</span>, we have ordinary least squares (OLS). As <span class="math inline">\(\lambda\)</span> increases, the coefficients are shrunk toward zero.</p>
+<div class="fragment">
+<div class="panel-tabset">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1"><span class="math inline">\(\lambda=0\)</span></a></li><li><a href="#tabset-4-2"><span class="math inline">\(\lambda=10^{-6}\)</span></a></li><li><a href="#tabset-4-3"><span class="math inline">\(\lambda=0.001\)</span></a></li><li><a href="#tabset-4-4"><span class="math inline">\(\lambda=0.01\)</span></a></li><li><a href="#tabset-4-5"><span class="math inline">\(\lambda=0.1\)</span></a></li><li><a href="#tabset-4-6">Coefficients</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1">
+<!-- Compare the true function with the degree 16 polynomial interpolation -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-26-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2">
+<!-- Compare the true function and the ridge interpolation with $\lambda=10^{-6}=0.000001$ -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-27-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-3">
+<!-- Compare the true function and the ridge interpolation with $\lambda=0.001$ -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-28-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-4">
+<!-- Compare the true function and the ridge interpolation with $\lambda = 0.01$ -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-29-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-5">
+<!-- Compare the true function and the ridge interpolation with $\lambda= 0.1$ -->
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-30-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-6">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-31-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="fix-overfitting-lasso-regularization" class="slide level2 smaller">
+<h2>Fix Overfitting: Lasso Regularization</h2>
+<p>Lasso Regularization is similar to Ridge Regression. It penalizes large coefficients of the polynomial with the loss function: <span class="math display">\[\text{Loss}_{\text{Lasso}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d |a_i|,\quad\lambda\geq0\]</span> When <span class="math inline">\(\lambda = 0\)</span>, we have ordinary least squares (OLS). As <span class="math inline">\(\lambda\)</span> increases, the coefficients are also shrunk toward zero.</p>
+<p><strong>Key Difference from Ridge:</strong></p>
+<ul>
+<li>Ridge uses squared penalty (<span class="math inline">\(a_i^2\)</span>) and shrinks coefficients smoothly but rarely to exactly zero</li>
+<li>Lasso uses absolute penalty (<span class="math inline">\(|a_i|\)</span>) and can set coefficients <strong>exactly to zero</strong></li>
+<li>This makes Lasso perform <strong>feature selection</strong> by eliminating unimportant terms</li>
+</ul>
+</section>
+<section id="fix-overfitting-increase-data" class="slide level2 smaller">
+<h2>Fix Overfitting: Increase Data</h2>
+<p>Having more data improves overfitting. To illustrate this we look at the model <span class="math display">\[y = x^3+\frac{1}{2}x+\epsilon\]</span> where <span class="math inline">\(\epsilon\)</span> is a normal random variable with mean 0 and standard deviation <span class="math inline">\(\sigma = 0.2\)</span>.</p>
+<p>We will generate four random sets: 30 points, 50 points, 80 points, and 160 points. For each of these sets, we will use polynomial regression of degree 16.</p>
+<div class="fragment">
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">30 Points</a></li><li><a href="#tabset-5-2">50 Points</a></li><li><a href="#tabset-5-3">80 Points</a></li><li><a href="#tabset-5-4">160 Points</a></li><li><a href="#tabset-5-5">Combined</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-33-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-34-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-3">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-35-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-4">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-36-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-5">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-37-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="multiple-linear-regression" class="slide level2 smaller">
+<h2>Multiple Linear Regression</h2>
+<p><strong>Problem:</strong> Predict <span class="math inline">\(y\)</span> using multiple features <span class="math inline">\(x_1, x_2, \ldots, x_p\)</span> <span class="math display">\[y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p + \varepsilon\]</span></p>
+<p><strong>Loss Function:</strong> Mean Squared Error <span class="math display">\[\text{Loss} = \frac{1}{N}\sum_{i=1}^N(y_i - \hat{y}_i)^2\]</span></p>
+<div class="fragment">
+<p><strong>Goal: Generalization over Explanation</strong></p>
+<ul>
+<li><strong>Statistics perspective:</strong> Focus on coefficient distributions, confidence intervals, p-values</li>
+<li><strong>ML perspective:</strong> Focus on prediction accuracy via cross-validation</li>
+</ul>
+<p>Both overfitting and regularization apply here: Ridge and Lasso extend naturally to multiple features.</p>
+</div>
+</section>
+<section id="fat-dataset-the-brozek-formula" class="slide level2 smaller">
+<h2>Fat Dataset: The Brozek Formula</h2>
+<p>We will use the <strong>fat</strong> dataset from R to predict <strong>body fat percentage</strong> using various body measurements (weight, height, age, circumferences, etc.). The Brozek formula estimates body fat from body density.</p>
+<div class="fragment">
+<div class="panel-tabset">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Data</a></li><li><a href="#tabset-6-2">Data Description</a></li><li><a href="#tabset-6-3">Statistical Summary</a></li><li><a href="#tabset-6-4">Model Selection</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(faraway) <span class="co">#has the dataset fat</span></span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"fat"</span>)</span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  brozek siri density age weight height adipos  free neck chest abdom   hip
+1   12.6 12.3  1.0708  23 154.25  67.75   23.7 134.9 36.2  93.1  85.2  94.5
+2    6.9  6.1  1.0853  22 173.25  72.25   23.4 161.3 38.5  93.6  83.0  98.7
+3   24.6 25.3  1.0414  22 154.00  66.25   24.7 116.0 34.0  95.8  87.9  99.2
+4   10.9 10.4  1.0751  26 184.75  72.25   24.9 164.7 37.4 101.8  86.4 101.2
+5   27.8 28.7  1.0340  24 184.25  71.25   25.6 133.1 34.4  97.3 100.0 101.9
+6   20.6 20.9  1.0502  24 210.25  74.75   26.5 167.0 39.0 104.5  94.4 107.8
+  thigh knee ankle biceps forearm wrist
+1  59.0 37.3  21.9   32.0    27.4  17.1
+2  58.7 37.3  23.4   30.5    28.9  18.2
+3  59.6 38.9  24.0   28.8    25.2  16.6
+4  60.1 37.3  22.8   32.4    29.4  18.2
+5  63.2 42.2  24.0   32.2    27.7  17.7
+6  66.0 42.0  25.6   35.7    30.6  18.8</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-2">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   252 obs. of  18 variables:
+ $ brozek : num  12.6 6.9 24.6 10.9 27.8 20.6 19 12.8 5.1 12 ...
+ $ siri   : num  12.3 6.1 25.3 10.4 28.7 20.9 19.2 12.4 4.1 11.7 ...
+ $ density: num  1.07 1.09 1.04 1.08 1.03 ...
+ $ age    : int  23 22 22 26 24 24 26 25 25 23 ...
+ $ weight : num  154 173 154 185 184 ...
+ $ height : num  67.8 72.2 66.2 72.2 71.2 ...
+ $ adipos : num  23.7 23.4 24.7 24.9 25.6 26.5 26.2 23.6 24.6 25.8 ...
+ $ free   : num  135 161 116 165 133 ...
+ $ neck   : num  36.2 38.5 34 37.4 34.4 39 36.4 37.8 38.1 42.1 ...
+ $ chest  : num  93.1 93.6 95.8 101.8 97.3 ...
+ $ abdom  : num  85.2 83 87.9 86.4 100 94.4 90.7 88.5 82.5 88.6 ...
+ $ hip    : num  94.5 98.7 99.2 101.2 101.9 ...
+ $ thigh  : num  59 58.7 59.6 60.1 63.2 66 58.4 60 62.9 63.1 ...
+ $ knee   : num  37.3 37.3 38.9 37.3 42.2 42 38.3 39.4 38.3 41.7 ...
+ $ ankle  : num  21.9 23.4 24 22.8 24 25.6 22.9 23.2 23.8 25 ...
+ $ biceps : num  32 30.5 28.8 32.4 32.2 35.7 31.9 30.5 35.9 35.6 ...
+ $ forearm: num  27.4 28.9 25.2 29.4 27.7 30.6 27.8 29 31.1 30 ...
+ $ wrist  : num  17.1 18.2 16.6 18.2 17.7 18.8 17.7 18.8 18.2 19.2 ...</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-3">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> brozek <span class="sc">~</span>  age <span class="sc">+</span> weight <span class="sc">+</span> height <span class="sc">+</span> adipos <span class="sc">+</span> neck <span class="sc">+</span></span>
+<span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a>              chest <span class="sc">+</span> abdom <span class="sc">+</span> hip <span class="sc">+</span> thigh <span class="sc">+</span> knee <span class="sc">+</span> ankle <span class="sc">+</span> biceps <span class="sc">+</span> forearm <span class="sc">+</span></span>
+<span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a>              wrist, <span class="at">data =</span> fat)</span>
+<span id="cb7-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = brozek ~ age + weight + height + adipos + neck + 
+    chest + abdom + hip + thigh + knee + ankle + biceps + forearm + 
+    wrist, data = fat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.2573  -2.5919  -0.1031   2.9040   9.2754 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -1.519e+01  1.611e+01  -0.943   0.3467    
+age          5.688e-02  3.003e-02   1.894   0.0594 .  
+weight      -8.130e-02  4.989e-02  -1.630   0.1045    
+height      -5.307e-02  1.034e-01  -0.513   0.6084    
+adipos       6.101e-02  2.780e-01   0.219   0.8265    
+neck        -4.450e-01  2.184e-01  -2.037   0.0427 *  
+chest       -3.087e-02  9.779e-02  -0.316   0.7526    
+abdom        8.790e-01  8.545e-02  10.286   &lt;2e-16 ***
+hip         -2.031e-01  1.371e-01  -1.481   0.1398    
+thigh        2.274e-01  1.356e-01   1.677   0.0948 .  
+knee        -9.927e-04  2.298e-01  -0.004   0.9966    
+ankle        1.572e-01  2.076e-01   0.757   0.4496    
+biceps       1.485e-01  1.600e-01   0.928   0.3543    
+forearm      4.297e-01  1.849e-01   2.324   0.0210 *  
+wrist       -1.479e+00  4.967e-01  -2.978   0.0032 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.996 on 237 degrees of freedom
+Multiple R-squared:  0.749, Adjusted R-squared:  0.7342 
+F-statistic: 50.52 on 14 and 237 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-6-4">
+<p>In statistics, there are several methods to select important variables (stepwise selection, forward selection, etc.). Using <strong>subset selection</strong>, the following variables were chosen in order of importance:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Order</th>
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">abdomen</td>
+<td style="text-align: left;">Abdomen circumference</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">weight</td>
+<td style="text-align: left;">Body weight</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">wrist</td>
+<td style="text-align: left;">Wrist circumference</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">forearm</td>
+<td style="text-align: left;">Forearm circumference</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="fat-dataset-lasso-regularization" class="slide level2 smaller">
+<h2>Fat Dataset: Lasso Regularization</h2>
+<p><strong>Model:</strong> Predict body fat percentage using multiple features: <span class="math display">\[y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p\]</span></p>
+<p><strong>Lasso Loss Function:</strong> <span class="math display">\[\text{Loss}_\text{Lasso} = \frac{1}{N}\sum_{i=1}^N(y_i - \hat{y}_i)^2+\lambda\sum_{i=1}^p|\beta_i|,\quad \lambda\geq0\]</span></p>
+<p>Unlike Ridge, Lasso’s L1 penalty can drive coefficients exactly to zero, automatically selecting the most important variables for prediction under the Lasso penalty.</p>
+<div class="fragment">
+<div class="panel-tabset">
+<ul id="tabset-7" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-7-1">Best <span class="math inline">\(\lambda\)</span></a></li><li><a href="#tabset-7-2">Coefficient Path</a></li><li><a href="#tabset-7-3">Coefficients</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1">
+<p>The glmnet package uses k-fold cross-validation to determine the optimal value of the Lasso regression parameter.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-44-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The optimal <span class="math inline">\(\lambda\)</span></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03981072</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-7-2">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="regression_files/figure-revealjs/unnamed-chunk-46-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-7-3">
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Coefficients for <span class="math inline">\(\lambda = 0.4\)</span></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>15 x 1 sparse Matrix of class "dgCMatrix"
+                      s0
+(Intercept) -12.24305064
+age           0.03613455
+weight        .         
+height       -0.14364342
+adipos        .         
+neck          .         
+chest         .         
+abdom         0.58504157
+hip           .         
+thigh         .         
+knee          .         
+ankle         .         
+biceps        .         
+forearm       .         
+wrist        -0.79611674</code></pre>
+</div>
+</div>
+</div><div class="column" style="width:45%;">
+<p>Coefficients for <span class="math inline">\(\lambda = 0.04\)</span></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>15 x 1 sparse Matrix of class "dgCMatrix"
+                      s0
+(Intercept) -12.91495589
+age           0.05413188
+weight       -0.06032719
+height       -0.08644628
+adipos        .         
+neck         -0.39283780
+chest         .         
+abdom         0.81911219
+hip          -0.13469768
+thigh         0.15322636
+knee          .         
+ankle         0.06422894
+biceps        0.10265101
+forearm       0.37781510
+wrist        -1.41960960</code></pre>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="hyperparameters-in-machine-learning" class="slide level2 smaller">
+<h2>Hyperparameters in Machine Learning</h2>
+<p><strong>What are hyperparameters?</strong><br>
+Parameters that control the learning process, set <strong>before</strong> training (not learned from data).</p>
+<p><strong>Examples from this presentation:</strong></p>
+<div>
+<ul>
+<li class="fragment"><strong>Polynomial degree</strong> <span class="math inline">\(d\)</span> in regression - controls model complexity</li>
+<li class="fragment"><strong>Regularization strength</strong> <span class="math inline">\(\lambda\)</span> in Ridge/Lasso - controls penalty magnitude</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>How do we choose them?</strong><br>
+Often chosen using <strong>cross-validation</strong></p>
+</div>
+<div class="fragment">
+<p><strong>Looking ahead:</strong><br>
+Every ML algorithm has hyperparameters. In neural networks: learning rate, number of layers, neurons per layer, etc. Choosing good hyperparameters is critical for model performance.</p>
+</div>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="regression_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="regression_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="regression_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="regression_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
