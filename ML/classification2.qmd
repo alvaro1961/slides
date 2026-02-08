@@ -1,0 +1,1123 @@
+---
+title: "Classification in High Dimensions"
+subtitle: "Introduction to Machine Learning"
+author: "Alvaro Arias"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    code-fold: false
+    code-line-numbers: false
+    code-copy: true
+    highlight-style: monokai
+    scrollable: true
+    font-size: 20px
+css: |
+  .reveal .title {
+    font-size: 2em !important;
+  }
+  .reveal .subtitle {
+    font-size: 1.3em !important;
+  }
+  .reveal .author {
+    font-size: 1.1em !important;
+  }
+  .reveal .date {
+    font-size: 1em !important;
+  }
+engine: knitr
+---
+
+
+```{r}
+#| include: false
+source("utils.R")
+library(keras3)  # Add this line!
+```
+
+## From Images to Vectors {.smaller}
+
+
+**Black and white images** are arrays of numbers between 0 and 255:
+
+- **0** = black
+- **255** = white
+- Values in between represent shades of gray
+
+::: {.fragment}
+We need to convert images into a vectors that our models can understand
+:::
+
+::: {.fragment}
+::: {.panel-tabset}
+
+## Matrix Representation and Image Visualization {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+A 5×4 image stored as a matrix of pixel values:
+
+```{r}
+#| echo: true
+# Create a simple "T" pattern with grayscale
+img_matrix <- matrix(c(
+  255, 255, 255, 255, 255,
+  0, 50, 225, 50, 0,
+  0, 25, 225, 25, 0,
+  0, 0, 200, 0, 0
+), nrow = 4, byrow = TRUE)
+
+img_matrix
+```
+
+This is how the computer stores the image: a 4×5 table of numbers.
+:::
+::: {.column width="50%"}
+
+Here's what those numbers look like as an image:
+
+```{r}
+#| echo: false
+#| fig-width: 4.6
+#| fig-height: 4
+#| fig-align: center
+library(grid)
+
+par(mar = c(1, 1, 2, 1))
+
+# For a 4x5 matrix (4 rows, 5 cols), we want row 1 at top
+# image() rotates things, so we need to be careful
+image(1:5, 1:4, t(img_matrix[4:1, ]), 
+      col = gray.colors(256),
+      axes = FALSE,
+      asp = 1,  # Force square pixels
+      main = "5×4 Image (20 pixels)",
+      xlab = "", ylab = "")
+box()
+```
+
+:::
+:::
+Darker pixels have values closer to 0, lighter pixels closer to 255.
+
+## Vector Representation {.smaller}
+
+Logistic and Softmax Regression expect vectors not images. To use images in a these models we need to **flatten/reshape** them into vectors:
+
+```{r}
+#| echo: true
+# Read the matrix row by row into a single vector
+img_vector <- as.vector(t(img_matrix))
+img_vector
+```
+
+Now we have a **vector of length 20** representing the image!
+
+- Position in vector = pixel location
+- Value = darkness of that pixel
+- The model learns patterns from these numbers
+
+:::
+:::
+
+
+
+
+
+## The MNIST Dataset {.smaller}
+
+**Handwritten Digits: A Classic Machine Learning Dataset**
+
+::: {.columns}
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| message: false
+library(keras3)
+
+# Load MNIST
+mnist <- dataset_mnist()
+train_images <- mnist$train$x
+train_labels <- mnist$train$y
+test_images <- mnist$test$x
+test_labels <- mnist$test$y
+
+# Flatten 28x28 images into vectors
+X_train <- array_reshape(train_images, c(nrow(train_images), 28*28)) / 255
+X_test <- array_reshape(test_images, c(nrow(test_images), 28*28)) / 255
+
+# Display a few examples
+par(mfrow = c(3, 4), mar = c(0.5, 0.5, 2.5, 0.5))
+set.seed(42)
+sample_idx <- sample(1:nrow(train_images), 12)
+
+for (i in sample_idx) {
+  digit <- train_images[i, , ]
+  image(t(digit[28:1, ]), 
+        col = gray.colors(256),
+        axes = FALSE,
+        main = paste("Label:", train_labels[i]),
+        cex.main = 2.5)
+  box()
+}
+```
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+**Reshaping/Flattening:**
+
+Each image is a $28 \times 28$ grid of pixels.
+To use logistic or softmax regression, we reshape it into a 784-dimensional vector.
+
+:::
+
+::: {.fragment}
+*MNIST* has **784 features!** (each feature is the brightness of one pixel)
+:::
+
+:::
+:::
+
+::: {.fragment}
+This is a **dramatic increase** in dimensionality compared to
+the *Iris dataset* (4 features) and the *Breast Cancer dataset* (9 features).
+:::
+
+::: {.fragment}
+**Dataset Details:**
+
+- 70,000 handwritten digits (0-9)
+- 60,000 training images
+- 10,000 test images
+:::
+
+## {.smaller}
+
+The MNIST dataset is in the keras library. We get the data and we flatten the images
+
+```r
+# Load library
+library(keras3)
+
+# Load MNIST
+mnist <- dataset_mnist()
+train_images <- mnist$train$x
+train_labels <- mnist$train$y
+test_images <- mnist$test$x
+test_labels <- mnist$test$y
+
+# Flatten 28x28 images into vectors
+X_train <- array_reshape(train_images, c(nrow(train_images), 28*28)) / 255
+X_test <- array_reshape(test_images, c(nrow(test_images), 28*28)) / 255
+
+
+dim(X_train)        # 60,000 images × 784 pixels (training features)
+dim(train_labels)   # 60,000 labels (digits 0–9) for training images
+dim(X_test)         # 10,000 images × 784 pixels (test features)
+dim(test_labels)    # 10,000 labels (digits 0–9) for test images
+```
+
+
+## Classifying 3s and 8s {.smaller}
+
+**Goal:** Predict whether an image is a 3 or an 8
+
+- Select the 3's and 8's
+
+::: {.fragment}
+```{r}
+#| echo: true
+# Select 3 and 8's
+keep_train <- train_labels %in% c(3, 8)
+keep_test <- test_labels %in% c(3, 8)
+
+x_train_3_8 <- X_train[keep_train,]
+y_train_3_8 <- train_labels[keep_train]
+
+print(dim(x_train_3_8))
+print(dim(y_train_3_8))
+
+x_test_3_8 <- X_test[keep_test,]
+y_test_3_8 <- test_labels[keep_test]
+
+print(dim(x_test_3_8))
+print(dim(y_test_3_8))
+```
+:::
+
+
+## Preparing Data for Logistic Regression {.smaller}
+
+**Some pixels never change**
+
+- Many edge pixels are always black  
+- These pixels have **zero variance**  
+- They carry no information for distinguishing 3s and 8s 
+
+::: {.fragment}
+We remove these features before fitting the model
+```{r}
+#| echo: true
+# Remove zero-variance columns
+variances <- apply(x_train_3_8, 2, var)
+non_zero_var <- variances > 0
+
+# Filter both train and test sets
+X_train_filtered <- x_train_3_8[, non_zero_var]
+X_test_filtered <- x_test_3_8[, non_zero_var]
+
+cat("Original Columns:", ncol(x_train_3_8), "\n","Removed:", sum(!non_zero_var), "zero-variance columns\n","Now we have:", ncol(X_train_filtered))
+```
+:::
+
+::: {.fragment}
+**Binary labels for logistic regression**
+```{r}
+#| echo: true
+
+# Binary labels: 1 = 8, 0 = 3
+y_train_3_8_bin <- ifelse(y_train_3_8 == 8, 1, 0)
+y_test_3_8_bin  <- ifelse(y_test_3_8  == 8, 1, 0)
+```
+:::
+
+
+
+## Train the model {.smaller}
+
+```{r training}
+#| echo: true
+
+# Arrange data in a data frame
+train_data <- data.frame(X_train_filtered, y = y_train_3_8_bin)
+
+# Time the model fitting
+fit_time <- system.time({
+  model <- glm(y ~ ., data = train_data, family = binomial(link = "logit"))
+})
+
+# Print elapsed time
+cat("Time to fit logistic regression:",
+    round(fit_time["elapsed"], 2), "seconds\n")
+```
+
+::: {.fragment}
+
+> Warning: glm.fit: algorithm did not converge
+> 
+> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+:::
+
+::: {.fragment}
+High dimensionality creates many near-separations, leading to very large coefficients and **overconfident predictions**.
+:::
+
+::: {.fragment}
+```{r}
+#| echo: true
+coef_table <- summary(model)$coefficients
+head(coef_table, 6)
+```
+:::
+
+## Evaluation on the test set {.smaller}
+
+**Despite training instability, the model performs well**
+
+- Test accuracy is about **95%** and most 3s and 8s are classified correctly
+- However, high dimensionality leads to very large coefficients, making the model overconfident and hard to interpret
+
+::: {.fragment}
+**Proper evaluation**
+:::
+
+::: {.fragment}
+- The model is trained using the **training data only**
+- Zero-variance pixels are identified **from the training set**
+- The same columns are removed from the test set
+:::
+
+::: {.fragment}
+```{r}
+#| echo: true
+# Get predictions on test set
+test_data <- data.frame(X_test_filtered)
+pred_prob <- predict(model, test_data, type = "response")
+pred_class <- ifelse(pred_prob > 0.5, 1, 0)
+
+# Confusion matrix
+table(Predicted = pred_class, Actual = y_test_3_8_bin)
+
+# Accuracy
+accuracy <- mean(pred_class == y_test_3_8_bin)
+cat("Test Accuracy:", round(accuracy * 100, 2), "%\n")
+```
+:::
+
+## Examples of Prediction {.smaller}
+
+```{r}
+library(gridExtra)
+library(ggplot2)
+
+# Define plot_digit
+plot_digit <- function(x, title = "") {
+  img <- matrix(x, nrow = 28, byrow = TRUE)
+  img <- t(img)[, 28:1]  # orient properly
+  
+  df <- expand.grid(x = 1:28, y = 1:28)
+  df$val <- as.vector(img)
+  
+  ggplot(df, aes(x, y, fill = val)) +
+    geom_tile() +
+    scale_fill_gradient(low = "white", high = "black") +
+    coord_equal() +
+    theme_void() +
+    theme(legend.position = "none",  # remove legend
+          plot.title = element_text(hjust = 0.5, size = 10)) +  # center & size title
+    ggtitle(title)
+}
+
+set.seed(12)
+n_samples <- 6
+
+# 1. Prepare Indices
+# Get 6 random indices
+random_indices <- sample(1:nrow(x_test_3_8), n_samples)
+
+# Get up to 6 misclassified indices
+predicted_class <- ifelse(pred_prob > 0.5, 8, 3)
+misclassified   <- which(y_test_3_8 != predicted_class)
+sample_misc     <- sample(misclassified, min(n_samples, length(misclassified)))
+
+# Combine into a single vector of 12 indices
+all_indices <- c(random_indices, sample_misc)
+
+# 2. Create Plots
+plot_list <- list()
+
+# Use parentheses to ensure the loop runs from 1 to 12
+for (i in 1:length(all_indices)) {
+  idx <- all_indices[i]
+  
+  # Extract values once
+  true_label <- y_test_3_8[idx]
+  prob_8     <- pred_prob[idx]
+  pred_label <- predicted_class[idx]
+  
+  # Calculate confidence based on the prediction made
+  # (Prob of 8 if predicted 8, otherwise Prob of 3)
+  conf <- ifelse(pred_label == 8, prob_8, 1 - prob_8)
+  
+  # Create title
+  title_text <- sprintf("True: %d | Pred: %d\nConf: %.5f", 
+                        true_label, pred_label, conf)
+  
+  # Generate plot
+  plot_list[[i]] <- plot_digit(x_test_3_8[idx, ], title_text)
+}
+
+# 3. Display Grid
+# Adjusted to 2 rows of 6 for better presentation layout
+grid.arrange(grobs = plot_list, 
+             ncol = 6, 
+             top = "Top Row: Random Samples | Bottom Row: Misclassifications")
+
+```
+
+
+
+
+## {.smaller}
+
+**Extreme confidence comes from extreme coefficients**
+
+::: {.fragment}
+- The model achieves high accuracy
+- But it is *overconfident*, even on mistakes
+- Coefficients become very large and hard to interpret
+:::
+
+::: {.fragment}
+**This is common in high dimensions**
+:::
+
+::: {.fragment}
+- Many directions can almost separate the data
+- The model pushes coefficients to extremes
+- Optimization becomes unstable
+:::
+
+::: {.fragment}
+**Two standard fixes**
+:::
+
+::: {.fragment}
+- **Regularization:** shrink coefficients and stabilize training  
+- **Dimensionality reduction:** remove unnecessary directions
+:::
+
+::: {.fragment}
+We focus on **dimensionality reduction** next.
+:::
+
+
+
+
+## Dimension Reduction (PCA) {.smaller}
+
+- Each image lives in a **high-dimensional space** (one dimension per pixel)
+- Many pixels are correlated and carry **redundant information**
+- Working in all dimensions is slow, unstable, and hard to interpret
+
+::: {.fragment}
+**Principal Component Analysis (PCA)** is a standard technique to reduce dimension
+:::
+
+::: {.fragment}
+- PCA Finds new axes that capture the **main patterns of variation** in the data
+- These axes are computed using **linear algebra**
+- Orders these directions from **most important to least important**
+- Allows us to keep only the first few directions and **discard the rest**
+:::
+
+::: {.fragment}
+**Why this helps**
+:::
+
+::: {.fragment}
+- Fewer dimensions lead to faster and more stable models
+- Less overconfidence and extreme coefficients
+- Easier to visualize and reason about the data
+:::
+
+
+## Perform PCA on Training Data {.smaller}
+```r 
+# Perform PCA on training data
+pca_model <- prcomp(X_train_filtered, center = TRUE, scale. = FALSE)
+```
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| fig-align: center
+#| results: "asis"
+
+# Perform PCA on training data
+pca_model <- prcomp(X_train_filtered, center = TRUE, scale. = FALSE)
+
+# Check variance explained
+variance_explained <- cumsum(pca_model$sdev^2) / sum(pca_model$sdev^2)
+
+# Prepare data frame for plotting
+pca_df <- data.frame(
+  Component = 1:length(variance_explained),
+  CumulativeVariance = variance_explained
+)
+
+# Create scree plot
+p<-ggplot(pca_df, aes(x = Component, y = CumulativeVariance)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_hline(yintercept = 0.90, color = "blue", linetype = "dashed", size = 1) +
+  geom_hline(yintercept = 0.95, color = "red", linetype = "dashed", size = 1) +
+  labs(
+    title = "Scree Plot: Cumulative Variance Explained",
+    x = "Number of Components",
+    y = "Cumulative Variance Explained"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "none"
+  )
+
+print(p)
+```
+
+## Perform PCA on Training Data {.smaller}
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| fig-align: center
+#| results: "asis"
+
+# Perform PCA on training data
+pca_model <- prcomp(X_train_filtered, center = TRUE, scale. = FALSE)
+
+# Check variance explained
+variance_explained <- cumsum(pca_model$sdev^2) / sum(pca_model$sdev^2)
+
+# Prepare data frame for plotting
+pca_df <- data.frame(
+  Component = 1:length(variance_explained),
+  CumulativeVariance = variance_explained
+)
+
+# Create scree plot
+p<-ggplot(pca_df, aes(x = Component, y = CumulativeVariance)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_hline(yintercept = 0.90, color = "blue", linetype = "dashed", size = 1) +
+  geom_hline(yintercept = 0.95, color = "red", linetype = "dashed", size = 1) +
+  labs(
+    title = "Scree Plot: Cumulative Variance Explained",
+    x = "Number of Components",
+    y = "Cumulative Variance Explained"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "none"
+  )
+
+print(p)
+```
+
+::: {.fragment}
+```{r}
+# Find number of components for different thresholds
+n_comp_95 <- which(variance_explained >= 0.95)[1]
+n_comp_90 <- which(variance_explained >= 0.90)[1]
+
+cat("Components for 90% variance:", n_comp_90, "\n")
+cat("Components for 95% variance:", n_comp_95, "\n")
+cat("Total components available:", length(pca_model$sdev), "\n")
+```
+:::
+
+
+
+::: {.fragment}
+Code of the graph
+```r
+# Check variance explained
+variance_explained <- cumsum(pca_model$sdev^2) / sum(pca_model$sdev^2)
+
+# Prepare data frame for plotting
+pca_df <- data.frame(
+  Component = 1:length(variance_explained),
+  CumulativeVariance = variance_explained
+)
+
+# Create scree plot
+ggplot(pca_df, aes(x = Component, y = CumulativeVariance)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "steelblue", size = 2) +
+  geom_hline(yintercept = 0.90, color = "blue", linetype = "dashed", size = 1) +
+  geom_hline(yintercept = 0.95, color = "red", linetype = "dashed", size = 1) +
+  labs(
+    title = "Scree Plot: Cumulative Variance Explained",
+    x = "Number of Components",
+    y = "Cumulative Variance Explained"
+  ) +
+  theme_minimal(base_size = 16) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.position = "none"
+  )
+
+# Find number of components for different thresholds
+n_comp_95 <- which(variance_explained >= 0.95)[1]
+n_comp_90 <- which(variance_explained >= 0.90)[1]
+
+cat("Components for 90% variance:", n_comp_90, "\n")
+cat("Components for 95% variance:", n_comp_95, "\n")
+cat("Total components available:", length(pca_model$sdev), "\n")
+```
+:::
+
+## Transform Data and Train Model {.smaller}
+
+::: {.panel-tabset}
+
+## Transform Data {.smaller}
+
+```{r}
+#| echo: true
+# Transform training and test data
+n_components <- n_comp_95  # or try 50, 100, etc.
+
+# Transform training data
+X_train_pca <- predict(pca_model, X_train_filtered)[, 1:n_components]
+
+# Transform test data (using the SAME PCA model from training)
+X_test_pca <- predict(pca_model, X_test_filtered)[, 1:n_components]
+
+cat("Original dimensions:", ncol(X_train_filtered), "\n")
+cat("PCA dimensions:", n_components, "\n")
+```
+
+
+
+## Train Model {.smaller}
+```{r}
+#| echo: true
+# Fit logistic regression on PCA data
+train_data_pca <- data.frame(X_train_pca, y = y_train_3_8_bin)
+
+# Time the model fitting
+fit_time <- system.time({
+  model_pca <- glm(y ~ ., data = train_data_pca,family = binomial(link = "logit"),control = list(maxit = 50))
+})
+
+# Print elapsed time
+cat("Time to fit logistic regression:",
+    round(fit_time["elapsed"], 2), "seconds\n")
+```
+
+## The Model {.smaller}
+
+```{r}
+#| echo: true
+
+summary(model_pca)
+```
+
+## Evaluate on Test Data
+
+```{r}
+#| echo: true
+# Evaluate on test set
+test_data_pca <- as.data.frame(X_test_pca)
+
+# Predictions
+pred_prob_pca <- predict(model_pca, newdata = test_data_pca, type = "response")
+pred_class_pca <- ifelse(pred_prob_pca > 0.5, 1, 0)
+
+# Confusion matrix
+cm_pca <- table(Predicted = pred_class_pca, Actual = y_test_3_8_bin)
+print(cm_pca)
+
+# Test accuracy
+accuracy_pca <- mean(pred_class_pca == y_test_3_8_bin)
+cat("Test Accuracy (PCA):", round(accuracy_pca * 100, 2), "%\n")
+
+# Training accuracy
+train_pred_prob_pca <- predict(model_pca, type = "response")
+train_pred_class_pca <- ifelse(train_pred_prob_pca > 0.5, 1, 0)
+train_accuracy_pca <- mean(train_pred_class_pca == y_train_3_8_bin)
+cat("Train Accuracy (PCA):", round(train_accuracy_pca * 100, 2), "%\n")
+
+```
+
+:::
+
+## Examples of Predictions {.smaller}
+
+
+```{r}
+library(gridExtra)
+
+set.seed(12)
+n_samples <- 6
+
+# 1. Prepare Indices
+# Get 6 random indices
+random_indices <- sample(1:nrow(x_test_3_8), n_samples)
+
+# Get up to 6 misclassified indices
+# Convert binary predictions back to digit labels
+predicted_class_pca <- ifelse(pred_class_pca == 1, 8, 3)
+misclassified <- which(y_test_3_8 != predicted_class_pca)
+sample_misc <- sample(misclassified, min(n_samples, length(misclassified)))
+
+# Combine into a single vector of 12 indices
+all_indices <- c(random_indices, sample_misc)
+
+# 2. Create Plots
+plot_list <- list()
+
+for (i in 1:length(all_indices)) {
+  idx <- all_indices[i]
+  
+  # Extract values
+  true_label <- y_test_3_8[idx]
+  prob_8 <- pred_prob_pca[idx]  # Probability of being class 1 (digit 8)
+  pred_label <- predicted_class_pca[idx]
+  
+  # Calculate confidence
+  conf <- ifelse(pred_label == 8, prob_8, 1 - prob_8)
+  
+  # Create title
+  title_text <- sprintf("True: %d | Pred: %d\nConf: %.5f", 
+                        true_label, pred_label, conf)
+  
+  # Generate plot
+  plot_list[[i]] <- plot_digit(x_test_3_8[idx, ], title_text)
+}
+
+# 3. Display Grid
+grid.arrange(grobs = plot_list, 
+             ncol = 6, 
+             top = "PCA Model: Top Row: Random | Bottom Row: Misclassifications")
+```
+
+## Distribution of Predicted Probabilities{.smaller}
+
+
+```{r}
+# Get predictions using PCA model
+test_data_pca <- as.data.frame(X_test_pca)
+pred_prob_all <- predict(model_pca, newdata = test_data_pca, type = "response")
+
+# Create dataframe with predictions and correctness
+pred_class_all <- ifelse(pred_prob_all > 0.5, 8, 3)
+results_df <- data.frame(
+  prob = pred_prob_all,
+  true_label = y_test_3_8,
+  pred_label = pred_class_all,
+  correct = (pred_class_all == y_test_3_8)
+)
+
+# Distribution separated by true class
+ggplot(results_df, aes(x = prob, fill = factor(true_label))) +
+  geom_histogram(bins = 50, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = 0.5, color = "red", linetype = "dashed", linewidth = 1) +
+  scale_fill_manual(values = c("3" = "blue", "8" = "orange"),
+                    labels = c("True 3s", "True 8s")) +
+  labs(title = "Predicted Probabilities by True Class",
+       x = "Predicted Probability (8)",
+       y = "Count",
+       fill = "True Label") +
+  theme_minimal()
+```
+
+
+
+## Using PCA for Visualization {.smaller}
+PCA helps us see the data and simplify the model
+
+::: {.fragment}
+::: {.panel-tabset}
+
+## 2 Dimensional Visualization
+```{r}
+# Get predictions using PCA model
+test_data_pca <- as.data.frame(X_test_pca)
+pred_prob_all <- predict(model_pca, newdata = test_data_pca, type = "response")
+pred_class_all <- ifelse(pred_prob_all > 0.5, 8, 3)
+
+# Create dataframe with first 2 PCA components
+pca_plot_df <- data.frame(
+  PC1 = X_test_pca[, 1],
+  PC2 = X_test_pca[, 2],
+  true_label = factor(y_test_3_8),
+  predicted = factor(pred_class_all),
+  correct = (pred_class_all == y_test_3_8)
+)
+
+# Plot colored by true label
+ggplot(pca_plot_df, aes(x = PC1, y = PC2, color = true_label)) +
+  geom_point(alpha = 0.6, size = 2) +
+  scale_color_manual(values = c("3" = "blue", "8" = "orange"),
+                     labels = c("3s", "8s")) +
+  labs(title = "2D PCA: Test Set (colored by true label)",
+       x = "First Principal Component",
+       y = "Second Principal Component",
+       color = "True Label") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+## 3 Dimensional Visualization
+
+```{r}
+library(plotly)
+
+# Create dataframe with first 3 PCA components
+pca_plot_3d <- data.frame(
+  PC1 = X_test_pca[, 1],
+  PC2 = X_test_pca[, 2],
+  PC3 = X_test_pca[, 3],
+  true_label = factor(y_test_3_8)
+)
+
+# 3D scatter plot
+plot_ly(pca_plot_3d, 
+        x = ~PC1, 
+        y = ~PC2, 
+        z = ~PC3,
+        color = ~true_label,
+        colors = c("blue", "orange"),
+        type = "scatter3d",
+        mode = "markers",
+        marker = list(size = 3, opacity = 0.6)) %>%
+  layout(title = "3D PCA: Test Set",
+         scene = list(
+           xaxis = list(title = "PC1"),
+           yaxis = list(title = "PC2"),
+           zaxis = list(title = "PC3")
+         ))
+
+```
+
+
+:::
+:::
+
+
+
+
+## From Binary to Multiclass {.smaller}
+
+- So far: 3 vs 8 (binary classification)
+- MNIST has **10 digits**
+
+::: {.fragment}
+
+```r 
+library(keras3)
+
+# Load all MNIST data (all 10 digits)
+mnist <- dataset_mnist()
+train_images <- mnist$train$x
+train_labels <- mnist$train$y
+test_images <- mnist$test$x
+test_labels <- mnist$test$y
+
+# Flatten 28x28 images into vectors
+X_train <- array_reshape(train_images, c(nrow(train_images), 28*28)) / 255
+X_test <- array_reshape(test_images, c(nrow(test_images), 28*28)) / 255
+
+# Remove zero-variance columns to prepare them for PCA
+variances <- apply(X_train, 2, var)
+non_zero_var <- variances > 0
+X_train_prepared <- X_train[, non_zero_var]
+X_test_prepared <- X_test[, non_zero_var]
+```
+:::
+
+```{r}
+#| echo: false
+# Remove zero-variance columns to prepare them for PCA
+variances <- apply(X_train, 2, var)
+non_zero_var <- variances > 0
+X_train_prepared <- X_train[, non_zero_var]
+X_test_prepared <- X_test[, non_zero_var]
+```
+
+## Softmax Regression on MNIST {.smaller}
+We break the process into three steps:
+perform PCA, compress the data, and train the model.
+
+::: {.fragment}
+::: {.panel-tabset}
+## Performing PCA
+```{r}
+#| echo: true
+pca_time <- system.time({
+  pca_all <- prcomp(X_train_prepared, center = TRUE, scale. = FALSE)
+})
+
+print(pca_time)
+cat("Elapsed time:", round(pca_time["elapsed"], 2), "seconds\n")
+```
+
+## Reduce Dimensions
+We will use 50 components
+```{r}
+#| echo: true
+compress_data_time <- system.time({
+n_comp <- 50  
+X_train_pca <- predict(pca_all, X_train_prepared)[, 1:n_comp]
+X_test_pca <- predict(pca_all, X_test_prepared)[, 1:n_comp]
+})
+print(compress_data_time)
+cat("Elapsed time:", round(compress_data_time["elapsed"], 2), "seconds\n")
+```
+
+## Train Compressed Model
+```{r}
+#| echo: true
+library(nnet)
+# train model
+train_data <- data.frame(X_train_pca, y = factor(train_labels))
+
+cat("Fitting model with", n_comp, "components...\n")
+training_time <- system.time({
+  model_10digits <- multinom(y ~ ., data = train_data, maxit = 200)
+})
+
+print(training_time)
+cat("Elapsed time:", round(training_time["elapsed"], 2), "seconds\n")
+```
+
+:::
+:::
+
+## Evaluate Model on Test Set {.smaller}
+```{r}
+# Test
+test_data <- as.data.frame(X_test_pca)
+pred_10 <- predict(model_10digits, newdata = test_data)
+
+cm_10 <- table(Predicted = pred_10, Actual = test_labels)
+print(cm_10)
+
+accuracy_10 <- mean(pred_10 == test_labels)
+cat("\nTest Accuracy:", round(accuracy_10 * 100, 2), "%\n")
+
+# Accuracy
+accuracy_10 <- mean(pred_10 == test_labels)
+cat("\nTest Accuracy (all 10 digits):", round(accuracy_10 * 100, 2), "%\n")
+
+# Per-digit accuracy
+cat("\nPer-digit accuracy:\n")
+for (i in 0:9) {
+  digit_acc <- sum(cm_10[as.character(i), as.character(i)]) / sum(test_labels == i)
+  cat("Digit", i, ":", round(digit_acc * 100, 1), "%\n")
+}
+```
+
+
+## Softmax Regression {.smaller}
+
+::: {.fragment}
+Softmax regression outputs a **probability distribution**
+:::
+
+::: {.fragment}
+- For each image, the model assigns a probability to **each digit (0–9)**
+- All probabilities are **non-negative** and **sum to 1**
+:::
+
+::: {.fragment}
+
+The model is trained by minimizing the **cross-entropy loss**
+:::
+
+::: {.fragment}
+- This encourages high probability on the correct digit  
+  and low probability on the others
+:::
+
+::: {.fragment}
+**Predictions and Confidence**
+:::
+::: {.fragment}
+- Each prediction comes with a **full probability mass function**
+- The predicted digit has the **highest probability**
+- The remaining values show **model confidence**
+:::
+
+
+## {.smaller}
+
+**Examples of model prediction**
+
+```{r}
+# Get more evaluation data
+pred_probs <- predict(model_10digits, newdata = test_data, type = "probs")
+pred_classes <- predict(model_10digits, newdata = test_data, type = "class")
+# Get max probabilities for each prediction
+max_probs <- apply(pred_probs, 1, max)
+```
+
+```{r}
+# Function to visualize a specific index
+show_digit_analysis <- function(idx, X_data, labels, pred_classes, pred_probs) {
+  
+  # 1. Extract values
+  true_lab <- labels[idx]
+  # Ensure pred_label is numeric for comparison and plotting
+  pred_lab <- as.numeric(as.character(pred_classes[idx]))
+  probs_i  <- pred_probs[idx, ]
+  
+  # 2. Digit Plot
+  # Check if prediction was correct for the icon
+  status_icon <- ifelse(true_lab == pred_lab, "✅", "❌")
+  
+  p1 <- plot_digit(X_data[idx, ], 
+                   title = sprintf("True: %d | Pred: %d %s", 
+                                   true_lab, pred_lab, status_icon))
+  
+  # 3. Probability Bar Chart
+  df_probs <- data.frame(
+    Digit = 0:9,
+    Probability = as.vector(probs_i),
+    Category = "Other"
+  )
+  
+  # Color Logic
+  df_probs$Category[df_probs$Digit == true_lab] <- "True"
+  df_probs$Category[df_probs$Digit == pred_lab] <- "Predicted"
+  # If correct, 'True' color (Green) takes priority
+  if (true_lab == pred_lab) df_probs$Category[df_probs$Digit == true_lab] <- "True"
+  
+  p2 <- ggplot(df_probs, aes(x = factor(Digit), y = Probability, fill = Category)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = c("Other" = "grey80", "Predicted" = "firebrick1", "True" = "springgreen4")) +
+    theme_minimal() +
+    labs(x = "Digit", y = "Probability") +
+    ylim(0, 1) +
+    theme(legend.position = "bottom")
+
+  # 4. Return combined object
+  grid.arrange(p1, p2, ncol = 2, widths = c(1, 1.5))
+}
+```
+
+::: {.panel-tabset}
+## Well classified not confident {.smaller}
+```{r}
+show_digit_analysis(39, X_test, test_labels, pred_classes, pred_probs)
+```
+
+
+## Misclassified {.smaller}
+```{r}
+show_digit_analysis(2049, X_test, test_labels, pred_classes, pred_probs)
+```
+
+:::
+
+## Model Confidence in the True Label {.smaller}
+
+::: {.panel-tabset}
+## Correct Predictions {.smaller}
+
+```{r}
+# Was the prediction correct?
+correct <- pred_classes == test_labels
+pred_prob <- pred_probs[cbind(1:nrow(pred_probs), pred_classes)]
+true_class_prob <- pred_probs[cbind(1:nrow(pred_probs), test_labels+1)]
+
+
+pred_prob_correct <- pred_prob[correct]
+
+hist(pred_prob_correct,
+     breaks = 30,
+     col = "lightgreen",
+     main = "True Label Probability (Correct Predictions)",
+     xlab = "Predicted Class Probability",
+     xlim = c(0, 1))
+```
+
+
+
+## Wrong Predictions
+```{r}
+true_prob_wrong <- true_class_prob[!correct]
+
+hist(true_prob_wrong,
+     breaks = 30,
+     col = "salmon",
+     main = "True Label Probability (Wrong Predictions)",
+     xlab = "Predicted Class Probability",
+     xlim = c(0, 1))
+
+```
+:::
+
+
+
+
+
+

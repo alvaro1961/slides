@@ -1,0 +1,1338 @@
+---
+title: "Regression"
+subtitle: "Introduction to Machine Learning"
+author: "Alvaro Arias"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    code-fold: false
+    code-line-numbers: false
+    code-copy: true
+    highlight-style: monokai
+    scrollable: true
+    font-size: 20px
+css: |
+  .reveal .title {
+    font-size: 2em !important;
+  }
+  .reveal .subtitle {
+    font-size: 1.3em !important;
+  }
+  .reveal .author {
+    font-size: 1.1em !important;
+  }
+  .reveal .date {
+    font-size: 1em !important;
+  }
+engine: knitr
+---
+
+## Machine Learning {.smaller transition="none"}
+
+> In Machine Learning we study and build models that learn predictive relationships from data by minimizing error and validating performance on new data.
+
+## Machine Learning {.smaller transition="none"}
+
+> In Machine Learning we study and [build models]{style="color: red;"} that learn [predictive relationships from data]{style="color: red;"} by [minimizing error]{style="color: red;"} and [validating]{style="color: red;"} performance on [new data]{style="color: red;"}.
+
+**Important Concepts:**
+
+* Building models
+* Predictive relationships from data
+* Minimize error
+* Validating performance on new data
+
+::: {.fragment}
+> These ideas come directly from statistics, especially non-parametric methods, and become powerful at large scale.
+> 
+> In some settings, models are used not to predict a target, but to **discover hidden structure** in the data itself.
+:::
+
+## Linear Regression: A Starting Point {.smaller}
+
+::: {.fragment}
+* We observe data $\{(x_i,y_i):i\leq N\}$.
+* Our goal is to predict $y$ from $x$ using these data.
+:::
+::: {.fragment}
+### What is a Model?
+
+A model is a function that maps inputs to predictions. For simple regression, the model is:
+$$\hat{y}=f(x)=\beta_0+\beta_1x,$$
+where $\beta_0, \beta_1$ are parameters to be estimated from data.
+:::
+
+::: {.fragment}
+> Our goal is to find the values of $\beta_0, \beta_1$ that make the model’s predictions as accurate as possible.
+:::
+
+## Error, Loss, and Learning {.smaller}
+
+::: {.fragment}
+For each observation $(x_i, y_i)$, the model predicts
+$$
+\hat y_i = f(x_i).
+$$
+The **residual** is
+$$
+e_i = y_i - \hat y_i.
+$$
+:::
+
+::: {.fragment}
+Residuals measure error **point by point**.
+To evaluate the model as a whole, we aggregate them using a **loss function**.
+:::
+
+::: {.fragment}
+In linear regression, we commonly use the **mean squared error**:
+$$
+\text{Loss}(\beta_0,\beta_1)
+= \frac{1}{N}\sum_{i=1}^N (y_i - \hat y_i)^2.
+$$
+:::
+
+::: {.fragment}
+**Learning** means choosing the parameters that minimize this loss.
+:::
+
+
+## Comparing Models: Fit and Residuals {.smaller}
+
+```{r}
+set.seed(1)
+N <- 30
+x <- runif(N, 0, 10)
+y <- 2 + 1.5 * x + rnorm(N, sd = 2)
+```
+
+::: {.panel-tabset}
+
+## Data {.smaller}
+```{r}
+plot(x, y, pch = 19, xlab = "x", ylab = "y")
+```
+
+## A Model {.smaller}
+```{r}
+plot(x, y, pch = 19, xlab = "x", ylab = "y")
+abline(a = 10, b = -0.5, col = "red", lwd = 2)
+```
+
+## A Better Model {.smaller}
+```{r}
+plot(x, y, pch = 19, xlab = "x", ylab = "y")
+fit <- lm(y ~ x)
+abline(fit, col = "blue", lwd = 2)
+```
+
+## Residuals {.smaller}
+
+```{r}
+# Compute residuals
+resid <- y - predict(fit)
+
+plot(x, resid, pch = 19, xlab = "x", ylab = "Residuals",
+     main = "Residuals of the Better Model")
+abline(h = 0, col = "blue", lwd = 2)  # reference line at zero
+```
+
+## Linear Regression in R {.smaller} 
+
+
+Fitting a linear model in R is straightforward:
+
+```{r}
+#| echo: true
+# Find a linear model to the data
+model <- lm(y ~ x)
+summary(model)
+```
+
+
+:::
+
+
+
+
+
+
+
+
+## Linear Regression: Fitting vs Predicting {.smaller}
+
+::: {.fragment}
+Minimizing loss tells us how well the model fits the **observed data**.
+:::
+
+::: {.fragment}
+But a model that fits the data extremely well
+may perform poorly on **new data**.
+:::
+
+::: {.fragment}
+To evaluate prediction performance, we separate data into:
+
+- **Training data** – fit the model
+- **Validation data** – choose models or hyperparameters
+- **Test data** – final, unbiased evaluation
+:::
+
+::: {.fragment}
+The goal is **low loss on unseen data**, not just on the data we trained on.
+:::
+
+
+ 
+
+
+## Polynomial Regression {.smaller}
+### Increasing Model Flexibility {.smaller}
+
+::: {.fragment}
+
+- Linear regression is simple and easy to understand  
+- But many relationships in data are **nonlinear**  
+- Polynomial regression allows the model to **curve to fit the data**
+
+:::
+
+::: {.fragment}
+
+#### Topics We Will Explore {.smaller}
+::: {.incremental}
+
+- **Model Capacity** – How flexible should a model be?  
+- **Underfitting** – Too simple to capture the trend  
+- **Overfitting** – Too complex, captures noise instead of signal  
+- **Bias-Variance Tradeoff** – Balancing simplicity and flexibility  
+- **Validation** – How to check that the model generalizes
+:::
+
+:::
+
+
+::: {.fragment}
+> We will illustrate these topics with synthetic data.
+:::
+
+
+## Polynomial Regression: Model Capacity {.smaller}
+
+```{r}
+library(ggplot2)
+#| label: poly-setup
+#| echo: false
+
+set.seed(313)
+
+N <- 40
+x <- runif(N, -1, 1)
+
+f <- function(x) {
+  (x-0.4)^3+2.5*(x-0.4)^2/2
+}
+
+y <- f(x) + rnorm(N, sd = 0.2)
+
+df <- data.frame(x = x, y = y)
+
+xx <- seq(min(x), max(x), length.out = 300)
+
+x_lim <- range(x)
+y_lim <- range(y)
+y_pad <- 0.25 * diff(y_lim)
+y_lim <- c(y_lim[1] - y_pad, y_lim[2] + y_pad)
+
+fit1 <- lm(y ~ poly(x, 1, raw = TRUE), data = df)
+fit2 <- lm(y ~ poly(x, 2, raw = TRUE), data = df)
+fit3 <- lm(y ~ poly(x, 3, raw = TRUE), data = df)
+fit7 <- lm(y ~ poly(x, 7, raw = TRUE), data = df)
+fit12 <- lm(y ~ poly(x, 12, raw = TRUE), data = df)
+fit20 <- lm(y ~ poly(x, 20, raw = TRUE), data = df)
+
+xx <- data.frame(x = seq(min(x), max(x), length.out = 300))
+xx$y_hat1  <- predict(fit1,  newdata = xx)
+xx$y_hat2  <- predict(fit2,  newdata = xx)
+xx$y_hat3  <- predict(fit3,  newdata = xx)
+xx$y_hat7  <- predict(fit7,  newdata = xx)
+xx$y_hat12  <- predict(fit12,  newdata = xx)
+xx$y_hat20 <- predict(fit20, newdata = xx)
+
+```
+
+
+
+::: {.panel-tabset}
+
+## Data {.smaller}
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+## Linear {.smaller}
+
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  geom_line(
+    data = xx,
+    aes(x = x, y = y_hat1),
+    linewidth = 1,
+    color = "blue"
+  ) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+## Quadratic {.smaller}
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  geom_line(
+    data = xx,
+    aes(x = x, y = y_hat2),
+    linewidth = 1,
+    color = "blue"
+  ) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+
+## Cubic {.smaller}
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  geom_line(
+    data = xx,
+    aes(x = x, y = y_hat3),
+    linewidth = 1,
+    color = "blue"
+  ) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+## Degree 7 {.smaller}
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  geom_line(
+    data = xx,
+    aes(x = x, y = y_hat7),
+    linewidth = 1,
+    color = "blue"
+  ) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+## Degree 12 {.smaller}
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  geom_line(
+    data = xx,
+    aes(x = x, y = y_hat12),
+    linewidth = 1,
+    color = "blue"
+  ) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+
+## Degree 20 {.smaller}
+```{r}
+ggplot(data.frame(x, y), aes(x, y)) +
+  geom_point(size = 3) +
+  geom_line(
+    data = xx,
+    aes(x = x, y = y_hat20),
+    linewidth = 1,
+    color = "blue"
+  ) +
+  coord_fixed(ylim = c(-1,1)) +
+  labs(x = "x", y = "y")
+```
+
+:::
+
+## Polynomial Regression: Train/Test {.smaller}
+
+**Goal**: Create a model that generalizes well to new, unseen data.
+
+::: {.incremental .smaller}
+* Our dataset has 40 points
+* We randomly select 30 points to train the model
+* The remaining 10 points are used to test the model
+* We will plot the training and test errors versus polynomial degree
+* Training error decreases monotonically as degree increases
+* Test error decreases initially, then increases as the model overfits
+* The U-shaped test error curve illustrates the bias–variance tradeoff
+:::
+
+
+## Polynomial Regression: Train/Test {.smaller}
+
+```{r}
+# Split train/test
+train_idx <- sample(seq_len(N), size = 30)
+x_train <- x[train_idx]
+y_train <- y[train_idx]
+x_test  <- x[-train_idx]
+y_test  <- y[-train_idx]
+```
+
+
+```{r}
+
+# Assume x, y already defined
+N <- length(x)
+
+# 1️⃣ Split data
+set.seed(123)
+train_idx <- sample(seq_len(N), size = 30)
+x_train <- x[train_idx]
+y_train <- y[train_idx]
+x_test  <- x[-train_idx]
+y_test  <- y[-train_idx]
+
+train_df <- data.frame(x = x_train, y = y_train)
+test_df  <- data.frame(x = x_test, y = y_test)
+
+# 2️⃣ Compute train/test error for polynomial degrees 1:20
+degrees <- 1:20
+train_err <- numeric(length(degrees))
+test_err  <- numeric(length(degrees))
+
+for (i in seq_along(degrees)) {
+  d <- degrees[i]
+  mod <- lm(y ~ poly(x, d, raw = TRUE), data = train_df)
+  
+  train_pred <- predict(mod, newdata = train_df)
+  test_pred  <- predict(mod, newdata = test_df)
+  
+  train_err[i] <- mean((train_df$y - train_pred)^2)
+  test_err[i]  <- mean((test_df$y - test_pred)^2)
+}
+
+# 3️⃣ Plot train vs test error
+error_df <- data.frame(
+  degree = degrees,
+  train_err = train_err,
+  test_err = test_err
+)
+
+ggplot(error_df, aes(x = degree)) +
+  geom_line(aes(y = train_err, color = "Train Error"), linewidth = 1.2) +
+  geom_point(aes(y = train_err, color = "Train Error"), size = 2) +
+  geom_line(aes(y = test_err, color = "Test Error"), linewidth = 1.2) +
+  geom_point(aes(y = test_err, color = "Test Error"), size = 2) +
+  scale_color_manual(values = c("blue", "red")) +
+  labs(x = "Polynomial Degree", y = "Mean Squared Error",
+       color = "", 
+       title = "Train vs Test Error for Polynomial Regression") +
+  theme_minimal(base_size = 14)
+```
+
+
+
+
+
+## The Fitted Models Are Random {.smaller}
+The fitted models depend on which observations are randomly selected for training. Below we compare two polynomial models fitted on different random training sets, illustrating model variance.
+
+
+```{r}
+# 1️⃣ Split data differently
+set.seed(13)
+train_idx2 <- sample(seq_len(N), size = 30)
+x_train2 <- x[train_idx2]  # Fixed: was train_idx
+y_train2 <- y[train_idx2]  # Fixed: was train_idx
+x_test2  <- x[-train_idx2] # Fixed: was train_idx
+y_test2  <- y[-train_idx2] # Fixed: was train_idx
+
+train_df1 <- data.frame(x = x_train, y = y_train)   # Fixed: was ytrain
+train_df2 <- data.frame(x = x_train2, y = y_train2) # Fixed: was ytrain2
+```
+
+```{r}
+# Define function that plots the prediction of two samples
+plot_two_fits <- function(degree) {
+  
+  # Fit models
+  fit1 <- lm(y ~ poly(x, degree, raw = TRUE), data = train_df1)
+  fit2 <- lm(y ~ poly(x, degree, raw = TRUE), data = train_df2)
+  
+  # Create prediction data
+  xx <- seq(min(x), max(x), length.out = 300)
+  pred_df <- data.frame(x = xx)
+  
+  y_pred1 <- predict(fit1, newdata = pred_df)
+  y_pred2 <- predict(fit2, newdata = pred_df)
+  
+  # Separate data for fitted models and true function
+  fitted_data <- data.frame(
+    x = rep(xx, 2),
+    y = c(y_pred1, y_pred2),
+    model = rep(c("Fit 1", "Fit 2"), each = length(xx))
+  )
+  
+  true_data <- data.frame(x = xx, y = f(xx))
+  
+  train_data <- rbind(
+    data.frame(x = x_train, y = y_train, split = "Train 1"),
+    data.frame(x = x_train2, y = y_train2, split = "Train 2")
+  )
+  
+  # Create the plot
+  ggplot() +
+    geom_line(data = fitted_data, aes(x = x, y = y, color = model), linewidth = 1) +
+    geom_line(data = true_data, aes(x = x, y = y), 
+              color = "black", linetype = "dashed", linewidth = 1) +
+    geom_point(data = train_data, aes(x = x, y = y, color = split), size = 2, alpha = 0.6) +
+    scale_color_manual(values = c("Fit 1" = "blue", "Fit 2" = "red", 
+                                   "Train 1" = "blue", "Train 2" = "red")) +
+    coord_fixed(ylim = c(-1, 1)) +
+    labs(title = paste("Comparison of Two Polynomial Fits (degree =", degree, ")"), 
+        subtitle = "Black dashed = true function", x = "x", y = "y", color = NULL) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+```
+
+
+::: {.panel-tabset}
+## Data {.smaller}
+
+```{r}
+  train_data <- rbind(
+    data.frame(x = x_train, y = y_train, split = "Train 1"),
+    data.frame(x = x_train2, y = y_train2, split = "Train 2")
+  )
+
+
+  ggplot() +
+    # geom_line(data = plot_data, aes(x = x, y = y, color = model), linewidth = 1) +
+    geom_point(data = train_data, aes(x = x, y = y, color = split), size = 4, alpha = 0.5) +
+    scale_color_manual(values = c("Fit 1" = "blue", "Fit 2" = "red", 
+                                   "Train 1" = "blue", "Train 2" = "red")) +
+    coord_fixed(ylim = c(-1, 1)) +
+    labs(title = "Data: Two Random Samples", subtitle = "Many points are common to both samples", x = "x", y = "y", color = NULL) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+```
+
+## Degree 1 {.smaller}
+
+```{r}
+plot_two_fits(1)
+```
+
+## Degree 3 {.smaller}
+
+```{r}
+plot_two_fits(3)
+```
+
+## Degree 5 {.smaller}
+```{r}
+plot_two_fits(5)
+```
+
+## Degree 12 {.smaller}
+
+```{r}
+plot_two_fits(12)
+```
+
+## Degree 20 {.smaller}
+
+```{r}
+plot_two_fits(20)
+```
+
+:::
+
+
+## Model Comparison via Validation {.smaller}
+
+::: {.fragment}
+Fitted models are random because the training data is random.
+So we do not judge a model by a single fit.
+:::
+
+::: {.fragment}
+Instead, we:
+
+- fit the same model on several different training samples
+- evaluate each fit on data it has **not seen**
+:::
+
+::: {.fragment}
+For each model choice (e.g. polynomial degree), we record the
+**prediction error on the test data**.
+:::
+
+::: {.fragment}
+We select the model with the **lowest average test error**.
+
+This is the core idea of *K-fold cross-validation*, a standard tool in ML
+:::
+
+
+
+
+
+
+## Overfitting {.smaller}
+
+::: {.fragment .smaller}
+How do we detect overfitting?
+
+In polynomial regression we actually see it. In more complex models with thousands of parameters we cannot visualize it
+
+The most common method is to compare the error between the train and test sets
+:::
+
+::: {.fragment}
+**Solutions to Overfitting:**
+When we detect overfitting there are several methods
+:::
+
+::: {.incremental .smaller}
+1. **Adjust Model Complexity:**
+   * Use simpler architecture, like reducing the polynomial degree in our examples
+2. **Regularization:** Restrict the values of the model adding a penalty
+   * Ridge (Tichonov) Regularization
+   * Lasso Regularization
+3. **Add More Data** 
+:::
+
+## Regularization in Polynomial Regression {.smaller}
+
+::: {.smaller}
+**Setup:** Data points $\{(x_i,y_i):i\leq N\}$ with polynomial model $p(x)=a_0+a_1x+\cdots+a_dx^d$
+
+**Standard Loss (Mean Squared Error):**
+$$\text{Loss}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2$$
+
+**Problem:** When degree $d$ is too large, the model fits noise instead of the underlying trend (overfitting)
+
+**Solution - Ridge Regularization (Tikhonov):**  
+Penalize large coefficients by adding a penalty term:
+$$\text{Loss}_{\text{Ridge}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d a_i^2$$
+
+**Solution - Lasso Regularization:**  
+Use absolute values for the penalty (encourages sparse solutions):
+$$\text{Loss}_{\text{Lasso}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d |a_i|$$
+
+* $\lambda > 0$ controls the regularization strength (larger $\lambda$ = more penalty)
+* Both methods shrink coefficients toward zero, preventing overfitting
+:::
+
+## Fix Overfitting: Ridge Regularization {.smaller}
+
+Ridge (Tikhonov) Regularization penalizes large coefficients of the polynomial with the loss function:
+$$\text{Loss}_{\text{Ridge}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d a_i^2,\quad\lambda\geq0$$
+When $\lambda = 0$, we have ordinary least squares (OLS). As $\lambda$ increases, the coefficients are shrunk toward zero.
+
+```{r}
+# Define function to find ridge coefficients, using matrix multiplication
+
+ridge_closed_form <- function(X, y, lambda, intercept = TRUE) {
+  if (intercept) {
+    X <- cbind(1, X)
+  }
+  
+  p <- ncol(X)
+  I <- diag(p)
+  
+  if (intercept) {
+    I[1, 1] <- 0  # do not penalize intercept
+  }
+  
+  solve(t(X) %*% X + lambda * I, t(X) %*% y)
+}
+
+
+set.seed(13)
+degree <- 16
+N <- 30
+
+
+x <- runif(N, -1, 1)
+f <- function(x) {
+  x^3-x/2
+}
+y <- f(x) + rnorm(N, sd = 0.2)
+
+df <- data.frame(x = x, y = y)
+xx <- seq(min(x), max(x), length.out = 300)
+x_lim <- range(x)
+y_lim <- range(y)
+y_pad <- 0.25 * diff(y_lim)
+y_lim <- c(y_lim[1] - y_pad, y_lim[2] + y_pad)
+
+X <- poly(x, degree, raw = TRUE)
+X_new <- poly(xx, degree, raw = TRUE)
+
+# OLS coefficients
+beta_ols <- ridge_closed_form(X, y, lambda = 0)
+
+# Ridge with very small lambdas
+beta_1e1 <- ridge_closed_form(X, y, lambda = 1e-1)
+beta_1e2 <- ridge_closed_form(X, y, lambda = 1e-2)
+beta_1e3 <- ridge_closed_form(X, y, lambda = 1e-3)
+beta_1e6 <- ridge_closed_form(X, y, lambda = 1e-6)
+
+# Predictions
+yhat_ols <- cbind(1, X_new) %*% beta_ols
+yhat_1e1 <- cbind(1, X_new) %*% beta_1e1
+yhat_1e2 <- cbind(1, X_new) %*% beta_1e2
+yhat_1e3 <- cbind(1, X_new) %*% beta_1e3
+yhat_1e6 <- cbind(1, X_new) %*% beta_1e6
+
+
+yhat_ols  <- as.numeric(yhat_ols)
+yhat_1e1  <- as.numeric(yhat_1e1)
+yhat_1e2  <- as.numeric(yhat_1e2)
+yhat_1e3  <- as.numeric(yhat_1e3)
+yhat_1e6  <- as.numeric(yhat_1e6)
+
+plot_df <- rbind(
+  data.frame(x = xx, y = f(xx), model ="true"),
+  data.frame(x = xx, y = yhat_ols, model = "OLS"),
+  data.frame(x = xx, y = yhat_1e6, model = "Ridge1"),
+  data.frame(x = xx, y = yhat_1e3, model = "Ridge2"),
+  data.frame(x = xx, y = yhat_1e2, model = "Ridge3"),
+  data.frame(x = xx, y = yhat_1e1, model = "Ridge4")
+)
+
+```
+
+
+::: {.fragment}
+
+::: {.panel-tabset}
+
+## $\lambda=0$
+
+<!-- Compare the true function with the degree 16 polynomial interpolation -->
+```{r}
+
+ggplot(df, aes(x, y)) +
+  geom_point(size = 2, color = "black") +
+  geom_line(data = subset(plot_df, model == "true"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "OLS"), 
+            aes(x = x, y = y, color = "OLS", linetype = "OLS"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "OLS" = "red")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "OLS" = "solid")
+  ) +
+  labs(
+    title = "Ridge Regression: lambda = 0 (OLS)",
+    # subtitle = "Subset of models",
+    x = "x",
+    y = "y"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+## $\lambda=10^{-6}$
+
+<!-- Compare the true function and the ridge interpolation with $\lambda=10^{-6}=0.000001$ -->
+
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_point(size = 2, color = "black") +
+  geom_line(data = subset(plot_df, model == "true"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "OLS"), 
+            aes(x = x, y = y, color = "OLS", linetype = "OLS"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "Ridge1"), 
+            aes(x = x, y = y, color = "Ridge1", linetype = "Ridge1"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "OLS" = "red", "Ridge1" = "blue")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "OLS" = "dotted", "Ridge1" = "solid")
+  ) +
+  labs(
+    title = "Ridge Regression: lambda = 0.000001",
+    # subtitle = "Subset of models",
+    x = "x",
+    y = "y"
+  ) +
+  theme_minimal()
+
+```
+
+
+## $\lambda=0.001$
+
+<!-- Compare the true function and the ridge interpolation with $\lambda=0.001$ -->
+
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_point(size = 2, color = "black") +
+  geom_line(data = subset(plot_df, model == "true"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "OLS"), 
+            aes(x = x, y = y, color = "OLS", linetype = "OLS"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "Ridge2"), 
+            aes(x = x, y = y, color = "Ridge2", linetype = "Ridge2"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "OLS" = "red", "Ridge2" = "blue")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "OLS" = "dotted", "Ridge2" = "solid")
+  ) +
+  labs(
+    title = "Ridge Regression: lambda = 0.001",
+    # subtitle = "Subset of models",
+    x = "x",
+    y = "y"
+  ) +
+  theme_minimal()
+
+```
+
+
+## $\lambda=0.01$
+
+<!-- Compare the true function and the ridge interpolation with $\lambda = 0.01$ -->
+
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_point(size = 2, color = "black") +
+  geom_line(data = subset(plot_df, model == "true"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "OLS"), 
+            aes(x = x, y = y, color = "OLS", linetype = "OLS"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "Ridge3"), 
+            aes(x = x, y = y, color = "Ridge3", linetype = "Ridge3"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "OLS" = "red", "Ridge3" = "blue")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "OLS" = "dotted", "Ridge3" = "solid")
+  ) +
+  labs(
+    title = "Ridge Regression: lamba = 0.01",
+    # subtitle = "Subset of models",
+    x = "x",
+    y = "y"
+  ) +
+  theme_minimal()
+
+```
+
+
+## $\lambda=0.1$
+
+<!-- Compare the true function and the ridge interpolation with $\lambda= 0.1$ -->
+
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_point(size = 2, color = "black") +
+  geom_line(data = subset(plot_df, model == "true"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "OLS"), 
+            aes(x = x, y = y, color = "OLS", linetype = "OLS"), 
+            linewidth = 1) +
+  geom_line(data = subset(plot_df, model == "Ridge4"), 
+            aes(x = x, y = y, color = "Ridge4", linetype = "Ridge4"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "OLS" = "red", "Ridge4" = "blue")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "OLS" = "dotted", "Ridge4" = "solid")
+  ) +
+  labs(
+    title = "Ridge Regression: lambda = 0.1",
+    # subtitle = "Subset of models",
+    x = "x",
+    y = "y"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+## Coefficients {.smaller}
+
+```{r}
+
+library(glmnet)
+
+# x and y are your original polynomial data
+
+# Create polynomial feature matrix
+degree <- 18  # Set degree once
+X <- poly(x, degree = degree, raw = TRUE)  
+
+# Fit ridge regression
+ridge_model <- glmnet(X, y, alpha = 0)
+
+# Cross-validation to find best lambda
+# cv_ridge <- cv.glmnet(X, y, alpha = 0)
+
+plot(ridge_model, xvar = "lambda", label = TRUE)
+```
+
+::: 
+:::
+
+
+## Fix Overfitting: Lasso Regularization {.smaller}
+
+Lasso Regularization is similar to Ridge Regression. It penalizes large coefficients of the polynomial with the loss function:
+$$\text{Loss}_{\text{Lasso}}=\frac{1}{N}\sum_{i=1}^N(p(x_i)-y_i)^2+\lambda\sum_{i=1}^d |a_i|,\quad\lambda\geq0$$
+When $\lambda = 0$, we have ordinary least squares (OLS). As $\lambda$ increases, the coefficients are also shrunk toward zero.
+
+**Key Difference from Ridge:**
+
+* Ridge uses squared penalty ($a_i^2$) and shrinks coefficients smoothly but rarely to exactly zero
+* Lasso uses absolute penalty ($|a_i|$) and can set coefficients **exactly to zero**
+* This makes Lasso perform **feature selection** by eliminating unimportant terms
+
+
+
+## Fix Overfitting: Increase Data {.smaller}
+
+Having more data improves overfitting. To illustrate this we look at the model
+$$y = x^3+\frac{1}{2}x+\epsilon$$
+where $\epsilon$ is a normal random variable with mean 0 and standard deviation $\sigma = 0.2$.
+
+We will generate four random sets: 30 points, 50 points, 80 points, and 160 points. For each of these sets, we will use polynomial regression of degree 16.
+
+```{r}
+# Set seed, degree and function
+set.seed(13)
+degree <- 16
+f <- function(x) {
+  x^3-x/2
+}
+
+N1 <- 30
+x1 <- runif(N1, -1, 1)
+X1 <- poly(x1, degree, raw = TRUE)
+y1 <- f(x1) + rnorm(N1, sd = 0.2)
+df1 <- data.frame(x1 = x1, y1 = y1)
+fit1 <- lm(y1 ~ poly(x1, degree, raw = TRUE), data = df1)
+
+
+N2 <- 50
+x2 <- runif(N2, -1, 1)
+X2 <- poly(x2, degree, raw = TRUE)
+y2 <- f(x2) + rnorm(N2, sd = 0.2)
+df2 <- data.frame(x2 = x2, y2 = y2)
+fit2 <- lm(y2 ~ poly(x2, degree, raw = TRUE), data = df2)
+
+N3 <- 80
+x3 <- runif(N3, -1, 1)
+X3 <- poly(x3, degree, raw = TRUE)
+y3 <- f(x3) + rnorm(N3, sd = 0.2)
+df3 <- data.frame(x3 = x3, y3 = y3)
+fit3 <- lm(y3 ~ poly(x3, degree, raw = TRUE), data = df3)
+
+N4 <- 160
+x4 <- runif(N4, -1, 1)
+X4 <- poly(x4, degree, raw = TRUE)
+y4 <- f(x4) + rnorm(N4, sd = 0.2)
+df4 <- data.frame(x4 = x4, y4 = y4)
+fit4 <- lm(y4 ~ poly(x4, degree, raw = TRUE), data = df4)
+
+# xx <- seq(-1, 1, length.out = 300)
+# X_new <- poly(xx, degree, raw = TRUE)
+
+# Combine all datasets
+plot_df <- rbind(
+  data.frame(x = x1, y = y1, N = "N=30"),
+  data.frame(x = x2, y = y2, N = "N=50"),
+  data.frame(x = x3, y = y3, N = "N=80"),
+  data.frame(x = x4, y = y4, N = "N=160")
+)
+
+# Combine all predictions
+xx <- seq(-0.99, 0.99, length.out = 300)
+pred_df <- rbind(
+  data.frame(x = xx, y = f(xx), model = "True"),
+  data.frame(x = xx, y = predict(fit1, newdata = data.frame(x1 = xx)), model = "N=30"),
+  data.frame(x = xx, y = predict(fit2, newdata = data.frame(x2 = xx)), model = "N=50"),
+  data.frame(x = xx, y = predict(fit3, newdata = data.frame(x3 = xx)), model = "N=80"),
+  data.frame(x = xx, y = predict(fit4, newdata = data.frame(x4 = xx)), model = "N=160")
+)
+
+```
+
+
+::: {.fragment}
+
+::: {.panel-tabset}
+
+## 30 Points {.smaller}
+
+```{r}
+ggplot() +
+  # Points from the actual data
+  geom_point(data = subset(plot_df, N == "N=30"), 
+             aes(x = x, y = y), size = 2, color = "black") +
+  # Lines from predictions
+  geom_line(data = subset(pred_df, model == "True"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(pred_df, model == "N=30"), 
+            aes(x = x, y = y, color = "N=30", linetype = "N=30"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "N=30" = "red")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "N=30" = "solid")
+  ) +
+  labs(
+    title = "Degree 16 Polynomial Regression",
+    subtitle = "Sample = 30 Points",
+    x = "x", 
+    y = "y") +
+  theme_minimal()
+```
+
+## 50 Points {.smaller}
+
+```{r}
+ggplot() +
+  # Points from the actual data
+  geom_point(data = subset(plot_df, N == "N=50"), 
+             aes(x = x, y = y), size = 2, color = "black") +
+  # Lines from predictions
+  geom_line(data = subset(pred_df, model == "True"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(pred_df, model == "N=50"), 
+            aes(x = x, y = y, color = "N=50", linetype = "N=50"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "N=50" = "red")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "N=50" = "solid")
+  ) +
+  labs(
+    title = "Degree 16 Polynomial Regression",
+    subtitle = "Sample = 50 Points",
+    x = "x", 
+    y = "y") +
+  theme_minimal()
+```
+
+
+## 80 Points {.smaller}
+
+```{r}
+ggplot() +
+  # Points from the actual data
+  geom_point(data = subset(plot_df, N == "N=80"), 
+             aes(x = x, y = y), size = 2, color = "black") +
+  # Lines from predictions
+  geom_line(data = subset(pred_df, model == "True"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(pred_df, model == "N=80"), 
+            aes(x = x, y = y, color = "N=80", linetype = "N=80"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "N=80" = "red")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "N=80" = "solid")
+  ) +
+  labs(
+    title = "Degree 16 Polynomial Regression",
+    subtitle = "Sample = 80 Points",
+    x = "x", 
+    y = "y") +
+  theme_minimal()
+```
+
+## 160 Points {.smaller}
+
+```{r}
+ggplot() +
+  # Points from the actual data
+  geom_point(data = subset(plot_df, N == "N=160"), 
+             aes(x = x, y = y), size = 2, color = "black") +
+  # Lines from predictions
+  geom_line(data = subset(pred_df, model == "True"), 
+            aes(x = x, y = y, color = "True Function", linetype = "True Function"), 
+            linewidth = 1) +
+  geom_line(data = subset(pred_df, model == "N=160"), 
+            aes(x = x, y = y, color = "N=160", linetype = "N=160"), 
+            linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  scale_color_manual(
+    name = "Model",
+    values = c("True Function" = "black", "N=160" = "red")
+  ) +
+  scale_linetype_manual(
+    name = "Model",
+    values = c("True Function" = "dashed", "N=160" = "solid")
+  ) +
+  labs(
+    title = "Degree 16 Polynomial Regression",
+    subtitle = "Sample = 160 Points",
+    x = "x", 
+    y = "y") +
+    
+  theme_minimal()
+```
+
+## Combined {.smaller}
+
+```{r}
+ggplot() +
+  geom_point(data = plot_df, aes(x = x, y = y, color = N), size = 1.5) +
+  geom_line(data = pred_df, aes(x = x, y = y, color = model), linewidth = 1) +
+  coord_fixed(ylim = c(-1, 1)) +
+  labs(
+    title = "Degree 16 Polynomial Regression",
+    subtitle = "Combined Samples",
+    x = "x", 
+    y = "y") +
+  theme_minimal()
+```
+
+:::
+:::
+
+
+## Multiple Linear Regression {.smaller}
+
+**Problem:** Predict $y$ using multiple features $x_1, x_2, \ldots, x_p$
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p + \varepsilon$$
+
+**Loss Function:** Mean Squared Error
+$$\text{Loss} = \frac{1}{N}\sum_{i=1}^N(y_i - \hat{y}_i)^2$$
+
+::: {.fragment}
+**Goal: Generalization over Explanation**
+
+* **Statistics perspective:** Focus on coefficient distributions, confidence intervals, p-values
+* **ML perspective:** Focus on prediction accuracy via cross-validation
+
+Both overfitting and regularization apply here: Ridge and Lasso extend naturally to multiple features.
+
+::: 
+
+## Fat Dataset: The Brozek Formula {.smaller}
+We will use the **fat** dataset from R to predict **body fat percentage** using various body measurements (weight, height, age, circumferences, etc.).  The Brozek formula estimates body fat from body density. 
+
+```{r}
+library(faraway) #has the dataset fat
+data("fat")
+```
+
+::: {.fragment}
+
+::: {.panel-tabset}
+
+## Data {.smaller}
+
+```{r}
+#| echo: true
+library(faraway) #has the dataset fat
+data("fat")
+
+head(fat)
+```
+
+## Data Description {.smaller}
+
+```{r}
+#| echo: true
+str(fat)
+```
+
+
+## Statistical Summary {.smaller}
+
+```{r}
+#| echo: true
+model <- lm(formula = brozek ~  age + weight + height + adipos + neck +
+              chest + abdom + hip + thigh + knee + ankle + biceps + forearm +
+              wrist, data = fat)
+
+summary(model)
+```
+
+## Model Selection {.smaller}
+In statistics, there are several methods to select important variables (stepwise selection, forward selection, etc.). Using **subset selection**, the following variables were chosen in order of importance:
+
+```{r}
+selection_order <- data.frame(
+  Order = 1:4,
+  Variable = c("abdomen", "weight", "wrist", "forearm"),
+  Description = c("Abdomen circumference", "Body weight", "Wrist circumference", "Forearm circumference")
+)
+knitr::kable(selection_order)
+```
+
+
+:::
+::: 
+
+## Fat Dataset: Lasso Regularization {.smaller}
+
+**Model:** Predict body fat percentage using multiple features:
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p$$
+
+**Lasso Loss Function:**
+$$\text{Loss}_\text{Lasso} = \frac{1}{N}\sum_{i=1}^N(y_i - \hat{y}_i)^2+\lambda\sum_{i=1}^p|\beta_i|,\quad \lambda\geq0$$
+
+Unlike Ridge, Lasso's L1 penalty can drive coefficients exactly to zero, automatically selecting the most important variables
+for prediction under the Lasso penalty.
+
+```{r}
+# Define the model matrix
+X <- model.matrix(brozek ~  age + weight + height + adipos + neck + chest + abdom + hip + 
+                  thigh + knee + ankle + biceps + forearm + wrist, 
+                  data=fat)[,-1] 
+# [,-1] removes the column of 1's from the data
+
+# and define the outcome
+Y <- fat[,"brozek"]
+```
+
+::: {.fragment}
+::: {.panel-tabset}
+
+## Best $\lambda$ {.smaller}
+
+The glmnet package uses k-fold cross-validation to determine the optimal value of the Lasso regression parameter. 
+
+```{r}
+# Define a custom sequence of lambda values
+lambda_seq <- 10^seq(-3, 2, by = 0.1)
+
+set.seed(1234)
+
+# Perform cross-validation to find the optimal lambda
+cv_fit <- cv.glmnet(X, Y, alpha = 1, nfolds = 5, lambda = lambda_seq)
+
+# Plot the cross-validation results
+plot(cv_fit)
+```
+
+The optimal $\lambda$
+```{r}
+optimal_lambda <- cv_fit$lambda.min
+print(optimal_lambda)
+```
+## Coefficient Path {.smaller}
+
+```{r}
+plot(cv_fit$glmnet.fit,"lambda", label=FALSE, lwd = 2)
+```
+
+## Coefficients  {.smaller}
+
+::: {.columns}
+::: {.column width="50%" }
+Coefficients for $\lambda = 0.4$
+```{r}
+ridge.model <- glmnet(x=X, y=Y, alpha = 1, lambda = 0.4)
+coef(ridge.model)
+```
+:::
+
+::: {.column width="45%" }
+Coefficients for $\lambda = 0.04$
+```{r}
+ridge.model <- glmnet(x=X, y=Y, alpha = 1, lambda = 0.04)
+coef(ridge.model)
+```
+:::
+:::
+
+:::
+:::
+
+
+## Hyperparameters in Machine Learning {.smaller}
+
+**What are hyperparameters?**  
+Parameters that control the learning process, set **before** training (not learned from data).
+
+**Examples from this presentation:**
+
+::: {.incremental}
+* **Polynomial degree** $d$ in regression - controls model complexity
+* **Regularization strength** $\lambda$ in Ridge/Lasso - controls penalty magnitude
+:::
+
+::: {.fragment}
+
+**How do we choose them?**  
+Often chosen using **cross-validation**
+
+:::
+
+::: {.fragment}
+**Looking ahead:**  
+Every ML algorithm has hyperparameters. In neural networks: learning rate, number of layers, neurons per layer, etc. Choosing good hyperparameters is critical for model performance.
+:::
+
