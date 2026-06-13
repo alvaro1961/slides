@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="convolutions_and_filters_files/libs/clipboard/clipboard.min.js"></script>
+<script src="convolutions_and_filters_files/libs/quarto-html/tabby.min.js"></script>
+<script src="convolutions_and_filters_files/libs/quarto-html/popper.min.js"></script>
+<script src="convolutions_and_filters_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="convolutions_and_filters_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="convolutions_and_filters_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="convolutions_and_filters_files/libs/quarto-html/quarto-syntax-highlighting-325f3ff2f131f9421fc6e27256f8a6fd.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.37">
+
+  <meta name="author" content="Alvaro Arias">
+  <title>Convolutions and Filters</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="convolutions_and_filters_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="convolutions_and_filters_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #f8f8f2; background-color: #2e3440; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #f8f8f2; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #75715e; } /* Annotation */
+    code span.at { color: #f92672; } /* Attribute */
+    code span.bn { color: #ae81ff; } /* BaseN */
+    code span.bu { color: #66d9ef; } /* BuiltIn */
+    code span.cf { color: #f92672; } /* ControlFlow */
+    code span.ch { color: #e6db74; } /* Char */
+    code span.cn { color: #ae81ff; } /* Constant */
+    code span.co { color: #75715e; } /* Comment */
+    code span.cv { color: #75715e; } /* CommentVar */
+    code span.do { color: #75715e; } /* Documentation */
+    code span.dt { color: #66d9ef; font-style: italic; } /* DataType */
+    code span.dv { color: #ae81ff; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #a6e22e; font-weight: bold; } /* Extension */
+    code span.fl { color: #ae81ff; } /* Float */
+    code span.fu { color: #a6e22e; } /* Function */
+    code span.im { color: #f92672; } /* Import */
+    code span.in { color: #f1fa8c; } /* Information */
+    code span.kw { color: #f92672; } /* Keyword */
+    code span.op { color: #f8f8f2; } /* Operator */
+    code span.ot { color: #a6e22e; } /* Other */
+    code span.pp { color: #f92672; } /* Preprocessor */
+    code span.re { color: #75715e; } /* RegionMarker */
+    code span.sc { color: #ae81ff; } /* SpecialChar */
+    code span.ss { color: #e6db74; } /* SpecialString */
+    code span.st { color: #e6db74; } /* String */
+    code span.va { color: #f8f8f2; } /* Variable */
+    code span.vs { color: #e6db74; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="convolutions_and_filters_files/libs/revealjs/dist/theme/quarto-dd35d0306f5a6863b0b5c85b74390ac9.css">
+  <link rel="stylesheet" href="presentations.css">
+  <link href="convolutions_and_filters_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="convolutions_and_filters_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="convolutions_and_filters_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="convolutions_and_filters_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Convolutions and Filters</h1>
+  <p class="subtitle">Introduction to Machine Learning</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Alvaro Arias 
+</div>
+</div>
+</div>
+
+</section>
+<section id="what-is-a-convolution" class="slide level2 smaller">
+<h2>What is a Convolution?</h2>
+<p>A <strong>convolution</strong> is a linear map on arrays: it transforms an input array into an output array via a weighted local sum, where the weights are given by a small matrix called the <strong>kernel</strong>.</p>
+<div class="fragment">
+<p>Formally, at each position <span class="math inline">\((r, c)\)</span> the output is:</p>
+<p><span class="math display">\[\text{output}(r, c) = \sum_{i=0}^{k-1} \sum_{j=0}^{k-1} \text{input}(r+i,\ c+j) \cdot \text{kernel}(i, j)\]</span></p>
+<p>This sum is computed at every valid position, producing a new array of the same spatial structure.</p>
+</div>
+<div class="fragment">
+<p><strong>A note on terminology:</strong> the formula above is technically <strong>cross-correlation</strong> — the kernel is not flipped before the sum. The classical signal-processing definition of convolution flips the kernel in both dimensions.</p>
+<p>In deep learning, the unflipped version is used universally, and the operation is still called convolution. We follow that convention.</p>
+</div>
+</section>
+<section id="stride-and-padding" class="slide level2 smaller">
+<h2>Stride and Padding</h2>
+<p>Two parameters control how the kernel travels and what happens at the borders.</p>
+<div class="columns">
+<div class="column" style="font-size: 85%;">
+<div class="fragment">
+<p><strong>Stride:</strong> how many pixels the kernel moves at each step</p>
+<ul>
+<li>Stride 1: move one pixel at a time (default)</li>
+<li>Stride 2: skip every other position — the output is roughly half the size</li>
+</ul>
+</div>
+</div><div class="column" style="font-size: 85%;">
+<div class="fragment">
+<p><strong>Padding:</strong> what to do at the edges of the image</p>
+<ul>
+<li>No padding: the kernel only visits positions where it fits fully — the output is smaller than the input</li>
+<li>Zero padding: surround the image with zeros so the kernel can visit every pixel — the output can match the input size</li>
+</ul>
+</div>
+</div></div>
+<div class="fragment">
+<blockquote>
+<p><span class="math display">\[\text{output size} = \left\lfloor \frac{\text{input size} - \text{kernel size} + 2 \times \text{padding}}{\text{stride}} \right\rfloor + 1\]</span></p>
+<p>For a <span class="math inline">\(6 \times 6\)</span> input, <span class="math inline">\(3 \times 3\)</span> kernel, stride 1, no padding: <span class="math inline">\(\lfloor(6 - 3) / 1\rfloor + 1 = 4\)</span></p>
+</blockquote>
+</div>
+</section>
+<section id="convolution-explorer" class="slide level2 smaller">
+<h2>Convolution Explorer</h2>
+<p>Step through a convolution interactively. Try changing the kernel, stride, and padding and observe how the output changes.</p>
+<div class="fragment">
+<iframe src="convolution_applet.html" width="100%" height="520px" frameborder="0" style="border-radius: 8px;">
+</iframe>
+</div>
+<div style="font-size: 0.65em; color: gray; margin-top: 6px;">
+<p><em>The input has a deliberate edge pattern — switch to Sobel horizontal or vertical to see the kernel respond strongly at boundaries.</em></p>
+</div>
+</section>
+<section id="convolutions-in-pytorch" class="slide level2 smaller">
+<h2>Convolutions in PyTorch</h2>
+<div style="font-size: 85%;">
+<p>PyTorch implements convolutions via <code>torch.nn.functional.conv2d</code>.</p>
+<p>The applet worked with 2D arrays — a 2D image and a 2D kernel.</p>
+<p>PyTorch requires <strong>4D tensors</strong> for both:</p>
+<div class="fragment">
+<table class="caption-top">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 32%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Object</th>
+<th>Applet</th>
+<th>PyTorch</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Image</td>
+<td><code>(height, width)</code></td>
+<td><code>(batch, channels, height, width)</code></td>
+</tr>
+<tr class="even">
+<td>Kernel</td>
+<td><code>(height, width)</code></td>
+<td><code>(out_channels, in_channels, height, width)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p>The spatial operation is the same. The extra dimensions exist to handle multiple images at once and multiple input/output channels.</p>
+<p>We will add those dimensions explicitly.</p>
+</div>
+</div>
+</section>
+<section id="why-4d-tensors-channels-and-batches" class="slide level2 smaller">
+<h2>Why 4D Tensors? Channels and Batches</h2>
+<div style="font-size: 85%;">
+<p><strong>Channels</strong> capture multiple measurements per pixel.</p>
+<div class="fragment">
+<p>A color image has three channels — one per color:</p>
+<div id="5a7d23eb" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># RGB image: shape (3, height, width)</span></span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a>rgb <span class="op">=</span> torch.zeros(<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">6</span>)</span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"RGB image shape:"</span>, rgb.shape)</span>
+<span id="cb1-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># channel 0 = red, channel 1 = green, channel 2 = blue</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RGB image shape: torch.Size([3, 6, 6])</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The convolution kernel must match the number of input channels. For RGB, each kernel is a 3×3×3 array — one 3×3 filter per channel, summed to produce one output value.</p>
+<p>Later in CNNs, channels generalize beyond color: they represent learned feature maps.</p>
+</div>
+<div class="fragment">
+<p><strong>Batches</strong> exist for computational efficiency.</p>
+<p>Networks process <span class="math inline">\(N\)</span> images simultaneously — the same kernel applied to all <span class="math inline">\(N\)</span> inputs in parallel. This is what makes GPU training fast.</p>
+<div id="ed8a75ff" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Batch of 8 RGB images</span></span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>batch <span class="op">=</span> torch.zeros(<span class="dv">8</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">6</span>)</span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Batch shape:"</span>, batch.shape)</span>
+<span id="cb3-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (8 images, 3 channels, 6 rows, 6 cols)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Batch shape: torch.Size([8, 3, 6, 6])</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="from-2d-to-4d-image-and-kernel" class="slide level2 smaller">
+<h2>From 2D to 4D: Image and Kernel</h2>
+<div style="font-size: 85%;">
+<p>The applet image and the Sobel kernel are both 2D. We add two dimensions to each.</p>
+<div class="fragment">
+<div id="34dd367f" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb5-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># The same image as the applet — starts as 2D</span></span>
+<span id="cb5-5"><a href="" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> torch.tensor([</span>
+<span id="cb5-6"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">200.</span>, <span class="fl">200.</span>],</span>
+<span id="cb5-7"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">200.</span>, <span class="fl">200.</span>],</span>
+<span id="cb5-8"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">10.</span>, <span class="fl">200.</span>, <span class="fl">200.</span>],</span>
+<span id="cb5-9"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">200.</span>,<span class="fl">200.</span>,<span class="fl">200.</span>,<span class="fl">200.</span>, <span class="fl">10.</span>,  <span class="fl">10.</span>],</span>
+<span id="cb5-10"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">200.</span>,<span class="fl">200.</span>,<span class="fl">200.</span>,<span class="fl">200.</span>, <span class="fl">10.</span>,  <span class="fl">10.</span>],</span>
+<span id="cb5-11"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="fl">200.</span>,<span class="fl">200.</span>,<span class="fl">200.</span>,<span class="fl">200.</span>, <span class="fl">10.</span>,  <span class="fl">10.</span>],</span>
+<span id="cb5-12"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb5-13"><a href="" aria-hidden="true" tabindex="-1"></a>img_4d <span class="op">=</span> img.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)   <span class="co"># (1, 1, 6, 6)</span></span>
+<span id="cb5-14"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Image:"</span>, img.shape, <span class="st">"→"</span>, img_4d.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Image: torch.Size([6, 6]) → torch.Size([1, 1, 6, 6])</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div id="c9041f2a" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Sobel horizontal kernel — starts as 2D</span></span>
+<span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_h <span class="op">=</span> torch.tensor([</span>
+<span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="op">-</span><span class="fl">1.</span>, <span class="op">-</span><span class="fl">2.</span>, <span class="op">-</span><span class="fl">1.</span>],</span>
+<span id="cb7-4"><a href="" aria-hidden="true" tabindex="-1"></a>    [ <span class="fl">0.</span>,  <span class="fl">0.</span>,  <span class="fl">0.</span>],</span>
+<span id="cb7-5"><a href="" aria-hidden="true" tabindex="-1"></a>    [ <span class="fl">1.</span>,  <span class="fl">2.</span>,  <span class="fl">1.</span>]</span>
+<span id="cb7-6"><a href="" aria-hidden="true" tabindex="-1"></a>]).unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)             <span class="co"># (1, 1, 3, 3)</span></span>
+<span id="cb7-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Kernel:"</span>, <span class="st">"(3, 3)"</span>, <span class="st">"→"</span>, sobel_h.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Kernel: (3, 3) → torch.Size([1, 1, 3, 3])</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Both follow the same pattern: start with the natural 2D array, add the two required dimensions with <code>unsqueeze</code>.</p>
+</div>
+</div>
+</section>
+<section id="applying-the-sobel-kernel" class="slide level2 smaller">
+<h2>Applying the Sobel Kernel</h2>
+<div style="font-size: 85%;">
+<p>With both tensors in 4D form, we call <code>conv2d</code> — and the result should match what the applet computed.</p>
+<div id="90b58646" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> F.conv2d(img_4d, sobel_h, padding<span class="op">=</span><span class="dv">0</span>, stride<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Output shape:"</span>, output.shape)</span>
+<span id="cb9-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Output values:"</span>)</span>
+<span id="cb9-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(output.squeeze().numpy().astype(<span class="bu">int</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output shape: torch.Size([1, 1, 4, 4])
+
+Output values:
+[[   0    0    0    0]
+ [ 760  760  380 -380]
+ [ 760  760  380 -380]
+ [   0    0    0    0]]</code></pre>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The same operation on a real image produces interpretable structure — edges, textures, and boundaries become visible in the output.</p>
+</div>
+</section>
+<section id="convolutions-of-large-images" class="slide level2 smaller">
+<h2>Convolutions of Large Images</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">The Image</a></li><li><a href="#tabset-1-2">The Filters</a></li><li><a href="#tabset-1-3">Convolutions</a></li><li><a href="#tabset-1-4">Results</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># import libraries and image</span></span>
+<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torchvision.transforms <span class="im">as</span> transforms</span>
+<span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Load gray image</span></span>
+<span id="cb11-9"><a href="" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'images/panda.jpg'</span>).convert(<span class="st">'L'</span>)</span>
+<span id="cb11-10"><a href="" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> transforms.ToTensor()</span>
+<span id="cb11-11"><a href="" aria-hidden="true" tabindex="-1"></a>img_tensor <span class="op">=</span> transform(image).unsqueeze(<span class="dv">0</span>) <span class="co"># add the batch dimension</span></span>
+<span id="cb11-12"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="" aria-hidden="true" tabindex="-1"></a>image</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column" style="width:50%;">
+<div id="d3c31d4f" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-8-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="a5165751" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-stdout">
+<pre><code>The img_tensor has shape torch.Size([1, 1, 250, 500])</code></pre>
+</div>
+</div>
+</div></div>
+</div>
+<div id="tabset-1-2">
+<div id="cf304fc5" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># define common filters </span></span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># We are adding the out-channels=1 and in_channels=1 </span></span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_x <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>], </span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>                        [<span class="op">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">2</span>], </span>
+<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>                        [<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>]], dtype<span class="op">=</span>torch.float32).unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_y <span class="op">=</span> torch.tensor([[<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">2</span>, <span class="op">-</span><span class="dv">1</span>], </span>
+<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a>                        [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], </span>
+<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a>                        [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>]], dtype<span class="op">=</span>torch.float32).unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a>gaussian <span class="op">=</span> torch.tensor([[<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">1</span>],</span>
+<span id="cb13-10"><a href="" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">4</span>, <span class="dv">16</span>, <span class="dv">24</span>, <span class="dv">16</span>, <span class="dv">4</span>],</span>
+<span id="cb13-11"><a href="" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">6</span>, <span class="dv">24</span>, <span class="dv">36</span>, <span class="dv">24</span>, <span class="dv">6</span>],</span>
+<span id="cb13-12"><a href="" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">4</span>, <span class="dv">16</span>, <span class="dv">24</span>, <span class="dv">16</span>, <span class="dv">4</span>],</span>
+<span id="cb13-13"><a href="" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">1</span>]], dtype<span class="op">=</span>torch.float32) <span class="op">/</span> <span class="fl">256.0</span>  <span class="co"># Dividing by 256 normalizes the filter</span></span>
+<span id="cb13-14"><a href="" aria-hidden="true" tabindex="-1"></a>gaussian <span class="op">=</span> gaussian.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb13-15"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The sobel_x filter has shape </span><span class="sc">{</span>sobel_x<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-17"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The sobel_y filter has shape </span><span class="sc">{</span>sobel_y<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-18"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"The gaussian filter has shape </span><span class="sc">{</span>gaussian<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The sobel_x filter has shape torch.Size([1, 1, 3, 3])
+The sobel_y filter has shape torch.Size([1, 1, 3, 3])
+The gaussian filter has shape torch.Size([1, 1, 5, 5])</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3">
+<div id="c04ef44f" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply convolutions - use padding to preserve size</span></span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>img_sobel_x <span class="op">=</span> F.conv2d(img_tensor, sobel_x, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>img_sobel_y <span class="op">=</span> F.conv2d(img_tensor, sobel_y, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a>img_gaussian <span class="op">=</span> F.conv2d(img_tensor, gaussian, padding<span class="op">=</span><span class="dv">2</span>)  </span>
+<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to numpy for plotting</span></span>
+<span id="cb15-7"><a href="" aria-hidden="true" tabindex="-1"></a>original_np <span class="op">=</span> img_tensor.squeeze().detach().numpy()</span>
+<span id="cb15-8"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_x_np <span class="op">=</span> img_sobel_x.squeeze().detach().numpy()</span>
+<span id="cb15-9"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_y_np <span class="op">=</span> img_sobel_y.squeeze().detach().numpy()</span>
+<span id="cb15-10"><a href="" aria-hidden="true" tabindex="-1"></a>gaussian_np <span class="op">=</span> img_gaussian.squeeze().detach().numpy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>The Sobel_x filter detects vertical edges</li>
+<li>The Sobel_y filter detects horizontal edges</li>
+<li>The Gaussian filter blurs the image. It is often used before further processing</li>
+</ul>
+</div>
+<div id="tabset-1-4">
+<div id="cb69616d" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-12-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-stride" class="slide level2 smaller">
+<h2>Exploring Stride</h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Concept</a></li><li><a href="#tabset-2-2">Stride Examples</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div style="font-size: 85%;">
+<p>Stride controls the step size between kernel positions — how far the kernel moves after each computation.</p>
+<div class="fragment">
+<p>Larger stride → fewer output positions → smaller output array</p>
+</div>
+<div class="fragment">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Stride</th>
+<th>Output size (400×300 image, 3×3 kernel)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>398 × 298</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>199 × 149</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>133 × 99</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>100 × 74</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In CNNs, stride &gt; 1 is used to <strong>downsample</strong> the feature map</li>
+<li>reducing spatial resolution at each layer without a separate pooling operation.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="tabset-2-2">
+<div id="b4d98610" class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-13-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-dilation" class="slide level2 smaller">
+<h2>Exploring Dilation</h2>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Concept</a></li><li><a href="#tabset-3-2">Dilation Examples</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div style="font-size: 85%;">
+<p>A dilated convolution inserts gaps between kernel elements, expanding the <strong>receptive field</strong> without increasing the number of parameters.</p>
+<p>With a 3×3 kernel:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Dilation = 1</strong> (standard)</p>
+<p>Kernel elements are adjacent — covers a 3×3 region of the input.</p>
+<pre><code>■ ■ ■
+■ ■ ■
+■ ■ ■</code></pre>
+</div><div class="column" style="width:50%;">
+<p><strong>Dilation = 2</strong></p>
+<p>One gap between elements — covers a 5×5 region of the input.</p>
+<pre><code>■ · ■ · ■
+· · · · ·
+■ · ■ · ■
+· · · · ·
+■ · ■ · ■</code></pre>
+</div></div>
+<div class="fragment">
+<p>The kernel has the same 9 weights in both cases. Dilation = 2 applies those weights to positions spaced 2 apart, so the output depends on a larger neighborhood.</p>
+<p>In PyTorch: <code>F.conv2d(x, kernel, dilation=2)</code></p>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div style="font-size: 70%;">
+<p>Unlike stride, dilation does not reduce the output size — the spatial dimensions are preserved with appropriate padding</p>
+</div>
+<div id="fc3014e8" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-14-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="batch-processing-of-images" class="slide level2 smaller">
+<h2>Batch Processing of Images</h2>
+<div class="panel-tabset">
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Concept</a></li><li><a href="#tabset-4-2">Resize and Stack</a></li><li><a href="#tabset-4-3">Apply Convolution</a></li><li><a href="#tabset-4-4">Results</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1">
+<p>In practice, processing images one at a time is inefficient. A <strong>batch</strong> groups multiple images into a single tensor and processes them simultaneously.</p>
+<div class="fragment">
+<p>For this to work, all images must have the same spatial dimensions. We resize them to a common target size before stacking.</p>
+</div>
+<div class="fragment">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>Shape</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Single image</td>
+<td><code>(1, H, W)</code></td>
+<td>1 channel, height, width</td>
+</tr>
+<tr class="even">
+<td>Batch of 3</td>
+<td><code>(3, 1, H, W)</code></td>
+<td>3 images, 1 channel, height, width</td>
+</tr>
+<tr class="odd">
+<td>After conv</td>
+<td><code>(3, 1, H, W)</code></td>
+<td>same batch structure, filtered</td>
+</tr>
+</tbody>
+</table>
+<p>The convolution is applied once — PyTorch handles the entire batch in a single call, with the kernel weights shared across all images.</p>
+</div>
+</div>
+<div id="tabset-4-2">
+<div class="columns" style="font-size: 80%;">
+<div class="column" style="width:50%;">
+<div id="45a68381" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a>panda <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'images/panda.jpg'</span>).convert(<span class="st">'L'</span>)</span>
+<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a>butterfly <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'images/butterfly.jpg'</span>).convert(<span class="st">'L'</span>)</span>
+<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a>city_river <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'images/city_river.jpg'</span>).convert(<span class="st">'L'</span>)</span>
+<span id="cb18-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to tensors and check shapes</span></span>
+<span id="cb18-6"><a href="" aria-hidden="true" tabindex="-1"></a>panda_tensor <span class="op">=</span> transform(panda)</span>
+<span id="cb18-7"><a href="" aria-hidden="true" tabindex="-1"></a>butterfly_tensor <span class="op">=</span> transform(butterfly)</span>
+<span id="cb18-8"><a href="" aria-hidden="true" tabindex="-1"></a>city_river_tensor <span class="op">=</span> transform(city_river) </span>
+<span id="cb18-9"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="" aria-hidden="true" tabindex="-1"></a>panda_tensor.shape, butterfly_tensor.shape, city_river_tensor.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>(torch.Size([1, 159, 318]),
+ torch.Size([1, 251, 201]),
+ torch.Size([1, 1599, 2400]))</code></pre>
+</div>
+</div>
+<p>Images have different sizes — we need to:</p>
+<ul>
+<li>Resize them to a common shape</li>
+<li>Stack them into a single tensor</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div id="411277e0" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a>target_size <span class="op">=</span> (<span class="dv">200</span>, <span class="dv">256</span>)  </span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>resize <span class="op">=</span> transforms.Compose([</span>
+<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a>    transforms.Resize(target_size),</span>
+<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>    transforms.ToTensor()</span>
+<span id="cb20-6"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="" aria-hidden="true" tabindex="-1"></a>panda_resized <span class="op">=</span> resize(panda)</span>
+<span id="cb20-9"><a href="" aria-hidden="true" tabindex="-1"></a>butterfly_resized <span class="op">=</span> resize(butterfly)</span>
+<span id="cb20-10"><a href="" aria-hidden="true" tabindex="-1"></a>city_river_resized <span class="op">=</span> resize(city_river)</span>
+<span id="cb20-11"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="" aria-hidden="true" tabindex="-1"></a>panda_resized.shape, butterfly_resized.shape, city_river_resized.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>(torch.Size([1, 200, 256]),
+ torch.Size([1, 200, 256]),
+ torch.Size([1, 200, 256]))</code></pre>
+</div>
+</div>
+<div id="f102e104" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a>combined_images <span class="op">=</span> torch.stack([panda_resized, butterfly_resized, city_river_resized])</span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Batch tensor shape: </span><span class="sc">{</span>combined_images<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (3 images, 1 channel, 200 rows, 256 cols)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Batch tensor shape: torch.Size([3, 1, 200, 256])</code></pre>
+</div>
+</div>
+</div></div>
+</div>
+<div id="tabset-4-3">
+<p>The same call as before — PyTorch applies the filter to each image in the batch automatically.</p>
+<div id="a1e0a2b6" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="" aria-hidden="true" tabindex="-1"></a>batch_sobel <span class="op">=</span> F.conv2d(combined_images, sobel_x, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Output batch shape: </span><span class="sc">{</span>batch_sobel<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb24-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (3 images, 1 channel, 200, 256) — same spatial size due to padding=1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output batch shape: torch.Size([3, 1, 200, 256])</code></pre>
+</div>
+</div>
+<p>Processing all images in a single call is computationally efficient — the kernel weights are shared across the entire batch.</p>
+</div>
+<div id="tabset-4-4">
+<div id="1be92e0d" class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-19-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="applying-filters-to-color-images" class="slide level2 smaller">
+<h2>Applying Filters to Color Images</h2>
+<div class="panel-tabset">
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Concept</a></li><li><a href="#tabset-5-2">Image</a></li><li><a href="#tabset-5-3">Kernel</a></li><li><a href="#tabset-5-4">Result</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1">
+<div>
+<ul>
+<li class="fragment">A grayscale image has 1 channel: one value per pixel.</li>
+<li class="fragment">A color image has 3 channels (RGB): three values per pixel.</li>
+<li class="fragment">When applying a convolution to a color image, the kernel covers all channels.</li>
+<li class="fragment">A 3×3 kernel becomes a 3×3×3 array: one 3×3 filter per channel.</li>
+<li class="fragment">At each position, the three filtered values are summed to produce a single output.</li>
+</ul>
+</div>
+<div class="fragment">
+<p>This means <strong>one filter applied to a color image produces one output channel</strong> — a grayscale feature map.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>Grayscale input</th>
+<th>Color input</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Kernel shape</td>
+<td><code>(1, 1, 3, 3)</code></td>
+<td><code>(1, 3, 3, 3)</code></td>
+</tr>
+<tr class="even">
+<td>Output shape</td>
+<td><code>(1, 1, H, W)</code></td>
+<td><code>(1, 1, H, W)</code></td>
+</tr>
+</tbody>
+</table>
+<p>The output is the same — the kernel is deeper to match the input.</p>
+</div>
+</div>
+<div id="tabset-5-2">
+<div id="239005ba" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="" aria-hidden="true" tabindex="-1"></a>color_image <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'images/butterfly.jpg'</span>).convert(<span class="st">'RGB'</span>)</span>
+<span id="cb26-2"><a href="" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> transforms.ToTensor()</span>
+<span id="cb26-3"><a href="" aria-hidden="true" tabindex="-1"></a>color_img_tensor <span class="op">=</span> transform(color_image).unsqueeze(<span class="dv">0</span>)</span>
+<span id="cb26-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Color image tensor shape: </span><span class="sc">{</span>color_img_tensor<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb26-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (batch=1, channels=3, height, width)</span></span>
+<span id="cb26-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="" aria-hidden="true" tabindex="-1"></a>plt.imshow(color_img_tensor.squeeze(<span class="dv">0</span>).permute(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>).numpy())</span>
+<span id="cb26-9"><a href="" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb26-10"><a href="" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Color image tensor shape: torch.Size([1, 3, 251, 201])</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-20-output-2.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-3">
+<ul>
+<li>We start from the <span class="math inline">\(3 \times 3\)</span> Sobel kernel</li>
+<li>Add the two extra dimensions with <code>.unsqueeze(0).unsqueeze(0)</code>
+<ul>
+<li>the shape becomes <code>(1, 1, 3, 3)</code></li>
+</ul></li>
+<li>Use <code>.repeat(1, 3, 1, 1)</code> to copy the kernel 3 times along the in-channels dimension
+<ul>
+<li>shape becomes <code>(1, 3, 3, 3)</code></li>
+</ul></li>
+</ul>
+<div id="7c2b8851" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># The base Sobel kernel is 2D</span></span>
+<span id="cb28-2"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_x_kernel <span class="op">=</span> torch.tensor([</span>
+<span id="cb28-3"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="op">-</span><span class="fl">1.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>],</span>
+<span id="cb28-4"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="op">-</span><span class="fl">2.</span>, <span class="fl">0.</span>, <span class="fl">2.</span>],</span>
+<span id="cb28-5"><a href="" aria-hidden="true" tabindex="-1"></a>    [<span class="op">-</span><span class="fl">1.</span>, <span class="fl">0.</span>, <span class="fl">1.</span>]</span>
+<span id="cb28-6"><a href="" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb28-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Add out_channels and in_channels dimensions — same pattern as before</span></span>
+<span id="cb28-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Shape: (3, 3) -&gt; (1, 1, 3, 3)</span></span>
+<span id="cb28-10"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_x_color <span class="op">=</span> sobel_x_kernel.unsqueeze(<span class="dv">0</span>).unsqueeze(<span class="dv">0</span>).repeat(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb28-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># .repeat(1, 3, 1, 1) copies the kernel 3 times along the in_channels dimension</span></span>
+<span id="cb28-12"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># The same spatial filter is applied to each RGB channel independently</span></span>
+<span id="cb28-13"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Shape: (out_channels=1, in_channels=3, height=3, width=3)</span></span>
+<span id="cb28-14"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Kernel shape: </span><span class="sc">{</span>sobel_x_color<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Kernel shape: torch.Size([1, 3, 3, 3])</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-4">
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li>Apply convolution</li>
+<li>Convert it to numpy</li>
+<li>Plot it</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb30-2"><a href="" aria-hidden="true" tabindex="-1"></a>conv_color <span class="op">=</span> F.conv2d(color_img_tensor, sobel_x_color).detach().squeeze().numpy()</span>
+<span id="cb30-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="" aria-hidden="true" tabindex="-1"></a>plt.imshow(conv_color, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb30-5"><a href="" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Sobel X — color input, grayscale output'</span>)</span>
+<span id="cb30-6"><a href="" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb30-7"><a href="" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div><div class="column" style="width:50%;">
+<div id="834f7c0e" class="cell" data-execution_count="21">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-22-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+</section>
+<section id="multiple-filters-multiple-output-channels" class="slide level2 smaller">
+<h2>Multiple Filters, Multiple Output Channels</h2>
+<div class="panel-tabset">
+<ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Concept</a></li><li><a href="#tabset-6-2">Kernel</a></li><li><a href="#tabset-6-3">Results</a></li><li><a href="#tabset-6-4">Toward CNNs</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1">
+<div style="font-size: 85%;">
+<p>Applying <span class="math inline">\(N\)</span> filters to an image produces <span class="math inline">\(N\)</span> output channels — one per filter.</p>
+<div class="fragment">
+<p>Each filter operates independently and produces its own feature map. The output tensor has shape <code>(batch, N, H, W)</code>.</p>
+<p>Here we apply Sobel X and Sobel Y simultaneously:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>Shape</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Input image</td>
+<td><code>(1, 1, H, W)</code></td>
+<td>1 image, 1 channel</td>
+</tr>
+<tr class="even">
+<td>Kernel</td>
+<td><code>(2, 1, 3, 3)</code></td>
+<td>2 filters, 1 input channel, 3×3</td>
+</tr>
+<tr class="odd">
+<td>Output</td>
+<td><code>(1, 2, H, W)</code></td>
+<td>1 image, 2 channels</td>
+</tr>
+</tbody>
+</table>
+<p><code>output[:, 0, :, :]</code> contains the Sobel X response, <code>output[:, 1, :, :]</code> the Sobel Y response.</p>
+</div>
+<div class="fragment">
+<p>The two output channels can then be combined. The <strong>gradient magnitude</strong> <span class="math inline">\(\sqrt{S_x^2 + S_y^2}\)</span> measures total edge strength at each pixel, regardless of orientation. The <strong>sum</strong> <span class="math inline">\(S_x+S_y\)</span> combines both and emphasizes diagonal edges.</p>
+</div>
+</div>
+</div>
+<div id="tabset-6-2">
+<div style="font-size:85%;">
+<ul>
+<li>We start from the two 2D kernels <code>sobel_x</code> and <code>sobel_y</code>, already in shape <code>(1, 1, 3, 3)</code></li>
+<li>We stack them along the out-channels dimension to get shape <code>(2, 1, 3, 3)</code></li>
+</ul>
+<div id="9002f1af" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Stack the two filters along the out_channels dimension</span></span>
+<span id="cb31-2"><a href="" aria-hidden="true" tabindex="-1"></a>sobel_xy <span class="op">=</span> torch.stack([sobel_x.squeeze(), sobel_y.squeeze()]).unsqueeze(<span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Kernel shape: </span><span class="sc">{</span>sobel_xy<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb31-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (out_channels=2, in_channels=1, height=3, width=3)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Kernel shape: torch.Size([2, 1, 3, 3])</code></pre>
+</div>
+</div>
+<ul>
+<li>We apply the convolution — the output has 2 channels, one per filter</li>
+</ul>
+<div id="69abf161" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="" aria-hidden="true" tabindex="-1"></a>output_xy <span class="op">=</span> F.conv2d(img_tensor, sobel_xy)</span>
+<span id="cb33-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Output shape: </span><span class="sc">{</span>output_xy<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb33-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># (batch=1, channels=2, H, W) — one channel per filter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Output shape: torch.Size([1, 2, 248, 498])</code></pre>
+</div>
+</div>
+<ul>
+<li><code>output_xy[0, 0]</code> is <span class="math inline">\(S_x\)</span> — the Sobel X response (vertical edges)</li>
+<li><code>output_xy[0, 1]</code> is <span class="math inline">\(S_y\)</span> — the Sobel Y response (horizontal edges)</li>
+<li>We will plot both, their sum <span class="math inline">\(S_x + S_y\)</span>, and the gradient magnitude <span class="math inline">\(\sqrt{S_x^2 + S_y^2}\)</span></li>
+</ul>
+</div>
+</div>
+<div id="tabset-6-3">
+<div style="finf-size:85%;">
+<div id="48003c82" class="cell" data-execution_count="24">
+<div class="cell-output cell-output-display">
+<div>
+<figure>
+<p><img data-src="convolutions_and_filters_files/figure-revealjs/cell-25-output-1.png"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-6-4">
+<div style="finf-size:85%;">
+<p>In CNNs, the same principle generalizes: each layer applies many filters to many input channels.</p>
+<div class="fragment">
+<p>A typical first convolutional layer might take a 3-channel RGB image and apply 32 filters: Conv2d(in_channels=3, out_channels=32, kernel_size=3)</p>
+<p>The kernel has shape <code>(32, 3, 3, 3)</code> — 32 filters, each of depth 3, each 3×3 spatial. The output has 32 channels — one feature map per filter.</p>
+</div>
+<div class="fragment">
+<p>The next layer takes those 32 channels as input and applies 64 filters: Conv2d(in_channels=32, out_channels=64, kernel_size=3)</p>
+<p>Kernel shape: <code>(64, 32, 3, 3)</code> — 64 filters, each covering all 32 input channels.</p>
+</div>
+<div class="fragment">
+<p>The filters are not hand-designed — their weights are learned from data by minimizing the loss. This is what makes CNNs powerful: they learn which features to extract at each layer.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="convolutions_and_filters_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="convolutions_and_filters_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

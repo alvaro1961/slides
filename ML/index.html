@@ -1,57 +1,784 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>ML Slides</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Machine Learning — Presentations</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-        background-color: #f5f5f5;
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap");
+
+      :root {
+        --ink: #1c1c2a;
+        --slate: #52596b;
+        --muted: #8892a0;
+        --rule: #ddd8ce;
+        --bg: #f9f8f5;
+        --card-bg: #ffffff;
+        --gold: #9a6f2e;
+        --gold-pale: #fdf6eb;
+        --blue: #1d4ed8;
+        --blue-pale: #eff4ff;
+        --border: #e8e3da;
+        --planned: #9ca3af;
       }
-      h1 {
-        color: #2c3e50;
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-      }
-      ul {
-        list-style: none;
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
         padding: 0;
       }
-      li {
-        background-color: white;
-        margin: 1rem 0;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        font-size: 1.2rem;
-        transition: transform 0.2s;
+
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.65;
+        padding: 60px 24px 100px;
       }
-      li:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
       }
-      .number {
-        color: #3498db;
-        font-weight: bold;
-        margin-right: 0.5rem;
+
+      /* ── Header ── */
+      .site-header {
+        margin-bottom: 64px;
       }
-      a {
+
+      .site-header h1 {
+        font-family: "Lora", Georgia, serif;
+        font-size: clamp(1.9rem, 4vw, 2.8rem);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        line-height: 1.2;
+        margin-bottom: 16px;
+      }
+
+      .site-header p {
+        font-size: 1.05rem;
+        color: var(--slate);
+        max-width: 580px;
+        line-height: 1.7;
+      }
+
+      /* ── Act label ── */
+      .act-label {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+
+      .act-label-text {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+      }
+
+      .act-label-line {
+        flex: 1;
+        height: 1px;
+        background: var(--rule);
+      }
+
+      .act-stat .act-label-text {
+        color: var(--gold);
+      }
+      .act-ml .act-label-text {
+        color: var(--blue);
+      }
+      .act-planned .act-label-text {
+        color: var(--planned);
+      }
+
+      /* ── Cards ── */
+      .card-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 26px 28px;
         text-decoration: none;
         color: inherit;
         display: block;
+        transition:
+          box-shadow 0.18s ease,
+          transform 0.18s ease,
+          border-color 0.18s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        border-color: #c8c2b8;
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 8px;
+      }
+
+      .card-left {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+      }
+
+      .card-num {
+        font-family: "Lora", Georgia, serif;
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-style: italic;
+        min-width: 18px;
+        padding-top: 2px;
+      }
+
+      .card-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.3;
+      }
+
+      .card:hover .card-title {
+        color: var(--blue);
+      }
+
+      .open-link {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--blue);
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.15s;
+        padding-top: 3px;
+      }
+
+      .card:hover .open-link {
+        opacity: 1;
+      }
+
+      .card-tagline {
+        font-size: 0.93rem;
+        color: var(--slate);
+        margin-left: 32px;
+        margin-bottom: 18px;
+      }
+
+      .card-concepts {
+        margin-left: 32px;
+        border-top: 1px solid var(--rule);
+        padding-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+
+      .concept {
+        font-size: 0.88rem;
+        color: var(--slate);
+        padding-left: 14px;
+        position: relative;
+        line-height: 1.55;
+      }
+
+      .concept::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--rule);
+      }
+
+      .card:hover .concept::before {
+        background: var(--blue);
+      }
+
+      .concept strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* ── Planned card ── */
+      .card-planned {
+        border-style: dashed;
+        background: transparent;
+        cursor: default;
+      }
+      .card-planned:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: var(--border);
+      }
+      .card-planned .card-title {
+        color: var(--planned);
+      }
+      .card-planned .card-tagline {
+        color: #b0b8c4;
+      }
+      .card-planned .concept {
+        color: #b0b8c4;
+      }
+      .card-planned .concept strong {
+        color: #9ca3af;
+      }
+      .card-planned .concept::before {
+        background: #d1d5db;
+      }
+      .card-planned:hover .concept::before {
+        background: #d1d5db;
+      }
+      .card-planned:hover .card-title {
+        color: var(--planned);
+      }
+
+      .planned-tag {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--planned);
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        padding: 2px 8px;
+        white-space: nowrap;
+      }
+
+      /* ── Inflection marker ── */
+      .inflection {
+        margin: 48px 0;
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
+
+      .inflection-line {
+        flex: 1;
+        height: 1px;
+        background: var(--rule);
+      }
+
+      .inflection-pill {
+        background: var(--ink);
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 100px;
+        white-space: nowrap;
+      }
+
+      .inflection-years {
+        display: flex;
+        gap: 24px;
+        margin-top: 12px;
+        padding: 0 2px;
+        overflow-x: auto;
+      }
+
+      .yr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 70px;
+      }
+
+      .yr-date {
+        font-family: "Lora", Georgia, serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--slate);
+      }
+
+      .yr-label {
+        font-size: 0.68rem;
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.4;
+        margin-top: 2px;
+      }
+
+      .yr-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--rule);
+        margin-bottom: 5px;
+      }
+
+      .yr-dot.active {
+        background: var(--gold);
+      }
+      .yr-dot.modern {
+        background: var(--blue);
+      }
+
+      .inflection-timeline {
+        margin-top: 14px;
+        display: flex;
+        align-items: flex-end;
+        gap: 0;
+        padding: 0 2px;
+        overflow-x: auto;
+      }
+
+      .tl-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        min-width: 80px;
+      }
+
+      .tl-label {
+        font-size: 0.67rem;
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.35;
+        max-width: 90px;
+        margin-bottom: 6px;
+      }
+
+      .tl-date {
+        font-family: "Lora", Georgia, serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--slate);
+        margin-bottom: 5px;
+      }
+
+      .tl-node {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--rule);
+      }
+
+      .tl-node.gold {
+        background: var(--gold);
+      }
+      .tl-node.blue {
+        background: var(--blue);
+      }
+
+      .tl-connect {
+        flex: 1;
+        height: 1px;
+        background: var(--rule);
+        align-self: flex-end;
+        margin-bottom: 4px;
+      }
+
+      /* ── Section spacing ── */
+      .act-section {
+        margin-bottom: 12px;
       }
     </style>
-</head>
-<body>
-    <h1>Machine Learning Presentations</h1>
-    <ul>
-        <li><a href="regression.html" target="_blank"><span class="number">1.</span> Regression</a></li>
-        <li><a href="classification.html" target="_blank"><span class="number">2.</span> Classification</a></li>
-        <li><a href="classification2.html" target="_blank"><span class="number">3.</span> Classification in Higher Dimension</a></li>
-        <li><a href="neural_networks.html" target="_blank"><span class="number">4.</span> Neural Networks</a></li>
-    </ul>
-</body>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <h1>Machine Learning from First Principles</h1>
+        <p>
+          The core ideas behind modern AI are not new. Most of them were worked
+          out by statisticians over the past century: fitting curves,
+          estimating probabilities, controlling for overfitting.
+        </p>
+        <br/>
+        <p>
+          These presentations focus on the ideas that matter most: 
+          the small set of concepts that explain most of what modern ML does. 
+          The first presentations use R, the natural language of statistics. 
+          Later ones move to Python, where the math and code becomes more explicit.
+        </p>
+      </header>
+
+      <!-- ── Act I: Statistical Foundations ── -->
+      <div class="act-section">
+        <div class="act-label act-stat">
+          <span class="act-label-text">Statistical Foundations</span>
+          <span class="act-label-line"></span>
+        </div>
+
+        <div class="card-list">
+
+          <a href="regression.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num">1</span>
+                <h3 class="card-title">Regression Models</h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+              Fitting a function to data by minimizing prediction error is central to 
+              statistics — and equally central to machine learning, where the same idea 
+              scales to more powerful models and larger datasets.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>Model capacity:</strong> A more flexible model fits
+                training data better, but may generalize worse. Watching error
+                on held-out data reveals where that line is.
+              </div>
+              <div class="concept">
+                <strong>Bias–variance tradeoff:</strong> Simple models err by
+                being wrong on average (bias); complex ones err by being
+                inconsistent (variance). Neither extreme is good.
+              </div>
+              <div class="concept">
+                <strong>Train / validation / test splits:</strong>
+                Training error tells you about fit, not about generalization.
+                Train/validation/test splits exist to measure what actually
+                matters: how the model performs on new data.
+              </div>
+            </div>
+          </a>
+
+          <a href="classification.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num">2</span>
+                <h3 class="card-title">
+                  Classification &amp; Maximum Likelihood
+                </h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+              When the outcome is a category, statistics works with probabilities rather 
+              than continuous predictions — and so does machine learning, where the same 
+              probabilistic framework extends to neural networks and beyond.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>Maximum likelihood estimation:</strong> Instead of
+                minimizing squared error, we choose parameters that make the
+                observed labels most probable. This is the foundation of almost
+                every loss function in ML.
+              </div>
+              <div class="concept">
+                <strong>Cross-entropy loss:</strong>
+                Minimizing cross-entropy and maximizing likelihood are the same
+                thing. Binary cross-entropy handles the two-class case; softmax
+                cross-entropy generalizes it to any number of classes by turning
+                raw scores into a probability distribution.
+              </div>
+              <div class="concept">
+                <strong>Precision, recall, and class imbalance:</strong>
+                Not all errors cost the same. When classes are imbalanced,
+                precision and recall let you control the tradeoff between false
+                alarms and missed detections.
+              </div>
+            </div>
+          </a>
+
+          <a href="classification2.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num">3</span>
+                <h3 class="card-title">High-Dimensional Classification</h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+              High-dimensional inputs like images expose real limits of standard classification. The fixes — regularization and dimensionality reduction — are classical ideas that remain central to modern ML.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>Images as data:</strong> 
+                Pixels are just numbers, and a small image already has hundreds of them. Treating each one as a feature makes the input space enormous by default.
+              </div>
+              <div class="concept">
+                <strong>The curse of dimensionality:</strong>
+                With hundreds of features, logistic regression produces extreme,
+                unstable coefficients — overconfident on training data and
+                brittle on new inputs.
+              </div>
+              <div class="concept">
+                <strong>Regularization and dimensionality reduction:</strong>
+                Two complementary fixes. Regularization shrinks coefficients
+                directly; PCA first compresses the input by finding the
+                directions that capture most of the variance, discarding the
+                rest.
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── Inflection marker ── -->
+      <div>
+        <div class="inflection">
+          <div class="inflection-line"></div>
+          <div class="inflection-pill">From Statistics to Machine Learning</div>
+          <div class="inflection-line"></div>
+        </div>
+        <div class="inflection-timeline">
+          <div class="tl-item">
+            <div class="tl-label">
+              Least squares<br />(Gauss &amp; Legendre)
+            </div>
+            <div class="tl-date">1805</div>
+            <div class="tl-node gold"></div>
+          </div>
+                    <div class="tl-connect"></div>
+          <div class="tl-item">
+            <div class="tl-label">Principal Component Analysis<br />(Pearson)</div>
+            <div class="tl-date">1901</div>
+            <div class="tl-node gold"></div>
+          </div>
+          <div class="tl-connect"></div>
+          <div class="tl-item">
+            <div class="tl-label">Maximum likelihood<br />(Fisher)</div>
+            <div class="tl-date">1922</div>
+            <div class="tl-node gold"></div>
+          </div>
+          <div class="tl-connect"></div>
+          <div class="tl-item">
+            <div class="tl-label">Logistic regression<br />(Cox)</div>
+            <div class="tl-date">1958</div>
+            <div class="tl-node gold"></div>
+          </div>
+          <div class="tl-connect"></div>
+          <div class="tl-item">
+            <div class="tl-label">Ridge &amp; Lasso<br />regularization</div>
+            <div class="tl-date">1970–96</div>
+            <div class="tl-node gold"></div>
+          </div>
+          <div class="tl-connect"></div>
+          <div class="tl-item">
+            <div class="tl-label">Backpropagation Neural Networks</div>
+            <div class="tl-date">1970-2012</div>
+            <div class="tl-node blue"></div>
+          </div>
+          <div class="tl-connect"></div>
+          <div class="tl-item">
+            <div class="tl-label">Deep learning<br />takes over</div>
+            <div class="tl-date">2012+</div>
+            <div class="tl-node blue"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Act II: More Powerful Models ── -->
+      <div class="act-section" style="margin-top: 48px">
+        <div class="act-label act-ml">
+          <span class="act-label-text">More Powerful Models</span>
+          <span class="act-label-line"></span>
+        </div>
+
+        <div class="card-list">
+
+          <a href="neural_networks.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num">4</span>
+                <h3 class="card-title">Neural Networks</h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+              Regression and classification revisited in R with a more flexible model class — 
+              networks of stacked linear transformations and nonlinear activations that 
+              can approximate functions no polynomial or logistic model could fit.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>Function composition and activation:</strong> 
+                Stacking linear layers with non-linear activations produces models that can approximate any continuous function
+              </div>
+              <div class="concept">
+                <strong>More capacity, more risk:</strong> 
+                A network with enough parameters can fit any training data perfectly. That makes overfitting not just possible but the default. Controlling it requires careful model selection, regularization, and validation.
+              </div>
+            </div>
+          </a>
+
+
+          <a href="neural_networks_pytorch.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num">5</span>
+                <h3 class="card-title">Neural Networks in PyTorch</h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+              The same networks, now implemented in PyTorch. Automatic differentiation 
+              is introduced, and the training loop — forward pass, loss, backward pass, 
+              parameter update — becomes explicit and reusable.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>Autodiff and computation graphs:</strong> PyTorch tracks
+                every operation so it can differentiate through them
+                automatically — no hand-derived gradients needed.
+              </div>
+              <div class="concept">
+                <strong>Training loop anatomy:</strong> Forward pass, loss,
+                backward pass, optimizer step. Everything in a neural network
+                framework maps back to these four moves. 
+              </div>
+            </div>
+          </a>
+
+          
+
+          <!-- Planned: RKHS -->
+          <div class="card card-planned">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num" style="color: #c8cdd6">+</span>
+                <h3 class="card-title">
+                  Kernel Methods &amp; RKHS
+                  <span
+                    style="font-size: 0.8em; font-weight: 400; color: #b0b8c4"
+                    >(possible addition)</span
+                  >
+                </h3>
+              </div>
+              <span class="planned-tag">Possible</span>
+            </div>
+            <p class="card-tagline">
+              The other path to non-linearity — and the dominant approach before
+              deep learning.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>The kernel trick:</strong> Map inputs to a
+                high-dimensional space implicitly, without ever computing the
+                coordinates — then apply linear methods there.
+              </div>
+              <div class="concept">
+                <strong>Support vector machines and RKHS:</strong> SVMs were
+                state of the art in the 2000s. Understanding them shows that
+                neural networks aren't the only way to learn non-linear
+                boundaries.
+              </div>
+            </div>
+        </div>
+
+
+      <!-- ── Act III: Convolutional Neural Networks  ── -->
+      <div class="act-section" style="margin-top: 48px">
+        <div class="act-label act-ml">
+          <span class="act-label-text">Convolutional Neural Networks</span>
+          <span class="act-label-line"></span>
+        </div>
+
+        <div class="card-list">            
+            
+          <a href="images_as_data.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num">7</span>
+                <h3 class="card-title">Images as Data</h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+              The first step toward understanding CNNs is representing images as arrays of numbers and using linear algebra to transform them.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>Images as arrays:</strong> A grayscale image is a 2D matrix of pixel values; a color image is a 3D array 
+                  with one channel per color. Every operation on an image is an operation on numbers.
+              </div>
+              <div class="concept">
+                <strong>Reshaping and indexing:</strong> Working with images requires fluency with array manipulation — flattening, slicing, and reshaping between 2D and 3D. These skills are essential for everything that follows.
+              </div>
+              <div class="concept">
+                <strong>Linear transformations on images:</strong> Color swaps, grayscale conversion, and sepia filters are all matrix multiplications. Linear algebra is not just theoretical — it acts directly on image data.
+              </div>
+            </div>
+          </a>
+            
+<a href="convolutions_and_filters.html" target="_blank" class="card">
+  <div class="card-top">
+    <div class="card-left">
+      <span class="card-num">8</span>
+      <h3 class="card-title">Convolutions and Filters</h3>
+    </div>
+    <span class="open-link">Open ↗</span>
+  </div>
+  <p class="card-tagline">
+      A convolution is a linear map on arrays. Classical hand-designed kernels — 
+  edge detection, blurring, sharpening — illustrate the operation that CNNs 
+  later learn from data.
+  </p>
+  <div class="card-concepts">
+    <div class="concept">
+      <strong>Convolution as a linear map:</strong> A kernel slides across an 
+      input array, computing a weighted local sum at each position. 
+    </div>
+    <div class="concept">
+      <strong>4D tensors in PyTorch:</strong> Images and kernels require four 
+      dimensions — batch, channels, height, width. The spatial operation is 
+      unchanged; the extra dimensions handle multiple images and multiple 
+      input/output channels simultaneously.
+    </div>
+    <div class="concept">
+      <strong>Stride, dilation, and channels:</strong> Stride downsamples the 
+      output; dilation expands the receptive field without adding parameters. 
+      Applying N filters to a C-channel input produces N output channels — 
+      the core operation repeated at every layer of a CNN.
+    </div>
+  </div>
+</a>
+
+
+          <!-- Planned: CNNs -->
+          <div class="card card-planned">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num" style="color: #c8cdd6">6</span>
+                <h3 class="card-title">Convolutional Neural Networks</h3>
+              </div>
+              <span class="planned-tag">Planned</span>
+            </div>
+            <p class="card-tagline">
+              Fixing the spatial blindness of flattened inputs with locally
+              connected, weight-shared filters.
+            </p>
+            <div class="card-concepts">
+              <div class="concept">
+                <strong>The problem with flattening images:</strong> A pixel's
+                meaning depends on its neighbors. Flattening destroys that
+                structure. Convolutions preserve it.
+              </div>
+              <div class="concept">
+                <strong>Translation invariance:</strong> The same filter applied
+                at every position means a detector for a feature in the top-left
+                also works in the bottom-right — far more efficient than
+                learning both separately.
+              </div>
+            </div>
+            </div>
+          
+
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
