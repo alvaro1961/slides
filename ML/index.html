@@ -748,33 +748,40 @@
 </a>
 
 
-          <!-- Planned: CNNs -->
-          <div class="card card-planned">
+          
+          <a href="cnns.html" target="_blank" class="card">
             <div class="card-top">
               <div class="card-left">
                 <span class="card-num" style="color: #c8cdd6">6</span>
                 <h3 class="card-title">Convolutional Neural Networks</h3>
               </div>
-              <span class="planned-tag">Planned</span>
+              <span class="open-link">Open ↗</span>
             </div>
             <p class="card-tagline">
-              Fixing the spatial blindness of flattened inputs with locally
-              connected, weight-shared filters.
-            </p>
-            <div class="card-concepts">
-              <div class="concept">
-                <strong>The problem with flattening images:</strong> A pixel's
-                meaning depends on its neighbors. Flattening destroys that
-                structure. Convolutions preserve it.
-              </div>
-              <div class="concept">
-                <strong>Translation invariance:</strong> The same filter applied
-                at every position means a detector for a feature in the top-left
-                also works in the bottom-right — far more efficient than
-                learning both separately.
-              </div>
+    Structured weight sharing turns the convolution operation into a 
+    trainable layer — one that exploits the spatial geometry of images.
+  </p>
+  <div class="card-concepts">
+    <div class="concept">
+      <strong>Local connectivity and weight sharing:</strong> Each filter 
+      operates on a small neighborhood and is reused at every position. 
+      This reduces parameters by orders of magnitude while encoding the 
+      assumption that useful features are local and position-independent.
+    </div>
+    <div class="concept">
+      <strong>The conv → activation → pool block:</strong> Stacking these 
+      units builds a hierarchy — early layers detect edges and textures, 
+      later layers detect higher-level structure. Spatial dimensions 
+      contract as channel depth grows.
+    </div>
+    <div class="concept">
+      <strong>Learned filters and historical architectures:</strong> The 
+      filters are not hand-designed — they are found by gradient descent. 
+      LeNet, AlexNet, VGG16, and ResNet each solved a concrete failure 
+      mode on the path from 7 trainable layers to 152.
+    </div>
             </div>
-            </div>
+            
           
 
         </div>
