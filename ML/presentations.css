@@ -1,0 +1,23 @@
+/* custom.css */
+.reveal .title {
+  font-size: 2em !important;
+}
+.reveal .subtitle {
+  font-size: 1.3em !important;
+}
+.reveal .author {
+  font-size: 1.1em !important;
+}
+.reveal .date {
+  font-size: 1em !important;
+}
+
+code:not(pre code) {
+  font-family: "Fira Code", "Courier New", monospace !important;
+  font-weight: bold !important;
+  background-color: rgba(214, 51, 132, 0.08) !important;
+  color: #c93b7b !important;
+  padding: 0.15em 0.35em !important;
+  border-radius: 4px !important;
+  font-size: 90% !important;
+}

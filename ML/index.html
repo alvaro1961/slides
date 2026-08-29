@@ -781,6 +781,35 @@
       mode on the path from 7 trainable layers to 152.
     </div>
             </div>
+
+
+             <a href="adjoint_of_convolution.html" target="_blank" class="card">
+            <div class="card-top">
+              <div class="card-left">
+                <span class="card-num" style="color: #c8cdd6">6</span>
+                <h3 class="card-title">The Adjoint of a Convolution Operator</h3>
+              </div>
+              <span class="open-link">Open ↗</span>
+            </div>
+            <p class="card-tagline">
+    The adjoint of a linear map is easy to define but often hard to compute directly.
+    Writing convolution as an explicit matrix A and transposing it would mean working with 
+    a massive, mostly-zero matrix. This presentation derives the adjoint of a convolution 
+    without ever building that matrix.
+  </p>
+  <div class="card-concepts">
+    <div class="concept">
+      <strong>The adjoint of a convolution is another convolution:</strong> 
+      Flipping the kernel and padding the input gives a closed-form expression for the adjoint, 
+      one that avoids the matrix entirely and is efficient to compute.
+    </div>
+    <div class="concept">
+      <strong>Importance of the adjoint:</strong> 
+        PyTorch uses the adjoint behind the scenes during backpropagation.
+        The adjoint of a convolution is also an important mechanism for upsampling — expanding a compressed 
+        representation back to full resolution, as in U-Nets.
+    </div>
+            </div>
             
           
 

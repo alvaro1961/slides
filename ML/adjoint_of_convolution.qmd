@@ -1,0 +1,274 @@
+---
+title: "The Adjoint of a Convolution"
+subtitle: "Introduction to Machine Learning"
+author: "Alvaro Arias"
+format:
+  revealjs:
+    theme: simple
+    transition: slide
+    slide-number: true
+    code-fold: false
+    code-line-numbers: false
+    code-copy: true
+    highlight-style: monokai
+    scrollable: true
+    font-size: 17px
+css: presentations.css
+engine: jupyter
+jupyter: convexity
+---
+
+## Inner Product Spaces {.smaller}
+
+An **inner product space** is a vector space $V$ equipped with an inner product $\langle \cdot,\cdot\rangle : V \times V \to \mathbb{R}$: bilinear, symmetric, and positive definite.
+
+::: {.panel-tabset}
+
+### $\mathbb{R}^n$
+
+The usual dot product:
+
+$$\langle \mathbf{x}, \mathbf{y}\rangle = \sum_{i=1}^n x_i y_i$$
+
+### $M_{n\times m}$
+
+The Frobenius inner product on matrices:
+
+$$\langle A, B\rangle = \sum_{i=1}^m \sum_{j=1}^n A_{ij} B_{ij} = \operatorname{tr}(A^\top B)$$
+
+### An RGB Image
+
+An RGB image is a tensor $X \in \mathbb{R}^{p\times q\times 3}$, indexed by row, column, and color channel. The inner product is the natural extension of the Frobenius one:
+
+$$\langle X, Y\rangle = \sum_{i=1}^p \sum_{j=1}^q \sum_{c=1}^3 X_{i,j,c}\, Y_{i,j,c}$$
+
+Equivalently, summing the Frobenius inner product of each color channel separately:
+
+$$\langle X, Y\rangle = \sum_{c=1}^3 \langle X_c, Y_c\rangle$$
+
+### A CNN Layer with $C$ Channels
+
+A convolutional layer's feature map is a tensor $X \in \mathbb{R}^{p\times q\times C}$, one value per spatial position per channel. RGB is the special case $C=3$; the inner product extends the same way:
+
+$$\langle X, Y\rangle = \sum_{i=1}^p \sum_{j=1}^q \sum_{c=1}^C X_{i,j,c}\, Y_{i,j,c} = \sum_{c=1}^C \langle X_c, Y_c\rangle$$
+
+:::
+
+::: {.fragment}
+Everything that follows only needs an inner product to be defined — the same argument works whether the objects being compared are vectors, matrices, or images.
+:::
+
+## The Adjoint of a Linear Map {.smaller}
+
+Let $V, W$ be inner product spaces and $T : V \to W$ a linear map. The **adjoint** of $T$ is the linear map $T^* : W \to V$ defined by:
+
+$$\langle Tv, w\rangle_W = \langle v, T^*w\rangle_V \quad \text{for all } v \in V,\ w \in W$$
+
+::: {.fragment}
+**Special case.** If $T : \mathbb{R}^m \to \mathbb{R}^n$ is linear, there exists and $n\times m$ matrix $A$ such that 
+$T(\mathbf{x})=A\mathbf{x}$. 
+:::
+
+::: {.fragment}
+Then, using the standard dot product on both sides, we easily check that $T^*$ is multiplication by $A^\top$, the transpose of $A$.
+:::
+
+::: {.fragment}
+In machine learning, adjoints are usually just called **transposes**.
+:::
+
+## Convolution as a Linear Map {.smaller}
+
+Let $K$ be a $k\times k$ kernel and $X$ an $N\times N$ image. Cross-correlation gives a linear map
+
+$$C : M_N \to M_M, \qquad M = N - k + 1$$
+
+$$C(X)_{i,j} = \sum_{a=0}^{k-1}\sum_{b=0}^{k-1} K_{a,b}\, X_{i+a,\,j+b}\quad\text{ for }\quad 1\leq i,j\leq M$$
+
+::: {.fragment}
+The question is how do we find $C^*$.
+:::
+
+::: {.fragment}
+To find the answer, fix $Y\in M_M$ and $X\in M_N$. Then look at $\langle C(X), Y\rangle$, perform algebraic
+operations and obtain $\langle C(X), Y\rangle=\langle X, \text{RHS}\rangle$
+:::
+
+::: {.fragment}
+Since $X$ is arbitrary, $\text{RHS}=C^*(Y)$
+:::
+
+## Computing the Adjoint  {.smaller}
+
+Start expanding the left-hand side
+
+::: {.fragment}
+$$\langle C(X), Y\rangle = \sum_{i=1}^M\sum_{j=1}^M Y_{i,j} \sum_{a=0}^{k-1}\sum_{b=0}^{k-1} K_{a,b}\, X_{i+a,\,j+b}$$
+:::
+
+::: {.fragment}
+Rearrange the sum. For each entry of $X$, collect every term where it appears, and substitute $m = i+a,\ n=j+b$:
+
+$$\langle C(X), Y\rangle = \sum_{m=1}^N\sum_{n=1}^N X_{m,n} \sum_{a=0}^{\min(m-1,k-1)} \sum_{b=0}^{\min(n-1,k-1)}  K_{a,b}\, Y_{m-a,\,n-b}$$
+:::
+
+::: {.fragment}
+Since this holds for arbitrary $X$, for $1\leq m,n\leq N$,
+$$C^*(Y)_{m,n} = \sum_{a=0}^{\min(m-1,k-1)} \sum_{b=0}^{\min(n-1,k-1)} K_{a,b}\, Y_{m-a,\,n-b},$$
+which looks similar to the convolution formula.
+:::
+
+## The Adjoint Is Also a Convolution  {.smaller}
+
+It is not hard to see that the last formula is the cross-correlation with the kernel flipped, applied to a padded $Y$.
+
+::: {.fragment}
+For $0\leq i,j<k$, let $\tilde K_{i,j} = K_{k-1-i,\,k-1-j}$ (the flip of $K$), and let $Y_p$ be $Y$ padded with a frame of $p = k-1$ zeros. Then we have that:
+
+$$C^*(Y) = C_{\tilde K}(Y_p)$$
+:::
+
+::: {.fragment}
+Therefore **the adjoint of a convolution is another convolution**  with a flipped kernel and padded input. 
+:::
+
+## Convolution with Stride  {.smaller}
+
+A strided convolution $C_{K,s}$ of kernel $K$ with stride $s$ factors as an ordinary convolution followed by subsampling:
+$C_{K,s} = S_s \circ C_{K,1}$
+where $S_s$ keeps every $s$-th entry.
+
+::: {.fragment}
+Adjoints reverse composition order: 
+$C_{K,s}^* = C_{K,1}^* \circ S_s^*$
+:::
+
+::: {.fragment}
+::: {.panel-tabset}
+
+### Example, the Map $S_2$
+
+(stride-2 subsampling):
+
+$$
+S_2 : \begin{pmatrix}
+X_{11} & X_{12} & X_{13} & X_{14} & X_{15} \\
+X_{21} & X_{22} & X_{23} & X_{24} & X_{25} \\
+X_{31} & X_{32} & X_{33} & X_{34} & X_{35} \\
+X_{41} & X_{42} & X_{43} & X_{44} & X_{45} \\
+X_{51} & X_{52} & X_{53} & X_{54} & X_{55}
+\end{pmatrix}
+\;\longmapsto\;
+\begin{pmatrix}
+X_{11} & X_{13} & X_{15} \\
+X_{31} & X_{33} & X_{35} \\
+X_{51} & X_{53} & X_{55}
+\end{pmatrix}
+$$
+
+$S_2$ keeps every other row and every other column, discarding the rest.
+
+### The adjoint of $S_2$
+
+$$
+S_2^* : \begin{pmatrix}
+Y_{11} & Y_{12} & Y_{13} \\
+Y_{21} & Y_{22} & Y_{23} \\
+Y_{31} & Y_{32} & Y_{33}
+\end{pmatrix}
+\;\longmapsto\;
+\begin{pmatrix}
+Y_{11} & 0 & Y_{12} & 0 & Y_{13} \\
+0 & 0 & 0 & 0 & 0 \\
+Y_{21} & 0 & Y_{22} & 0 & Y_{23} \\
+0 & 0 & 0 & 0 & 0 \\
+Y_{31} & 0 & Y_{32} & 0 & Y_{33}
+\end{pmatrix}
+$$
+
+$S_2^*$ places each entry of $Y$ back where it came from, and fills every discarded position with a zero — the adjoint of "throw entries away" is "put zeros where they were thrown away," never any other value.
+
+:::
+:::
+
+
+## Convolution with Dilation  {.smaller}
+
+
+::: {.fragment}
+A dilated convolution $C_{K,d}$ of kernel $K$ with dilation $d$ can be written as a regular convolution with a different kernel.
+:::
+
+::: {.fragment}
+It is not hard to see that 
+$$C_{k,d}=C_{S_d^*(K)}$$ 
+where the new kernel is the adjoint of the stride-$d$ operator.
+:::
+
+::: {.fragment}
+Then 
+$$C_{K,d}^*=C_{S_d^*(K)}^*.$$
+:::
+
+
+## Adjoint in PyTorch  {.smaller}
+
+The adjoint of the convolutions operators are implemented in PyTorch
+
+::: {.fragment}
+```{python}
+#| echo: true
+import torch
+import torch.nn as nn
+
+conv = nn.Conv2d(1, 1, kernel_size=3, stride=2, padding=1, bias=False)
+transposed_conv = nn.ConvTranspose2d(1, 1, kernel_size=3, stride=2, padding=1, bias=False)
+
+x = torch.randn(1, 1, 9, 9)
+y = conv(x)
+print("input: ", x.shape)
+print("output:", y.shape)
+print("transposed_conv(output):", transposed_conv(y).shape)
+```
+:::
+
+::: {.fragment}
+`nn.ConvTranspose2d` (or `F.conv_transpose2d`) takes the same `padding`, `stride`, and `dilation` arguments as `Conv2d` and builds $C^*$ directly — the flipping, padding, and zero-insertion from the last three slides are handled internally.
+:::
+
+## Checking the Definition Numerically  {.smaller}
+
+The defining identity, $\langle Cx, y\rangle = \langle x, C^*y\rangle$, holds exactly — not approximately — when both layers share the same kernel:
+
+```{python}
+#| echo: true
+torch.manual_seed(0)
+conv = nn.Conv2d(1, 1, kernel_size=3, stride=2, padding=1, bias=False)
+transposed_conv = nn.ConvTranspose2d(1, 1, kernel_size=3, stride=2, padding=1, bias=False)
+transposed_conv.weight.data = conv.weight.data.clone()
+
+x = torch.randn(1, 1, 9, 9)
+y = torch.randn_like(conv(x))
+
+lhs = torch.sum(conv(x) * y)
+rhs = torch.sum(x * transposed_conv(y))
+print(f"<Cx, y>   = {lhs.item():.6f}")
+print(f"<x, C*y>  = {rhs.item():.6f}")
+```
+
+## Uses of the Adjoint  {.smaller}
+
+Two places this operator shows up, beyond being mathematically interesting.
+
+::: {.incremental}
+- **Backpropagation** — computing gradients through a convolutional layer.
+  - This happens behind the scenes in Pytorch.
+  - Because the adjoint of a convolution *is* a convolution, backprop reuses the same optimized convolution routines instead of ever forming the matrix $A$ explicitly.
+- **Increasing spatial dimension** — going from a compressed representation back to larger resolution.
+  - Suppose that $C$ is a convolution of kernel size $k=2$, stride = 2, and no padding (padding = 0).
+  - This map reduces the spatial dimension in half $C:M_{2n}\to M_n$.
+  - Then the adjoint doubles the dimension $C^*:M_n\to M_{2n}$.
+  - These maps are a natural building block for bottleneck architectures like U-Net, which are widely used in computer vision and diffusion models.
+
+:::
+
